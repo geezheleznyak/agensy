@@ -7,6 +7,14 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [1.0.4] — 2026-04-05
+
+### Fixed
+
+- `README.md`: removed "full maturity" overclaim in two places — replaced with honest viability framing ("works across real domains", "built by the same process it teaches")
+
+---
+
 ## [1.0.3] — 2026-04-05
 
 ### Fixed

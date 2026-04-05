@@ -160,7 +160,7 @@ agensy/
 
 ## The Vault Configs Are Illustrative
 
-The configs in `vaults/` are based on production vault configurations built using the genesis protocol across six domains: philosophy + metaphysics, political theory, economic systems, military theory, historical dynamics, and essay writing. They show what the framework produces at full maturity. Use them as reference when building your own.
+The configs in `vaults/` are based on production vault configurations built using the genesis protocol across six domains: philosophy + metaphysics, political theory, economic systems, military theory, historical dynamics, and essay writing. They show what the framework produces across real domains. Use them as reference when building your own.
 
 ---
 
@@ -168,7 +168,7 @@ The configs in `vaults/` are based on production vault configurations built usin
 
 Every file in this repository — framework protocols, command suites, template documents, this README — was generated through synthesis sessions with Claude. AGENSY is a meta-example of its own method: the framework was built by running synthesis on the problem of building synthesis frameworks.
 
-This matters for two reasons: (1) it demonstrates the methodology works at full maturity; (2) it's honest. If you use this, you are building on AI-generated infrastructure. The ideas are ours; the articulation was collaborative.
+This matters for two reasons: (1) it demonstrates the methodology works — the framework itself was built by the same process it teaches; (2) it's honest. If you use this, you are building on AI-generated infrastructure. The ideas are ours; the articulation was collaborative.
 
 ---
 
