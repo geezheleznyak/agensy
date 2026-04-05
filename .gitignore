@@ -1,0 +1,10 @@
+# Obsidian workspace state — user-specific, do not share
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Session memory — personal context, not part of the framework
+memory/
+
+# OS noise
+.DS_Store
+Thumbs.db
