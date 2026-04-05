@@ -2,7 +2,7 @@
 
 ## Framework Version
 
-**v1.0.0** — stable release as of 2026-04-04.
+**v1.0.1** — released 2026-04-04.
 
 Version scheme:
 - **Major** (v2.x.x) — breaking protocol changes (existing vaults require migration)

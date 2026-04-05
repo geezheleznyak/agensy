@@ -65,8 +65,8 @@ When a slash command is invoked in any synthesis vault:
 2. For universal commands, read the full protocol from `[AGENSY_PATH]/framework/universal-commands/[command-name].md`.
 3. Execute the protocol using this vault's parameters.
 
-**Universal commands** (16 total — protocols in agensy/):
-arc · coverage-audit · axis-survey · what-next · promote · compare · engage-problem · synthesis · update-moc · evergreen-note · engage-deep · domain-audit · dialogue · positions · revisit · question-bank
+**Universal commands** (17 total — protocols in agensy/):
+arc · coverage-audit · axis-survey · what-next · promote · compare · engage-problem · synthesis · update-moc · evergreen-note · engage-deep · domain-audit · quick-check · dialogue · positions · revisit · question-bank
 
 **Command lifecycle**: See `[AGENSY_PATH]/framework/command-lifecycle.md` for when to fire each command — four trigger types (automatic, milestone, session, analytical). Run the Type C session check at every session start.
 

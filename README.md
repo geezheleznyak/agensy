@@ -143,7 +143,7 @@ agensy/
     system-architecture.md   ← system diagrams
     inter-vault-protocol.md  ← cross-vault connection rules
     command-lifecycle.md     ← when to fire each command
-    universal-commands/      ← 16 command protocol files + 3 legacy/sub-protocol files
+    universal-commands/      ← 17 command protocol files + 2 legacy/sub-protocol files
   vaults/
     theoria-config.md        ← example: philosophy + metaphysics vault config
     politeia-config.md       ← example: political theory vault config
