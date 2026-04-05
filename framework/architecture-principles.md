@@ -17,18 +17,18 @@ For the visual system map and structured YAML manifest: `system-architecture.md`
 
 ## §1 — The System in Brief
 
-The synthesis-meta framework is an **Agent-first system** for building and maintaining Obsidian knowledge vaults. Claude is the primary executor; the framework is the instruction set.
+The AGENSY framework is an **Agent-first system** for building and maintaining Obsidian knowledge vaults. Claude is the primary executor; the framework is the instruction set.
 
 **3-layer loading hierarchy** (context budget is finite — every layer is sized accordingly):
 - **Global CLAUDE.md** (~86 lines, always loaded): universal rules — atomicity, two-zone architecture, tier logic, slash command runtime, tool rules, memory management
 - **Vault CLAUDE.md** (~95–120 lines, always loaded per vault): vault identity — role, mission, driving questions, engagement axis, open problems list, domain defaults, note schema summary
-- **On-demand** (per command): `vault-config.md` (~260 lines, read per invocation) + the relevant universal protocol file from `synthesis-meta/framework/universal-commands/`
+- **On-demand** (per command): `vault-config.md` (~260 lines, read per invocation) + the relevant universal protocol file from `[AGENSY_PATH]/framework/universal-commands/`
 
 **Content architecture**: three tiers (T1 capture → T2 analysis → T3 output), two schemas per note (reference substrate or synthesis core, governed by `evergreen-candidate`), four intellectual styles (adversarial, dialectical, contemplative, constructive).
 
-**Execution architecture**: 19 universal command protocols live in synthesis-meta. Each vault holds thin stubs (~11 lines) in `.claude/commands/` that point to them. A bug fix in one protocol propagates to all vaults instantly.
+**Execution architecture**: 19 universal command protocols live in agensy. Each vault holds thin stubs (~11 lines) in `.claude/commands/` that point to them. A bug fix in one protocol propagates to all vaults instantly.
 
-**State architecture**: three memory files per vault — `MEMORY.md` (persistent decisions, dialogue log, max 150 lines), `session-state.md` (pre-computed session diagnostics, replaces vault-wide globbing at session start), `note-index.md` (bulk metadata cache, replaces hundreds of individual frontmatter reads for audit commands). One cross-vault file in synthesis-meta — `system-state.md` (dynamic operational state: note counts, audit dates, cross-vault user positions; updated by `/coverage-audit` and `/dialogue` Bridge mode).
+**State architecture**: three memory files per vault — `MEMORY.md` (persistent decisions, dialogue log, max 150 lines), `session-state.md` (pre-computed session diagnostics, replaces vault-wide globbing at session start), `note-index.md` (bulk metadata cache, replaces hundreds of individual frontmatter reads for audit commands). One cross-vault file in agensy — `system-state.md` (dynamic operational state: note counts, audit dates, cross-vault user positions; updated by `/coverage-audit` and `/dialogue` Bridge mode).
 
 **Reference system**: 1 framework (agensy), 4+ accumulation vaults (e.g., theoria, politeia, oeconomia, historia), 1 training vault (e.g., bellum), 1 expression vault (e.g., logos). Cross-vault: 3 connection types — Type 1 knowledge→expression (one-way), Type 2 knowledge→training (one-way), Type 3 peer↔peer (bidirectional).
 
@@ -50,7 +50,7 @@ These are structural load-bearing walls. Violating any requires rebuilding the s
 
 6. **Engagement field mandatory** — every synthesis-schema note must have a specific, non-trivial entry in the engagement field (Threatens / Complicates / Transforms / Constrains). This is what prevents notes from being mere summaries. The escape valve exists only at Tier 2, and blocks promotion to Tier 3. *Test*: could a note pass quality checks after this change with less analytical work than before?
 
-7. **Stub pattern** — vault command files are logic-free pointers to universal protocols. Protocol logic lives once in synthesis-meta. Duplicating protocol logic into vault stubs breaks automatic propagation. *Test*: does this require changing command behavior in vault stubs rather than in the protocol file?
+7. **Stub pattern** — vault command files are logic-free pointers to universal protocols. Protocol logic lives once in agensy. Duplicating protocol logic into vault stubs breaks automatic propagation. *Test*: does this require changing command behavior in vault stubs rather than in the protocol file?
 
 8. **Two-zone integrity** — the `evergreen-candidate` field direction is `false → true` only; a note is never downgraded from synthesis schema to reference schema. Domain defaults apply at creation; note-level value overrides. *Test*: does this create any path where a synthesis note reverts to reference schema?
 
@@ -80,7 +80,7 @@ Consult this table first when assessing any proposed change.
 
 | Change to... | Propagates to... | Action required |
 |---|---|---|
-| Universal protocol in synthesis-meta | All vaults automatically | None — stubs point to protocol |
+| Universal protocol in agensy | All vaults automatically | None — stubs point to protocol |
 | `vault-config-schema.md` | New vaults only | None — existing vault configs unchanged |
 | New **required** key in vault-config | Every active vault-config.md | Add key to all configs; update contract table |
 | New **optional** key with fallback | New vault-configs by default | Document fallback in protocol; update contract table |
@@ -91,6 +91,8 @@ Consult this table first when assessing any proposed change.
 | `genesis-protocol.md` | New vaults only | Existing vaults unaffected |
 | `command-lifecycle.md` | Claude's session behavior globally | Affects every session start and milestone trigger |
 | State file schema (session-state, note-index) | All vaults that have these files | Add migration note; old format must remain parseable |
+
+See `system-contracts.md` §5 for the complementary breaking/non-breaking classification of these same changes.
 
 ---
 
@@ -106,7 +108,7 @@ Score a proposed change against all six axes before implementing. A change that 
 
 4. **Universality** — does the change work for all vault types (accumulation, training, expression) and all four intellectual styles? *Test*: mentally execute the change against all 12 combinations.
 
-5. **Propagation** — does the change propagate automatically to all vaults, or does it require per-vault migration? *Test*: how many files outside synthesis-meta need to change?
+5. **Propagation** — does the change propagate automatically to all vaults, or does it require per-vault migration? *Test*: how many files outside agensy need to change?
 
 6. **Reversibility** — can the change be undone without data loss? *Test*: is there a rollback path that leaves existing vault content intact?
 
@@ -136,7 +138,7 @@ Seven steps before implementing any framework change.
 
 1. **Read scope**: this document + `system-contracts.md` + the specific target file. Read the YAML manifest in `system-architecture.md` if you need to trace relationships.
 
-2. **Check propagation**: consult §4. How many files outside synthesis-meta change? If >0, document the migration path before proceeding.
+2. **Check propagation**: consult §4. How many files outside agensy change? If >0, document the migration path before proceeding.
 
 3. **Check invariants**: does the change touch any core invariant from §2? If yes, it is almost certainly wrong unless accompanied by a fundamental architecture revision. State explicitly which invariant is contacted and why the contact is safe.
 
@@ -148,4 +150,4 @@ Seven steps before implementing any framework change.
 
 7. **Write the rationale in one sentence**: "This change improves [axis] by [mechanism] without degrading [other axes]." If you cannot write this sentence, the change is not well-enough understood to implement.
 
-8. **Sync config extracts** (if the change involves any vault's `vault-config.md`): update the corresponding snapshot in `synthesis-meta/vaults/[vault]-config.md`. These extracts serve as reference documentation for the framework; stale extracts mislead during vault genesis and architecture reviews.
+8. **Sync config extracts** (if the change involves any vault's `vault-config.md`): update the corresponding snapshot in `[AGENSY_PATH]/vaults/[vault]-config.md`. These extracts serve as reference documentation for the framework; stale extracts mislead during vault genesis and architecture reviews.

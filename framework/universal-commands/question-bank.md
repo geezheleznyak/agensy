@@ -7,7 +7,7 @@ audience: claude
 
 Manage the cross-vault question bank. Questions that emerge from dialogue but cannot yet be answered — questions that span vaults, require future arcs, or reveal gaps the vault cannot yet fill — are logged here and surface in future sessions.
 
-**Data file**: `synthesis-meta/question-bank.md`
+**Data file**: `[AGENSY_PATH]/question-bank.md`
 
 **Why agensy**: Questions span vaults. "Does the recon-strike complex make operational maneuver obsolete?" touches bellum (tactics), but answering it draws on politeia (industrial capacity) and oeconomia (cost-exchange economics). The framework vault is the cross-vault coordination layer.
 
@@ -15,9 +15,9 @@ Manage the cross-vault question bank. Questions that emerge from dialogue but ca
 
 ## Subcommand: `list`
 
-Show all questions in `synthesis-meta/question-bank.md`.
+Show all questions in `[AGENSY_PATH]/question-bank.md`.
 
-1. Read `synthesis-meta/question-bank.md`.
+1. Read `[AGENSY_PATH]/question-bank.md`.
 2. Group questions by `status`: show `open` first, then `explored`, then `resolved`.
 3. Within `open`: flag questions older than 30 days with ⚠️.
 4. For each question: show ID, question text, vaults, open problems, age in days, source.
@@ -43,7 +43,7 @@ Show all questions in `synthesis-meta/question-bank.md`.
 
 Add a new question to the bank.
 
-1. Read `synthesis-meta/question-bank.md`.
+1. Read `[AGENSY_PATH]/question-bank.md`.
 2. Check for near-duplicate questions (≥70% semantic overlap with existing open questions). If duplicate found → point to existing entry, do not add.
 3. Assign the next sequential ID.
 4. Append the new entry using the schema below.
@@ -69,7 +69,7 @@ Add a new question to the bank.
 
 Mark question N as resolved by a specific note.
 
-1. Read `synthesis-meta/question-bank.md`.
+1. Read `[AGENSY_PATH]/question-bank.md`.
 2. Find question with `id: N`.
 3. Update: `status: resolved`, `resolution: "[note-path] — [one sentence: how the note resolves the question]"`.
 4. Write the updated file.

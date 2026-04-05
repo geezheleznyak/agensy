@@ -37,9 +37,9 @@ This ensures vaults with a dedicated maps folder (e.g., `theory/maps/`) route ma
 
 ## Step 1.5 — Cross-Vault Awareness (Optional)
 
-**When to activate**: Check whether the subject falls within a bridge domain in `synthesis-meta/cross-vault-bridges.md`. If yes, activate. If no, skip silently — do not mention it.
+**When to activate**: Check whether the subject falls within a bridge domain in `[AGENSY_PATH]/cross-vault-bridges.md`. If yes, activate. If no, skip silently — do not mention it.
 
-**Bridge check**: Read `synthesis-meta/cross-vault-bridges.md`. Match the arc subject against the 10 bridge domains by topic (not keyword — use judgment). A thinker or concept may fall into 1–3 bridges simultaneously.
+**Bridge check**: Read `[AGENSY_PATH]/cross-vault-bridges.md`. Match the arc subject against the 10 bridge domains by topic (not keyword — use judgment). A thinker or concept may fall into 1–3 bridges simultaneously.
 
 **If activated**:
 1. Read the relevant bridge entries (the "which vaults" and "vault treatment" lines for each matched bridge).

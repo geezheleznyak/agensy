@@ -178,4 +178,4 @@ This log enables:
 - `/revisit` trigger (30-day check for dialogue-derived notes)
 - `/positions` (cross-vault survey of user-originated knowledge)
 
-**Bridge mode**: When mode = `bridge` and a clear position emerged, `/dialogue` Step 6 also appends to `synthesis-meta/system-state.md` Cross-Vault Positions — see that file.
+**Bridge mode**: When mode = `bridge` and a clear position emerged, `/dialogue` Step 6 also appends to `[AGENSY_PATH]/system-state.md` Cross-Vault Positions — see that file.

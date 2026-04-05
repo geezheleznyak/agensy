@@ -104,7 +104,7 @@ source_note: "epistemology/pearl-systematic-map"
 
 **Rules**:
 - Bidirectional references must be explicitly stated in both vaults (if A → B, then B should also note the connection)
-- Parallel connections are logged in `vault-registry.md` in synthesis-meta
+- Parallel connections are logged in `vault-registry.md` in agensy
 - Do not create a parallel connection that is really a dependency — if vault A requires vault B's content to make sense, it is Type 1 or Type 2, not Type 3
 - Awareness of a bridge does NOT mandate creating a cross-vault reference in every arc note. Quality over quantity — only when the sibling vault's treatment genuinely deepens the note
 

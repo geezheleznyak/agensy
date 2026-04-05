@@ -194,7 +194,7 @@ $ARGUMENTS
 3. Execute the protocol using this vault's parameters.
 ```
 
-The full protocol for each universal command lives in `synthesis-meta/framework/universal-commands/[command-name].md` — do NOT duplicate it in the vault's command file.
+The full protocol for each universal command lives in `[AGENSY_PATH]/framework/universal-commands/[command-name].md` — do NOT duplicate it in the vault's command file.
 
 **Vault-specific commands** (commands unique to this vault, from Q6/Q7): write as full protocol files. These read `vault-config.md` for their parameters instead of hardcoding vault-specific values.
 
@@ -258,7 +258,7 @@ Last updated: YYYY-MM-DD | Total: 0 | Last full rebuild: never
 | [vault-name] | Phase 0 (bootstrapped) | 0 | never |
 ```
 
-This tracks dynamic operational state (note counts, audit cadence). Vault identity, mission, and connection types are registered separately in `vault-registry.md` per synthesis-meta CLAUDE.md Task 1 steps 6–7.
+This tracks dynamic operational state (note counts, audit cadence). Vault identity, mission, and connection types are registered separately in `vault-registry.md` per agensy CLAUDE.md Task 1 steps 6–7.
 
 ---
 

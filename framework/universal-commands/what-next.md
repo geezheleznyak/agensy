@@ -17,7 +17,7 @@ Analyze the vault's current state and recommend the single highest-value next su
 
 ## Step 1 — State Check
 
-**Question bank**: Read `synthesis-meta/question-bank.md`. Check for open questions tagged to this vault. If any open questions exist:
+**Question bank**: Read `[AGENSY_PATH]/question-bank.md`. Check for open questions tagged to this vault. If any open questions exist:
 - Note which open problems they address
 - Flag any question that aligns with a coverage gap (same domain or OP) — these get a connection bonus in the final recommendation
 

@@ -9,7 +9,7 @@ This is the universal CLAUDE.md template for generating a vault's CLAUDE.md. Thr
 **3-layer loading hierarchy** (updated 2026-03-21):
 - `~/.claude/CLAUDE.md` (global) — universal rules, always loaded. Contains: Core Principles, Two-Zone Architecture concept, Tier logic, Slash command runtime instruction, Output Efficiency, Tool & Skill Rules, Memory Management.
 - `[vault]/CLAUDE.md` (this template) — vault identity only (~80–120 lines). Contains ONLY vault-specific content.
-- On-demand: `vault-config.md` + `synthesis-meta/framework/universal-commands/[cmd].md` per slash command invocation.
+- On-demand: `vault-config.md` + `[AGENSY_PATH]/framework/universal-commands/[cmd].md` per slash command invocation.
 
 **DO NOT duplicate** in vault CLAUDE.md: Core Principles, Two-Zone Architecture concept (only domain defaults table), Tier logic (only vault-specific sections), Tool & Skill Rules, Memory Management rules, Output Efficiency. These are already in `~/.claude/CLAUDE.md`.
 

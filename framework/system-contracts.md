@@ -14,13 +14,12 @@ Read this before modifying any universal command protocol, adding a new vault ty
 
 ## 1. Why This Architecture
 
-**3-layer loading hierarchy**: Context budget is finite. Global `~/.claude/CLAUDE.md` stays under 100 lines; vault CLAUDE.md stays under 120 lines. Vault CLAUDE.md contains ONLY vault-specific content — universal rules are not repeated. This is a hard budget constraint, not a preference.
+For full principles, invariants, and the 7-step change protocol: read `architecture-principles.md` first.
 
-**Parameterized runtime**: Universal command protocols are written once and execute in any vault by reading `vault-config.md` at runtime. Protocols never hardcode vault-specific values. Violating this constraint requires duplicating protocols per vault — which defeats the entire architecture.
-
-**Stub pattern**: Vault command files are 11-line pointers to universal protocols. The protocol logic lives once in synthesis-meta. A bug fix or protocol improvement propagates automatically to all vaults.
-
-For the complete system picture (components, relationships, propagation rules, YAML manifest): `architecture-principles.md` and `system-architecture.md`.
+Brief orientation for cold readers:
+- **3-layer loading hierarchy**: context budget is finite — global CLAUDE.md ≤100 lines, vault CLAUDE.md ≤120 lines, vault-specific content never duplicated into global
+- **Parameterized runtime**: universal protocols never hardcode vault-specific values; all vault identity flows through `vault-config.md` at runtime
+- **Stub pattern**: vault command files are pure pointers to protocols in agensy; a fix in one protocol propagates to all vaults instantly
 
 ---
 
@@ -50,7 +49,7 @@ Every universal command reads `vault-config.md` at runtime. **Required** keys mu
 | `/dialogue` | `open_problems[]`, `driving_questions`, `intellectual_style`, `engagement_axis`, `folder_structure.output`, `note_template.synthesis` | `folder_structure.mocs` (MOC update after Route 1) |
 | `/positions` | None (reads across vaults by searching for `source: user-dialogue` in frontmatter) | — |
 | `/revisit` | `folder_structure.output`, `open_problems[]`, `intellectual_style`, `engagement_axis` | — |
-| `/question-bank` | None (reads/writes `synthesis-meta/question-bank.md` directly) | — |
+| `/question-bank` | None (reads/writes `[AGENSY_PATH]/question-bank.md` directly) | — |
 
 **Universal required keys** (needed by ≥6 commands): `domains[]`, `open_problems[]`, `intellectual_style` (with `engagement_axis`), `note_tiers`. Every vault must define all four.
 
@@ -100,6 +99,8 @@ Known vault structures that universal protocols must handle:
 
 ## 5. Breaking Change Criteria
 
+See `architecture-principles.md` §4 for the complementary propagation scope of these same changes.
+
 | Change | Breaking? | Required action |
 |---|---|---|
 | Add a REQUIRED key to vault-config.md | Yes | Add key to all active vault-configs; update contract table |
@@ -125,4 +126,4 @@ When registering a vault built before the framework (before 2026-03-21 migration
 - [ ] `domains[].folder` values are accurate (flat vs per-folder structure documented)
 - [ ] `folder_structure.maps` points to the correct dedicated map folder
 - [ ] Run `/coverage-audit` as baseline — if it completes without error, the contract is satisfied
-- [ ] Add vault to `synthesis-meta/vault-registry.md`
+- [ ] Add vault to `[AGENSY_PATH]/vault-registry.md`

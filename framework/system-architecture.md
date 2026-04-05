@@ -6,7 +6,7 @@ audience: claude
 
 **Reading order**: `architecture-principles.md` (WHY — invariants + change protocol) → `system-contracts.md` (HOW — contract table) → `system-architecture.md` (WHAT — topology and YAML manifest, read here last)
 
-Visual and structured descriptions of the complete synthesis-meta framework. Two representations of the same system: Mermaid diagrams for human viewing in Obsidian; YAML manifest for Claude's structured analysis.
+Visual and structured descriptions of the complete agensy framework. Two representations of the same system: Mermaid diagrams for human viewing in Obsidian; YAML manifest for Claude's structured analysis.
 
 **How to use**:
 - **Human**: view this file in Obsidian to see the rendered diagrams
@@ -20,7 +20,7 @@ Every major component and the relationships between them. Subgraphs group by fun
 
 ```mermaid
 graph TD
-    subgraph META["synthesis-meta — Framework Source"]
+    subgraph META["agensy — Framework Source"]
         FD["Framework Documents ×10<br/>genesis-protocol · vault-config-schema<br/>claude-md-template · note-tier-template<br/>map-type-template · command-lifecycle<br/>inter-vault-protocol · system-contracts<br/>architecture-principles · system-architecture"]
         UP["Universal Protocols ×19<br/>arc · coverage-audit · axis-survey · what-next<br/>promote · compare · engage-problem · synthesis<br/>update-moc · evergreen-note · engage-deep<br/>domain-audit · dialogue · positions<br/>revisit · question-bank · quick-check"]
     end
@@ -33,7 +33,7 @@ graph TD
 
     subgraph EXEC["Execution — command dispatch chain"]
         STUBS[".claude/commands/ stubs<br/>~11 lines · logic-free pointers<br/>CONSTRAINT: one stub per universal command"]
-        PROTO["Protocol read from<br/>synthesis-meta/framework/universal-commands/"]
+        PROTO["Protocol read from<br/>[AGENSY_PATH]/framework/universal-commands/"]
         PARAM["Parameterized execution<br/>vault-config values injected"]
     end
 
@@ -98,7 +98,7 @@ graph TD
 - Global CLAUDE.md is capped at 100 lines — every line is paid in every session everywhere
 - vault-config.md is read fresh per command (cascade exception: chained sub-commands skip re-read)
 - Tier promotion is one-way; T3 notes are never moved back
-- Protocol logic lives once in synthesis-meta; vault stubs are pure pointers
+- Protocol logic lives once in agensy; vault stubs are pure pointers
 
 ---
 
@@ -324,7 +324,7 @@ loading_hierarchy:
           consumers: [arc, coverage-audit, what-next, domain-audit]
 
     universal_protocols:
-      location: "synthesis-meta/framework/universal-commands/"
+      location: "[AGENSY_PATH]/framework/universal-commands/"
       count: 19
       names: [arc, coverage-audit, axis-survey, what-next, promote, compare,
               engage-problem, synthesis, update-moc, evergreen-note, engage-deep,
@@ -474,9 +474,9 @@ commands:
 
   question-bank:
     triggers: [user_invocation]
-    reads: ["synthesis-meta/question-bank.md"]
+    reads: ["[AGENSY_PATH]/question-bank.md"]
     writes_content: [question_bank_update]
-    required_keys: []  # operates on synthesis-meta directly
+    required_keys: []  # operates on agensy directly
 
 state_files:
   memory_md:
@@ -651,7 +651,7 @@ constraints:
   structural:
     tier_direction: "promote only T1→T2→T3, never reversed"
     schema_direction: "false→true only, reference→synthesis, never reversed"
-    stub_pattern: "protocol logic lives once in synthesis-meta"
+    stub_pattern: "protocol logic lives once in agensy"
     parameterized_runtime: "no vault-specific values in universal protocols"
     single_config: "all vault identity in one vault-config.md, never split"
     engagement_mandatory: "every synthesis-schema note must have specific engagement entry"

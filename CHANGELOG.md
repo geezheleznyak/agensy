@@ -3,6 +3,26 @@
 All notable changes to AGENSY are documented here.
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Convention: each entry names the specific files changed (e.g., `framework/architecture-principles.md`) so readers can trace what `git log` would confirm.
+
+---
+
+## [1.0.3] — 2026-04-05
+
+### Fixed
+
+- `framework/architecture-principles.md`, `framework/system-contracts.md`, `framework/system-architecture.md`,
+  `framework/genesis-protocol.md`, `framework/command-lifecycle.md`, `framework/inter-vault-protocol.md`,
+  `framework/claude-md-template.md`, `framework/universal-commands/arc.md`, `framework/universal-commands/question-bank.md`,
+  `framework/universal-commands/what-next.md`: replaced all `synthesis-meta/...` path references with
+  `[AGENSY_PATH]/...` and conceptual "lives in synthesis-meta" with "lives in agensy"
+
+### Changed
+
+- `framework/system-contracts.md` §1: trimmed from 3 verbose paragraphs to 3 bullet one-liners
+  + pointer to `architecture-principles.md`; added cross-reference to §5 pointing to `architecture-principles.md` §4
+- `framework/architecture-principles.md` §4: added cross-reference to `system-contracts.md` §5
+- `CHANGELOG.md`: added convention note — entries should name specific files changed
 
 ---
 
