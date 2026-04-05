@@ -1,6 +1,8 @@
-# Obsidian workspace state — user-specific, do not share
+# Obsidian — user-specific state, do not share
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
+.obsidian/app.json
+.obsidian/appearance.json
 
 # Session memory — personal context, not part of the framework
 memory/

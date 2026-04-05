@@ -6,6 +6,14 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.0.2] — 2026-04-04
+
+### Fixed
+
+- Gitignored `.obsidian/app.json` and `.obsidian/appearance.json` — empty files, user-specific Obsidian state with no framework value
+
+---
+
 ## [1.0.1] — 2026-04-04
 
 ### Fixed
