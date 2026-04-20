@@ -1,0 +1,152 @@
+# system-model-schema.yaml
+# Canonical schema for the Vault System Model Layer — v0.1
+# Per-vault [vault]/system-model.yaml files extend this file via `extends:`.
+# Vocabulary frozen from a Phase 0 primitive-discovery experiment (2026-04-20).
+
+schema:
+  name: vault-system-model
+  version: "0.1"
+
+# ─────────────────────────────────────────────────────────────
+# NODE VOCABULARY — 6 categories
+# Each node belongs to exactly one category.
+# Categories partition the ontology — not types but kinds of thing.
+# ─────────────────────────────────────────────────────────────
+node_categories:
+  agents:       "Loci of decision/action with interests."
+  states:       "Conditions persisting until changed (stocks)."
+  flows:        "Rates of change of states."
+  signals:      "Information carrying content between agents/states."
+  constraints:  "Boundaries that foreclose possibilities."
+  structures:   "Persistent configurations of roles and relations."
+
+# ─────────────────────────────────────────────────────────────
+# NODE REQUIRED FIELDS
+# ─────────────────────────────────────────────────────────────
+node_required_fields:
+  - id                      # Unique within vault. Lowercase, snake_case.
+  - label                   # Human-readable name.
+  - category                # One of node_categories.
+  - domain                  # Must exist in vault-config.md domains[].slug.
+  - engagement_positions    # List from vault-config engagement_axis.positions.
+  - linked_notes            # List of note paths relative to vault root.
+
+node_optional_fields:
+  - theorists               # Theorists whose maps discuss this node.
+  - related_nodes           # Cross-references within the vault.
+  - quality                 # v0.2 candidate: uncertainty/confidence attribute.
+  - notes                   # Free-text clarification.
+
+# ─────────────────────────────────────────────────────────────
+# EDGE VOCABULARY — 5 core + 5 reserve
+# Edges connect two nodes with a typed, directed relation.
+# ─────────────────────────────────────────────────────────────
+edge_types:
+  # Core set — empirically dominant across all three Phase 0 decompositions.
+  produces:    "`from` generates or causes `to`."
+  reinforces:  "`from` amplifies or stabilizes `to`."
+  dampens:     "`from` suppresses or reduces `to`."
+  gates:       "`from` is a threshold/condition that enables or blocks `to`."
+  couples:     "`from` makes `to` dependent on a third element."
+  # Reserve set — plausibly real; retained pending broader corpus evidence.
+  consumes:    "`from` depletes or transforms `to`."
+  reveals:     "`from` makes `to` observable."
+  conceals:    "`from` hides or obfuscates `to`."
+  requires:    "`from` depends on `to` for its operation."
+  opposes:     "`from` and `to` are in structural antagonism."
+
+edge_required_fields:
+  - id                      # Unique within vault. For reference from patterns.
+  - from                    # Node id.
+  - to                      # Node id.
+  - type                    # One of edge_types.
+  - linked_notes            # Notes that discuss this edge. May be empty.
+
+edge_optional_fields:
+  - weight                  # v0.2 candidate: edge strength/certainty.
+  - conditions              # Scope conditions under which the edge applies.
+
+# ─────────────────────────────────────────────────────────────
+# PATTERN VOCABULARY — 7 types
+# Patterns are dynamical shapes instantiated by subgraphs (nodes + edges).
+# The pattern layer is what enables cross-vault composition:
+# the same pattern type in two vaults, with different local nodes,
+# is the coupling unit for cross_vault_bindings.
+# ─────────────────────────────────────────────────────────────
+pattern_types:
+  positive_feedback:  "Self-amplifying loop — output reinforces input."
+  negative_feedback:  "Self-limiting loop — output dampens input."
+  threshold:          "Sudden qualitative transition at a critical value."
+  reflexivity:        "System's model of itself affects the system."
+  selection:          "Differential persistence of competing units."
+  accumulation:       "Stock grows without a balancing release."
+  path_dependence:    "History constrains present options."
+
+pattern_required_fields:
+  - id                      # Unique within vault. Lowercase, snake_case.
+  - type                    # One of pattern_types.
+  - subgraph                # { nodes: [node_id...], edges: [edge_id...] }
+  - linked_notes            # Notes that analyze this pattern instance.
+
+pattern_optional_fields:
+  - theorists               # Theorists whose maps discuss this pattern.
+  - description             # Natural-language characterization.
+
+# ─────────────────────────────────────────────────────────────
+# CROSS-VAULT BINDINGS
+# Link a local pattern or node-set to a bridge_id in
+# [AGENSY_PATH]/cross-vault-bridges.md and its peer-vault counterpart.
+# ─────────────────────────────────────────────────────────────
+cross_vault_bindings_required_fields:
+  - bridge_id               # Must exist in [AGENSY_PATH]/cross-vault-bridges.md.
+  - local_nodes             # List of node ids in this vault.
+  - paired_with             # Dict: { [vault_name]: { nodes: [...], patterns: [...] } }
+
+cross_vault_bindings_optional_fields:
+  - local_patterns          # List of pattern ids on this side of the bridge.
+  - notes                   # Free-text characterization of the binding.
+
+# ─────────────────────────────────────────────────────────────
+# EXTENSIBILITY
+# Per-vault extensions are allowed and vault-scoped.
+# Schema-level additions (new categories, edge types, pattern types)
+# are reserved for v0.2 after Phase 2–4 corpus evidence accumulates.
+# ─────────────────────────────────────────────────────────────
+extensibility:
+  per_vault_extensions:
+    allowed: true
+    scope: "vault-local only; not binding across cross_vault_bindings"
+    mechanism: "Declare under an `extensions:` block in the vault's system-model.yaml"
+  schema_level_additions:
+    allowed: false
+    note: "Reserved for v0.2 after corpus evidence accumulates."
+
+# ─────────────────────────────────────────────────────────────
+# VALIDATION RULES
+# Enforced by /system-audit. See universal-commands/system-audit.md.
+# ─────────────────────────────────────────────────────────────
+validation:
+  - "Every node.category must be a key in node_categories."
+  - "Every node.domain must exist in vault-config.md domains[].slug."
+  - "Every node.engagement_positions value must exist in vault-config.md engagement_axis.positions[]."
+  - "Every edge.type must be a key in edge_types."
+  - "Every edge.from and edge.to must reference an existing node id in this vault."
+  - "Every pattern.type must be a key in pattern_types."
+  - "Every pattern.subgraph.nodes must reference existing node ids."
+  - "Every pattern.subgraph.edges must reference existing edge ids."
+  - "Every cross_vault_bindings[].bridge_id must exist in [AGENSY_PATH]/cross-vault-bridges.md."
+  - "Every linked_notes path must resolve to an existing file in the vault."
+
+# ─────────────────────────────────────────────────────────────
+# WHAT THE SYSTEM MODEL IS NOT
+# Reuse constraints — referenced by system-model-architecture.md.
+# ─────────────────────────────────────────────────────────────
+reuse_constraints:
+  not_a_restatement_of_vault_config:
+    "system-model references vault-config domains and engagement_axis positions; does not duplicate."
+  not_a_restatement_of_cross_vault_bridges:
+    "cross_vault_bindings reference bridge_id; do not duplicate bridge descriptions."
+  not_auto_generated:
+    "v0.1 is hand-curated. Auto-regeneration from note frontmatter is v2 work."
+  not_a_replacement_for_theorist_maps:
+    "Theorist maps index a single thinker's logic. system-model indexes the domain's structural ontology."

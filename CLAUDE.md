@@ -25,12 +25,16 @@ agensy/
     claude-md-template.md    ← universal CLAUDE.md with [CONFIG] blocks
     note-tier-template.md    ← universal three-tier note system
     map-type-template.md     ← four map type definitions
-    slash-command-suite.md   ← command index (17 universal + vault-type-generated commands)
+    slash-command-suite.md   ← command index (21 universal + vault-type-generated commands)
     genesis-protocol.md      ← step-by-step self-building procedure
     inter-vault-protocol.md  ← cross-vault connection rules
     system-contracts.md      ← WHY + contract table + design principles (read before modifying protocols)
     architecture-principles.md ← complete mental model + invariants + evaluation framework
     system-architecture.md   ← Mermaid diagrams + YAML system manifest
+    system-model-schema.yaml ← canonical schema for per-vault system-model.yaml (v0.1)
+    system-model-architecture.md ← design rationale for the System Model Layer
+    primitives.md            ← three-layer primitive vocabulary (nodes/edges/patterns)
+    universal-commands/      ← 21 parameterized protocol files (including 4 system-* commands)
   tools/
     vault-linter.py          ← note content / schema checks (Categories A/B/G)
     framework-verify.py      ← architectural integrity checks (Categories F1–F5)

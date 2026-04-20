@@ -32,7 +32,7 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 ---
 
-## Universal Commands (17 protocol files + 2 backward-compat aliases)
+## Universal Commands (21 protocol files + 2 backward-compat aliases)
 
 | Command | Trigger type | Protocol file |
 |---|---|---|
@@ -53,8 +53,14 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 | `/positions` | User (3+ dialogues) | `universal-commands/positions.md` |
 | `/revisit [note-path]` | Milestone (30+ days) | `universal-commands/revisit.md` |
 | `/question-bank [add\|list\|resolve]` | User | `universal-commands/question-bank.md` |
+| `/system-query [query]` | User | `universal-commands/system-query.md` |
+| `/system-audit` | Milestone (post coverage-audit) | `universal-commands/system-audit.md` |
+| `/system-build [mode] [args]` | User | `universal-commands/system-build.md` |
+| `/system-bridge [mode] [peer]` | User | `universal-commands/system-bridge.md` |
 
 **Backward-compat aliases** (adversarial vaults only): `/confront` = `/engage-deep`, `/fault-line-survey` = `/axis-survey`
+
+**System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. See `framework/system-model-architecture.md`.
 
 ---
 
