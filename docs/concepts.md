@@ -123,6 +123,25 @@ It is updated automatically by `/coverage-audit` and `/dialogue` in Bridge mode.
 
 ---
 
+## System Model Layer
+
+Optional per-vault layer (v1.1.0+): a `system-model.yaml` file at the vault root declaring the domain's structural ontology as **nodes**, **edges**, and **patterns** — plus cross-vault bindings to peer vaults.
+
+**Three-layer vocabulary** (locked in v0.1):
+- **Nodes (6 categories)** — *agents* (decision loci), *states* (stocks), *flows* (rates of change), *signals* (information carriers), *constraints* (what's ruled out), *structures* (persistent configurations of roles)
+- **Edges (5 core + 5 reserve)** — core: *produces*, *reinforces*, *dampens*, *gates*, *couples*; reserve: *consumes*, *reveals*, *conceals*, *requires*, *opposes*
+- **Patterns (7 types)** — *positive_feedback*, *negative_feedback*, *threshold*, *reflexivity*, *selection*, *accumulation*, *path_dependence*
+
+A node is *not* a claim about the world — it's a thing that appears in the vault's mechanisms (e.g., `rising_power` is a node; "rising powers produce fear in dominant powers" is an *edge* between two nodes). Patterns are the recurring shapes the edges instantiate, and they are the layer that enables cross-vault composition — the same pattern type in two vaults with different local nodes is the coupling unit.
+
+**What it's for**: answering structural questions without reading every note — *what are the load-bearing actors in this vault?*, *where is the feedback?*, *which patterns recur across domains?*, *where do two vaults share a pattern instance?* The MOC layer answers *what topics exist*; the system model answers *what shape does this domain have*.
+
+**What it isn't**: not an auto-generated summary of notes (v0.1 is hand-curated), not a replacement for theorist maps (those index one thinker's logic), not a restatement of `vault-config.md` or `cross-vault-bridges.md` (it references them).
+
+**Opt-in**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`. Four commands operate on it: `/system-query` (read), `/system-audit` (drift), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). See `framework/primitives.md` for the full vocabulary with worked examples, `framework/system-model-architecture.md` for the design rationale.
+
+---
+
 ## AGENSY_PATH
 
 Throughout the framework documents, `[AGENSY_PATH]` is a placeholder for the absolute path to your local agensy/ folder. When setting up, replace this with your actual path, or Claude Code will resolve it from the working directory.

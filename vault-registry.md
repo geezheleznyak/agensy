@@ -99,7 +99,7 @@ See `cross-vault-bridges.md` for bridge domains, vault treatments, tensions, and
 | `framework/claude-md-template.md` | Universal CLAUDE.md with placeholder blocks for domain content |
 | `framework/note-tier-template.md` | Universal three-tier note schema |
 | `framework/map-type-template.md` | Four map type definitions and naming conventions |
-| `framework/slash-command-suite.md` | Command index (17 universal + vault-type-generated commands) |
+| `framework/slash-command-suite.md` | Command index (21 universal + vault-type-generated commands) |
 | `framework/genesis-protocol.md` | Step-by-step self-building procedure for new vaults |
 | `framework/inter-vault-protocol.md` | Rules governing connections between vaults |
 | `framework/command-lifecycle.md` | When to fire each command — four trigger types |

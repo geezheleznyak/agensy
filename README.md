@@ -76,7 +76,7 @@ Answer 7 questions. Claude builds your entire vault structure in one session —
 Every vault has a central intellectual tension. Every synthesis note must take a position on it. This makes passive summarizing structurally impossible — the schema enforces analytical pressure on every single note. Comfortable confirmation is not analysis.
 
 ### 3. Self-Regulating Command Lifecycle
-16 canonical commands that chain: `/arc` accumulates notes → `/coverage-audit` diagnoses gaps → `/axis-survey` tracks intellectual distribution → `/what-next` recommends next action. The vault tells you what to build next. You never have to decide where to start.
+20 canonical commands that chain: `/arc` accumulates notes → `/coverage-audit` diagnoses gaps → `/axis-survey` tracks intellectual distribution → `/what-next` recommends next action. The vault tells you what to build next. You never have to decide where to start.
 
 Slash commands are shorthand — you never have to memorize them. Describe any operation in plain English and Claude runs the protocol. `/arc Keynes` and "let's build an arc on Keynes" are equivalent.
 
@@ -85,6 +85,9 @@ Multiple vaults (economics, politics, history, philosophy, military theory) oper
 
 ### 5. Living Dialogue
 `/dialogue` turns the vault into a thinking partner. Your positions are tracked, challenged against existing notes, and can generate new synthesis notes directly from the conversation. Not retrieval — genuine intellectual friction.
+
+### 6. Optional System Model Layer
+Each vault can opt in to a machine-readable structural ontology (`system-model.yaml`) declaring its actors, states, flows, constraints, and the dynamical patterns — feedback, threshold, reflexivity, path-dependence — they instantiate. Four commands operate on it: `/system-query` (read), `/system-audit` (drift), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). This is what lets an agent reason about a vault's domain *shape* without reading every note, and lets cross-vault queries find structurally matching patterns across domains.
 
 ---
 
@@ -106,7 +109,7 @@ agensy/ (this repo — framework vault)
 │
 ├── framework/               ← Claude-facing protocol files
 │   ├── genesis-protocol.md  ← the 7-question vault bootstrapping procedure
-│   ├── universal-commands/  ← 16 command protocols (read by Claude at runtime)
+│   ├── universal-commands/  ← 20 command protocols (read by Claude at runtime)
 │   └── ...
 ├── vaults/                  ← config extracts for each registered vault
 ├── tools/                   ← Python validation scripts
@@ -131,7 +134,7 @@ agensy/
   docs/
     getting-started.md       ← first vault walkthrough (start here)
     concepts.md              ← glossary of key terms
-    commands.md              ← all 16 commands explained
+    commands.md              ← all 20 commands explained
     tools.md                 ← validation scripts reference
   framework/
     genesis-protocol.md      ← 4-phase vault bootstrapping procedure
@@ -143,7 +146,10 @@ agensy/
     system-architecture.md   ← system diagrams
     inter-vault-protocol.md  ← cross-vault connection rules
     command-lifecycle.md     ← when to fire each command
-    universal-commands/      ← 17 command protocol files + 2 legacy/sub-protocol files
+    system-model-schema.yaml ← v0.1 schema for per-vault system-model.yaml
+    system-model-architecture.md ← design rationale for the System Model Layer
+    primitives.md            ← three-layer primitive vocabulary (nodes/edges/patterns)
+    universal-commands/      ← 21 command protocol files + 2 legacy/sub-protocol files
   vaults/
     theoria-config.md        ← example: philosophy + metaphysics vault config
     politeia-config.md       ← example: political theory vault config

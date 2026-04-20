@@ -5,7 +5,7 @@ audience: human
 
 # Command Reference
 
-AGENSY provides **16 canonical commands** plus 3 additional files for legacy compatibility and arc sub-protocols. All commands are invoked inside an Obsidian vault that has Claude Code running.
+AGENSY provides **20 canonical commands** plus 3 additional files for legacy compatibility and arc sub-protocols. All commands are invoked inside an Obsidian vault that has Claude Code running.
 
 Full protocol files live in `framework/universal-commands/[command-name].md`. The descriptions below tell you what each command does and when to use it — not how Claude executes it internally.
 
@@ -175,6 +175,48 @@ See `/axis-survey` above.
 
 ---
 
+## System Model Layer Commands
+
+The System Model Layer (v1.1.0+) gives each vault an optional machine-readable structural ontology — a YAML file declaring the domain's actors, states, flows, signals, constraints, structures, their typed relations, and the dynamical patterns (feedback, threshold, reflexivity, etc.) they instantiate. This is what lets an agent reason about *shape* of a vault's domain without reading every note.
+
+The layer is **opt-in per vault**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`.
+
+### `/system-query [query]`
+**What it does**: Read-only query against the vault's `system-model.yaml`. Six query shapes — list by category ("core actors"), trace edges ("what reinforces credibility_rigidity?"), find pattern instances ("all positive_feedback patterns"), resolve linked notes, show full detail on one entity, or aggregate across vaults ("reflexivity instances in politeia and oeconomia").
+
+**When to use**: When you want to navigate the structural ontology rather than browse notes. Useful before an arc to check what structural commitments already exist.
+
+**Output**: Table or YAML detail block depending on shape. Never mutates the model.
+
+---
+
+### `/system-audit`
+**What it does**: Reconciliation pass — checks schema conformance, validates domains and engagement positions against `vault-config.md`, verifies linked-note paths resolve, surfaces nodes with no notes (writing targets) and notes not referenced by any node (classification targets), and checks cross-vault binding integrity.
+
+**When to use**: Fire at the same cadence as `/coverage-audit` — every 3–4 arcs or at phase completion. Routine drift detection.
+
+**Output**: Drift report with counts and top 3–5 prioritized next actions. Never mutates the model — remediation is `/system-build`.
+
+---
+
+### `/system-build [mode] [args]`
+**What it does**: The only write path into `system-model.yaml`. Interactive editor with 9 modes: `add-node`, `add-edge`, `add-pattern`, `add-binding`, `update`, `rename`, `remove`, `link-notes`, `bootstrap`. Every write is preceded by a preview diff and requires explicit user confirmation.
+
+**When to use**: When the audit surfaces writing targets or when you've finished an arc and want to register the new structural commitments it produced. Also the entry point for bootstrapping a vault's first system model.
+
+**Output**: Updated `system-model.yaml` + a light audit pass on the touched region.
+
+---
+
+### `/system-bridge [mode] [peer-vault]`
+**What it does**: Cross-vault binding reconciliation. Diffs this vault's `cross_vault_bindings[]` against `cross-vault-bridges.md`. Three modes: `diff` (report only), `propose` (draft candidate binding blocks), `pair <peer>` (focused diff with one specific peer vault). Read-only — writes go through `/system-build`.
+
+**When to use**: After bootstrapping a new vault, or before a cross-vault synthesis session, to check which bridges the vault appears in and whether its bindings are current.
+
+**Output**: Bridge diff report with missing / drift / orphan / broken-peer classifications and (in propose mode) candidate binding YAML blocks.
+
+---
+
 ## Additional Files (Not Standalone Commands)
 
 | File | Purpose |
@@ -190,8 +232,8 @@ See `/axis-survey` above.
 | Type | Commands |
 |---|---|
 | **Automatic (A)** | `quick-check` (after arc), `update-moc` (after arc) |
-| **Milestone (B)** | `promote`, `evergreen-note` |
+| **Milestone (B)** | `promote`, `evergreen-note`, `system-audit` (with `coverage-audit`) |
 | **Session start (C)** | `what-next`, `coverage-audit` |
-| **Analytical (D)** | `dialogue`, `engage-deep`, `engage-problem`, `synthesis`, `compare`, `axis-survey`, `domain-audit`, `positions`, `revisit`, `question-bank` |
+| **Analytical (D)** | `dialogue`, `engage-deep`, `engage-problem`, `synthesis`, `compare`, `axis-survey`, `domain-audit`, `positions`, `revisit`, `question-bank`, `system-query`, `system-build`, `system-bridge` |
 
 See `framework/command-lifecycle.md` for the full trigger protocol.
