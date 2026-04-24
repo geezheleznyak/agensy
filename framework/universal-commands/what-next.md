@@ -3,6 +3,7 @@ description: Recommend the highest-value next subject given current coverage gap
 type: universal-protocol
 audience: claude
 ---
+
 # /what-next
 
 Analyze the vault's current state and recommend the single highest-value next subject to build.

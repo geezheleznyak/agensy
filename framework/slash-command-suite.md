@@ -2,6 +2,7 @@
 type: reference
 audience: claude
 ---
+
 # Slash Command Suite
 
 Index of all commands across the synthesis vault system. **Source of truth for protocol logic**: universal commands live in `framework/universal-commands/[command-name].md`. Vault stubs in `.claude/commands/` are 3-line pointers — they contain no protocol logic.
@@ -23,7 +24,7 @@ description: [one-line description]
 
 $ARGUMENTS
 
-1. Read the protocol: `[AGENSY_PATH]/framework/universal-commands/[command-name].md`
+1. Read the protocol: `[AGENSY_PATH]/framework\universal-commands\[command-name].md`
 2. Read vault configuration: `vault-config.md` (vault root)
 3. Execute the protocol using this vault's parameters.
 ```
@@ -32,7 +33,9 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 ---
 
-## Universal Commands (21 protocol files + 2 backward-compat aliases)
+## Universal Commands (34 protocol files + 2 backward-compat aliases)
+
+*17 core knowledge-work + 4 system-model + 8 article-pipeline + 5 companion-co. Full inventory below; the article-* and co-* rows are also repeated in the §Expression Vault Commands section for pipeline context.*
 
 | Command | Trigger type | Protocol file |
 |---|---|---|
@@ -60,7 +63,7 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 **Backward-compat aliases** (adversarial vaults only): `/confront` = `/engage-deep`, `/fault-line-survey` = `/axis-survey`
 
-**System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. See `framework/system-model-architecture.md`.
+**System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. All four registered 2026-04-20. See `framework/system-model-architecture.md`.
 
 ---
 
@@ -110,23 +113,47 @@ Output: stress-test analysis in `00-Inbox/`
 
 ### Expression Vault Commands
 
+**Map-to-Article Pipeline** (registered 2026-04-21; V1.5 preset-aware update 2026-04-21; V1.6 position index & harvest loop 2026-04-21; V1 = Type A solo-map essays only; Types B/C/D deferred to V2)
+
+The article-* pipeline turns argument-dense source-vault maps into published essays. Protocols live in `universal-commands/article-*.md`; cogitationis is the consumer. Each command reads `vault-config.md` (cross_vault_dependency.source_vaults), `voice-profile.md` (style layer), `writer-positions.md` (substance layer, bedrock), and — as of V1.5 — `article-presets.md` (three-axis preset registry). V1.6 adds `positions-index.md` (pre-loaded cross-vault pointer table to substantive claims earned in prior essays; T3 bodies loaded on-demand). Pipeline: `/article-scan → /article-seed → /article-outline → /article-draft → /article-revise → /article-promote`.
+
+**Preset-aware commands (V1.5)**: `/article-seed`, `/article-outline`, `/article-draft`, `/article-revise` consume the active essay's preset (recorded in seed/essay frontmatter). `/article-scan` and `/article-promote` remain preset-agnostic.
+
+**Position-aware commands (V1.6)**: `/article-seed` Step 2.6 greps `positions-index.md` by source-map keywords, loads matched T3s, records `matched_positions` in seed frontmatter (with `relation`: supports / extends / tensions-with / orthogonal). `/article-outline` Step 3.5 reserves argument-move slots for matched positions (required slot in pressure section for `tensions-with`). `/article-revise` Pass C runs two-layer check — bedrock `writer-positions.md` (hard) + matched positions (soft; surfaced, not silently corrected). `/article-promote` Step 7 runs the harvest loop — diffs essay claims against source-map atomics + matched T3s, classifies novel claims (substantive framework claim → new T3 + positions-index row; methodological claim → append to writer-positions; essay-specific → no promotion), user-confirms each, executes accepted promotions.
+
+| Command | Protocol | Inputs | Outputs | Preset role (V1.5) | Position role (V1.6) |
+|---|---|---|---|---|---|
+| `/article-scan [vault]` | `universal-commands/article-scan.md` | source vault name | readiness table → `source-map-registry.md` (5-axis score 0–25) | none | none |
+| `/article-seed [map-path(s)] [type] [--preset <id>]` | `universal-commands/article-seed.md` | 1 map path + `A` (V1 only) + optional preset flag | seed note in `10-Thoughts/` with thesis, claims, pressure, stakes, preset, matched positions | Step 2.5 infers preset from thesis-candidate grammar (or accepts `--preset`); records in frontmatter | Step 2.6 greps positions-index by source-map keywords; loads matched T3s; records `matched_positions` with relation classification |
+| `/article-outline [seed-path]` | `universal-commands/article-outline.md` | seed note | outline in `20-Essays/` at `status: outline`; preset blueprint imposed; position treatments decided | Reads preset; instantiates opening paragraph beats, body arc, pressure required-slots, closing type per `article-presets.md` | Step 3.5 reserves argument-move slots for `supports`/`extends`; adds required pressure slot for `tensions-with`; records `matched_position_treatments` |
+| `/article-draft [essay-path]` | `universal-commands/article-draft.md` | outline note | draft at `status: draft`; voice + positions applied; wikilinks resolved | Fills preset opening/pressure/closing shapes during per-section drafting | Treats matched positions as soft constraints during drafting |
+| `/article-revise [essay-path]` | `universal-commands/article-revise.md` | draft note | revised at `status: revision`; 6 passes (adversarial) or subset (light/creative) | Pass E extended with preset-fidelity sub-pass + P3 category-error audit (`orthodoxy-counter` + `framework-build`) | Pass C two-layer: bedrock `writer-positions.md` (hard) + matched-position T3s (soft); soft violations surfaced, not silently corrected |
+| `/article-promote [essay-path]` | `universal-commands/article-promote.md` | final-status note | moves to `40-Published/`; backlinks source maps; updates registry + Writing Dashboard; runs harvest loop | none | Step 7 harvest loop: extract claims, diff, classify (substantive / methodological / essay-specific), user-confirm, execute accepted promotions to new T3 + positions-index row or to writer-positions |
+
+**Critic-layer command (V1.9 — 2026-04-22)**: `/article-critique` is a standalone pass that catches what `/article-revise` structurally cannot see — frame circularity, theorist-as-stamp, analogy validity, stratification independence, scenario silence, concession-load, unit-of-analysis, title-thesis match. Eight passes (C1–C8) plus writing-tells. Produces a critique document in `synthesis_logos/critic/`; does NOT edit the essay. Calibrated against the human-written reference critique of "The Pole Is Obsolete". `/article-revise` Pass E now runs a cheap frame-pressure sub-pass (C1/C6/C7) as tripwire; Step 4 Five Questions gains a 6th question asking whether `/article-critique` has been run and its flags addressed-or-dismissed.
+
+| Command | Protocol | Inputs | Outputs |
+|---|---|---|---|
+| `/article-critique [essay-path] [--mode=full\|frame-only\|writing-only]` | `universal-commands/article-critique.md` | essay at any status | critique file in `critic/`; `critique_runs` frontmatter entry on essay |
+
+**Companion-mode commands (V1.9 — 2026-04-22)**: a parallel mode where the operator writes the essay and AI augments via four read-only verbs. Distinct from the delegation pipeline: no thesis locking, no preset enforcement, no auto-drafting, no in-place revision. Presets are advisory. Same `/article-promote` harvest loop works for both modes.
+
+| Command | Protocol | Inputs | Outputs |
+|---|---|---|---|
+| `/article-companion start <topic-or-source-map> [--from-map <map-path>]` | `universal-commands/article-companion.md` | topic string or source-map path | essay file at `20-Essays/` with `mode: companion`, `status: companion-draft`; workspace dossier report |
+| `/co-find <query> [--vault <name>] [--type <atomic\|t3\|map\|bridge\|all>]` | `universal-commands/co-find.md` | query string | structured dossier: atomic notes, T3 positions, maps, bridges |
+| `/co-combine <map1> <map2> [<map3> ...]` | `universal-commands/co-combine.md` | 2–5 source-map paths | shared concepts, opposing claims, complementary mechanisms, synthesis-angle options |
+| `/co-suggest <selection-or-stuck-point> [--type ...]` | `universal-commands/co-suggest.md` | passage or stuck-point description | 3 distinct next-move options (direction + rationale + risk per option) |
+| `/co-critique <selection> [--mode light\|adversarial]` | `universal-commands/co-critique.md` | selected passage | bulleted flags with fix suggestions; shares C1–C8 library with `/article-critique` in adversarial mode |
+| `/co-capture [flag\|sweep\|close] [--target voice\|positions\|methodological\|framework\|all]` | `universal-commands/co-capture.md` | active companion-mode dialogue | voice-profile source files, positions-index rows (status `under-review`), writer-positions.md appends; all substrate writes user-confirmed per-item |
+
+**Legacy expression commands** (cogitationis, retained for non-map-derived essays):
+
 **`/draft [title or thought-note path]`**
-Expand a Thought into an Essay. Protocol:
-1. Read the source Thought note (or take the title as the seed claim)
-2. Identify the core argument (one sentence)
-3. Identify 3–5 supporting points and the strongest objection
-4. Find source_refs that ground the argument (search the connected knowledge vault if available)
-5. Write the Essay at `outline` status
-Output: Essay note in `20-Essays/`
+Expand a Thought into an Essay. See `synthesis_logos/.claude/commands/draft.md` for the inline protocol. Prefer `/article-seed → /article-outline → /article-draft` for maps-to-articles work.
 
 **`/argument-map [claim]`**
-Build a structured argument tree. Protocol:
-1. State the claim precisely
-2. Identify all sub-claims that must be true for the main claim to hold
-3. For each sub-claim: state what evidence or argument supports it
-4. Identify the weakest link in the chain
-5. State the strongest single objection to the main claim and the best response
-Output: argument map in `00-Inbox/` or integrated into an Essay note
+Build a structured argument tree. See `synthesis_logos/.claude/commands/argument-map.md` for the inline protocol. Used mid-essay when the drafter needs to verify the claim's support structure.
 
 ### Domain Commands (generated from Q6 priority domains)
 

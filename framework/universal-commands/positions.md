@@ -3,6 +3,7 @@ description: Cross-vault survey of the user's own intellectual positions
 type: universal-protocol
 audience: claude
 ---
+
 # /positions
 
 Survey all knowledge vaults for notes the user has originated through dialogue or reflection. Output a structured map of the user's current intellectual positions, grouped by vault and open problem, with internal tensions flagged.
@@ -18,7 +19,7 @@ Survey all knowledge vaults for notes the user has originated through dialogue o
 
 ## Step 1 — Search All Vaults
 
-For each active knowledge vault (read active vaults from `agensy/system-state.md`):
+For each active knowledge vault (omega, belli, kratos, oikos):
 
 **If `memory/note-index.md` exists in that vault and is current (< 30 days old)**:
 - Read the vault's `memory/note-index.md` — one file read per vault
@@ -56,7 +57,7 @@ Scan across all vaults for internal tensions in the user's own positions:
 
 **Intra-vault tensions**: Two user-originated notes in the same vault that take opposing positions on the same question. Example: "In Note A you argue X. In Note B (same vault) you argue not-X."
 
-**Cross-vault tensions**: User-originated notes in different vaults that make claims that conflict when applied to the same situation. Example: "In bellum you argue that technology creates discontinuity. In theoria you argue that structural complexity is continuous. These positions conflict when applied to AI-driven warfare."
+**Cross-vault tensions**: User-originated notes in different vaults that make claims that conflict when applied to the same situation. Example: "In belli you argue that technology creates discontinuity. In omega you argue that structural complexity is continuous. These positions conflict when applied to AI-driven warfare."
 
 For each tension: name the two notes, state the conflict precisely, ask whether this is an unresolved contradiction or a domain-specific qualification.
 
@@ -88,10 +89,10 @@ For each tension: name the two notes, state the conflict precisely, ask whether 
 
 | Vault | User notes | OPs with user positions | OPs without |
 |---|---|---|---|
-| [vault-1] | N | N | list |
-| [vault-2] | N | N | list |
-| [vault-3] | N | N | list |
-| [vault-4] | N | N | list |
+| omega | N | N | list |
+| belli | N | N | list |
+| kratos | N | N | list |
+| oikos | N | N | list |
 ```
 
 ---

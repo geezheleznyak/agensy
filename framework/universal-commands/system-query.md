@@ -1,4 +1,4 @@
----
+﻿---
 description: Read-only query against a vault's system-model.yaml
 type: universal-protocol
 audience: claude
@@ -23,7 +23,7 @@ If the query is cross-vault (`/system-query across <vaults>`), read each peer va
 The command accepts free-text queries; classify the query into one of the shapes below and execute. If the query does not match any shape, answer the closest shape and say which it matched.
 
 ### Shape A — List by category
-Examples: "core actors in politeia", "all constraints", "structures and states".
+Examples: "core actors in kratos", "all constraints", "structures and states".
 Output: a table per requested category with `id`, `label`, `domain`, `linked_notes` count, and `engagement_positions`.
 
 ### Shape B — Trace edges from a node
@@ -31,7 +31,7 @@ Examples: "what does `dominant_power_anxiety` produce?", "what gates `individual
 Output: the matching edges with `from`, `type`, `to`, and `linked_notes` count. Also list the reverse direction if the query is ambiguous (e.g., "edges touching X").
 
 ### Shape C — Find pattern instances
-Examples: "all positive_feedback patterns in politeia", "reflexivity instances", "patterns in domain X".
+Examples: "all positive_feedback patterns in kratos", "reflexivity instances", "patterns in domain X".
 Output: each pattern's `id`, `type`, `subgraph.nodes`, `linked_notes` count, optional `description`.
 
 ### Shape D — Resolve linked notes for a node / edge / pattern
@@ -43,7 +43,7 @@ Examples: "show node `rising_power`", "show pattern `legitimacy_erosion_feedback
 Output: full YAML block for that entity plus resolved linked-note titles (read frontmatter `aliases` / first heading to extract).
 
 ### Shape F — Cross-vault query (Phase 4+)
-Examples: "all positive_feedback patterns across all vaults", "reflexivity in politeia and oeconomia".
+Examples: "all positive_feedback patterns across all vaults", "reflexivity in kratos and oikos".
 Procedure: read each vault's `system-model.yaml`, match by `pattern_type` or `bridge_id`. Output a per-vault table; flag when pattern instances share a name but disjoint `linked_notes` (possible pattern-name collision — see risk noted in `primitives.md`).
 
 ---

@@ -2,6 +2,7 @@
 type: template
 audience: claude
 ---
+
 # Map Type Template
 
 Four universal map types. All maps share a five-element structural core — the parts that never change. Each type adds domain-specific sections. This document defines both the universal core and the type-specific extensions.
@@ -29,6 +30,13 @@ Why this person/concept/domain/framework exists. What problem forced it into exi
 Quality test: if you removed this section, could the reader still assess why the subject is important? If yes, the Context section has not done its job.
 
 ### Element 2 — Architecture Diagram (Mermaid)
+
+```mermaid
+graph TD
+    [concept/module A] --> [concept/module B]
+    [concept/module B] --> [concept/module C]
+    [concept/module A] --> [concept/module D]
+```
 
 The diagram must show:
 - All major components (concepts, modules, phases, arguments)
@@ -84,9 +92,6 @@ This section is mandatory and must force engagement beyond affirmation — not j
 ### [engagement_axis.label] Position
 # Use the engagement axis label and positions from intellectual_style.engagement_axis:
 This [person/concept/domain/framework] [position from engagement_axis.positions[]] the [engagement_axis.label] because: [one sentence explanation].
-
-### Primary Sources
-3–5 canonical texts that are load-bearing for this subject. For each: Author — *Title* — one sentence on why this is essential (what argument, evidence, or framework anchors the arc). For novel or emerging topics, mark as TBD.
 
 ### Atomic Notes to Generate
 List of 8–15 candidate Tier 2 notes that should be created from this map's content. These are the map's deliverables.

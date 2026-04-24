@@ -27,6 +27,9 @@ Check codes:
     F09–F11  Category F3: Stub & Protocol Integrity
     F12–F14  Category F4: Path Integrity
     F15–F17  Category F5: Cross-Framework Consistency
+    F18–F22  Category F6: Meta-Architecture Integrity
+             (frontmatter schema, canonicity uniqueness, synchronized-with
+              symmetry + fact-match, protocol path discipline, supersession chain)
 """
 
 import io
@@ -104,8 +107,62 @@ COMMAND_REQUIRED_KEYS = {
         'folder_structure', 'open_problems', 'intellectual_style', 'engagement_axis',
     ],
     'question-bank': [],  # operates on agensy directly
-    'promote': [
-        'note_tiers', 'note_template', 'intellectual_style', 'folder_structure',
+
+    # ── System Model Layer (v0.1+, registered 2026-04-20) ────────────────
+    'system-query': [
+        'domains', 'engagement_axis',
+    ],
+    'system-audit': [
+        'domains', 'engagement_axis', 'folder_structure',
+    ],
+    'system-build': [
+        'domains', 'engagement_axis',
+    ],
+    'system-bridge': [
+        'domains',
+    ],
+
+    # ── Article Pipeline (cogitationis-facing, registered 2026-04-21/22) ─
+    # Consume reference_docs.* keys specific to expression vaults
+    # (voice_profile, writer_positions, positions_index, article_presets,
+    #  map_to_article_schema, source_map_registry).
+    'article-scan': [
+        'reference_docs',
+    ],
+    'article-seed': [
+        'reference_docs', 'folder_structure',
+    ],
+    'article-outline': [
+        'reference_docs', 'folder_structure', 'note_template',
+    ],
+    'article-draft': [
+        'reference_docs', 'output_layer',
+    ],
+    'article-revise': [
+        'reference_docs', 'note_template',
+    ],
+    'article-promote': [
+        'reference_docs', 'folder_structure', 'output_layer',
+    ],
+    'article-critique': [
+        'reference_docs', 'folder_structure',
+    ],
+    'article-companion': [
+        'reference_docs', 'folder_structure',
+    ],
+
+    # ── Companion Collaborative (registered 2026-04-22) ──────────────────
+    # co-find / co-combine read registries, not vault-config (cross-vault)
+    'co-find': [],          # reads vault-registry + positions-index
+    'co-combine': [],       # reads map files + cross-vault-bridges
+    'co-suggest': [
+        'reference_docs',
+    ],
+    'co-critique': [
+        'reference_docs',
+    ],
+    'co-capture': [
+        'reference_docs', 'folder_structure',
     ],
 }
 
@@ -191,11 +248,20 @@ class FrameworkVaultConfig:
         return bool(re.search(rf'^{re.escape(block)}:', self.text, re.MULTILINE))
 
     def get_positions(self) -> list:
-        """Extract engagement_axis position names."""
+        """Extract engagement_axis position names.
+        Supports two formats:
+          flat:   `    - materialist: >` (id-as-key)
+          nested: `      - id: structuralist` (id-as-field)
+        """
+        # Format A — flat, 4-space indent id-as-key
         m = re.search(r'\n  positions:\n((?:    - [\w][\w-]*:.*\n)+)', self.text)
         if m:
             return re.findall(r'    - ([\w][\w-]*):', m.group(1))
-        # Backward compat: fault_line positions
+        # Format B — nested, 6-space indent with `id:` field
+        m = re.search(r'\n    positions:\n((?:      - id: [\w][\w-]*\n(?:        [^\n]*\n)+)+)', self.text)
+        if m:
+            return re.findall(r'      - id: ([\w][\w-]*)', m.group(1))
+        # Backward compat: fault_line positions (flat)
         m = re.search(r'\nfault_line:\n(?:.*\n)*?  positions:\n((?:    - [\w][\w-]*:.*\n)+)', self.text)
         if m:
             return re.findall(r'    - ([\w][\w-]*):', m.group(1))
@@ -727,7 +793,7 @@ def check_f16_schema_mentions_blocks(meta_root: Path) -> list[Result]:
 
 
 def check_f17_genesis_doc_count(meta_root: Path) -> list[Result]:
-    """F17: genesis-protocol.md Phase 1 lists exactly 12 Doc entries."""
+    """F17: genesis-protocol.md Phase 1 lists at least 12 Doc entries (Docs 1–12 universal; Doc 13+ conditional per vault type)."""
     genesis_path = meta_root / 'framework' / 'genesis-protocol.md'
     if not genesis_path.exists():
         return [fail('F17', 'genesis-protocol.md not found')]
@@ -741,10 +807,465 @@ def check_f17_genesis_doc_count(meta_root: Path) -> list[Result]:
     phase1_text = phase1_m.group(1)
     doc_headers = re.findall(r'### Doc \d+', phase1_text)
     count = len(doc_headers)
-    if count == 12:
-        return [ok('F17', f'genesis-protocol.md Phase 1 has exactly 12 Doc entries')]
-    return [fail('F17', f'genesis-protocol.md Phase 1 has {count} Doc entries (expected 12)',
+    # Docs 1-12 are universal (required for every new vault);
+    # Doc 13+ are conditional (e.g., vault-type substrate templates for expression/training).
+    if count >= 12:
+        suffix = f' ({count - 12} conditional extension{"s" if count - 12 != 1 else ""})' if count > 12 else ''
+        return [ok('F17', f'genesis-protocol.md Phase 1 has {count} Doc entries{suffix}')]
+    return [fail('F17', f'genesis-protocol.md Phase 1 has {count} Doc entries (expected ≥12)',
                  f'Found: {doc_headers}')]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CATEGORY F6 — META-ARCHITECTURE INTEGRITY
+# Frontmatter-driven checks on the framework's own document system.
+# Canonical declaration: framework/framework-meta-architecture.md §11–§12
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Enumerations from framework-meta-architecture.md §11
+F6_TYPE_CANONICAL = {
+    'invariant', 'topology', 'protocol', 'template', 'vocabulary', 'schema',
+    'reference', 'decision_record', 'experiment_log', 'registry', 'meta_workflow',
+    'validation_tool',
+}
+# Backward-compat aliases: legacy kebab-case + pre-taxonomy values map to canonical names.
+# New docs should use the canonical snake_case forms; existing docs are not forced to migrate.
+F6_TYPE_ALIASES = {
+    'universal-protocol': 'protocol',
+    'decision-record': 'decision_record',
+    'experiment-log': 'experiment_log',
+    'gate-decision': 'experiment_log',   # Phase 0 gate records = experiment logs
+    'architecture': 'reference',          # pre-taxonomy "architecture" type = design rationale reference
+    # Vault-type-template files carry types describing what they will BE once copied into
+    # a vault (voice-profile.md becomes a style-card; writer-positions.md becomes a
+    # positions-card; positions-index.md keeps its indexing role). At framework-level
+    # they are all `template` variants.
+    'style-card': 'template',
+    'positions-card': 'template',
+    'positions-index': 'template',
+}
+F6_TYPE_ENUM = F6_TYPE_CANONICAL | set(F6_TYPE_ALIASES.keys())
+F6_STABILITY_ENUM = {'bedrock', 'foundational', 'operational', 'dynamic', 'historical'}
+F6_CANONICITY_ENUM = {'canonical', 'derived', 'synchronized', 'none'}
+
+# F21 — invariant I2 (parameterized runtime) enforcement for protocol files.
+# Rule: protocols must not hardcode vault-specific paths/slugs. `agensy/...`
+# references are allowed (the framework is structurally located there); `synthesis_<vault>`
+# references are forbidden (vault-specific identity must flow through vault-config.md).
+#
+# Forbidden pattern — any reference to a vault-specific namespace:
+F6_VAULT_SLUG_RE = re.compile(r'\bsynthesis_([a-z][a-z0-9_]*)\b')
+# Absolute Windows path detector (only matched to scope where forbidden slugs might appear):
+F6_ABSOLUTE_PATH_RE = re.compile(r'[A-Za-z]:[\\/][^\s\)`"\']*')
+
+
+def parse_frontmatter(file_path: Path) -> dict | None:
+    """Minimal YAML-frontmatter parser (regex-based, no yaml lib dependency).
+
+    Returns a dict of {field: value} where value is str, list[str], or None.
+    Returns None if no frontmatter is found.
+    Handles simple `key: value` and `key: [a, b, c]` forms plus indented list continuations.
+    """
+    try:
+        # Use utf-8-sig to strip BOM if present (agensy files carry one)
+        text = file_path.read_text(encoding='utf-8-sig', errors='ignore')
+    except (OSError, IOError):
+        return None
+
+    m = re.match(r'^---\r?\n(.*?)\r?\n---\r?\n', text, re.DOTALL)
+    if not m:
+        return None
+
+    fm_text = m.group(1)
+    result = {}
+    current_key = None
+
+    for line in fm_text.splitlines():
+        # Inline list: `key: [a, b, c]`
+        m_inline = re.match(r'^([A-Za-z_][\w_]*)\s*:\s*\[(.*)\]\s*$', line)
+        if m_inline:
+            key = m_inline.group(1)
+            items = [s.strip().strip('"\'') for s in m_inline.group(2).split(',') if s.strip()]
+            result[key] = items
+            current_key = None
+            continue
+        # Scalar: `key: value`
+        m_scalar = re.match(r'^([A-Za-z_][\w_]*)\s*:\s*(.*?)\s*$', line)
+        if m_scalar and not line.startswith(' ') and not line.startswith('\t'):
+            key, value = m_scalar.group(1), m_scalar.group(2)
+            value = value.strip().strip('"\'')
+            if value == '':
+                # Empty scalar — may be followed by a list block
+                result[key] = []
+                current_key = key
+            else:
+                result[key] = value
+                current_key = None
+            continue
+        # List continuation: `  - item`
+        m_item = re.match(r'^\s+-\s+(.+?)\s*$', line)
+        if m_item and current_key is not None:
+            item = m_item.group(1).strip().strip('"\'')
+            if not isinstance(result.get(current_key), list):
+                result[current_key] = []
+            result[current_key].append(item)
+            continue
+
+    return result
+
+
+def iter_framework_docs(meta_root: Path):
+    """Yield (rel_path, Path) for every .md file under framework/ plus top-level CLAUDE.md."""
+    framework_dir = meta_root / 'framework'
+    if framework_dir.exists():
+        for p in sorted(framework_dir.rglob('*.md')):
+            yield p.relative_to(meta_root).as_posix(), p
+    claude_md = meta_root / 'CLAUDE.md'
+    if claude_md.exists():
+        yield 'CLAUDE.md', claude_md
+
+
+def check_f18_frontmatter_schema(meta_root: Path) -> list[Result]:
+    """F18: framework docs carry valid frontmatter per meta-architecture §11.
+
+    FAIL on invalid enum values or missing required-by-state fields
+    (e.g., canonicity=canonical without canonical_for).
+    WARN on missing new fields (stability_tier, canonicity) in existing docs —
+    backward-compat: retrofit is opportunistic, not forced.
+    """
+    results = []
+    for rel, path in iter_framework_docs(meta_root):
+        fm = parse_frontmatter(path)
+        if fm is None:
+            results.append(warn('F18', f'{rel}: no frontmatter block'))
+            continue
+
+        # type (always required per existing convention, now enum-enforced)
+        t = fm.get('type')
+        if t is None:
+            results.append(warn('F18', f'{rel}: missing type field'))
+        elif t not in F6_TYPE_ENUM:
+            results.append(fail('F18', f'{rel}: type "{t}" not in allowed enum',
+                                f'Allowed: {sorted(F6_TYPE_CANONICAL)} (+ legacy aliases: {sorted(F6_TYPE_ALIASES.keys())})'))
+
+        # Resolve legacy alias to canonical for downstream checks
+        canonical_type = F6_TYPE_ALIASES.get(t, t)
+
+        # stability_tier (WARN on absent, FAIL on invalid)
+        st = fm.get('stability_tier')
+        if st is None:
+            results.append(warn('F18', f'{rel}: missing stability_tier (retrofit pending)'))
+        elif st not in F6_STABILITY_ENUM:
+            results.append(fail('F18', f'{rel}: stability_tier "{st}" not in allowed enum',
+                                f'Allowed: {sorted(F6_STABILITY_ENUM)}'))
+
+        # canonicity (WARN on absent, FAIL on invalid)
+        c = fm.get('canonicity')
+        if c is None:
+            results.append(warn('F18', f'{rel}: missing canonicity (retrofit pending)'))
+        elif c not in F6_CANONICITY_ENUM:
+            results.append(fail('F18', f'{rel}: canonicity "{c}" not in allowed enum',
+                                f'Allowed: {sorted(F6_CANONICITY_ENUM)}'))
+
+        # canonical_for required when canonicity=canonical
+        if c == 'canonical':
+            cf = fm.get('canonical_for')
+            if not cf or not isinstance(cf, list) or len(cf) == 0:
+                results.append(fail('F18', f'{rel}: canonicity=canonical but canonical_for is empty/missing'))
+
+        # derives_from required when canonicity=derived
+        if c == 'derived':
+            df = fm.get('derives_from')
+            if not df or not isinstance(df, list) or len(df) == 0:
+                results.append(fail('F18', f'{rel}: canonicity=derived but derives_from is empty/missing'))
+
+        # synchronized_with required when canonicity=synchronized
+        if c == 'synchronized':
+            sw = fm.get('synchronized_with')
+            if not sw or not isinstance(sw, list) or len(sw) == 0:
+                results.append(fail('F18', f'{rel}: canonicity=synchronized but synchronized_with is empty/missing'))
+
+        # supersedes only allowed on decision_record or experiment_log (alias-aware)
+        if fm.get('supersedes') and canonical_type not in ('decision_record', 'experiment_log'):
+            results.append(fail('F18', f'{rel}: supersedes field only permitted on decision_record/experiment_log',
+                                f'This doc has type={t} (canonical: {canonical_type})'))
+
+    if not any(r.status == 'FAIL' for r in results):
+        # Emit one summary pass if no hard failures
+        n_docs = sum(1 for _ in iter_framework_docs(meta_root))
+        results.append(ok('F18', f'frontmatter schema: {n_docs} framework docs scanned, 0 enum violations'))
+
+    return results
+
+
+def check_f19_canonicity_uniqueness(meta_root: Path) -> list[Result]:
+    """F19: every canonical_for concern is claimed by at most one doc.
+
+    Builds a {concern → [docs]} map from every `canonical_for` list.
+    FAIL on concerns claimed by >1 doc.
+    """
+    claims: dict[str, list[str]] = {}
+    for rel, path in iter_framework_docs(meta_root):
+        fm = parse_frontmatter(path)
+        if fm is None:
+            continue
+        cf = fm.get('canonical_for')
+        if not isinstance(cf, list):
+            continue
+        for concern in cf:
+            claims.setdefault(concern, []).append(rel)
+
+    results = []
+    conflicts = {c: docs for c, docs in claims.items() if len(docs) > 1}
+    if conflicts:
+        for concern, docs in conflicts.items():
+            results.append(fail('F19', f'concern "{concern}" claimed by {len(docs)} docs',
+                                f'Docs: {docs}'))
+    else:
+        results.append(ok('F19', f'canonicity uniqueness: {len(claims)} distinct concerns, no conflicts'))
+    return results
+
+
+def f20_fact_match_command_inventory(meta_root: Path) -> tuple[bool, str]:
+    """F20 callback: check that system-contracts §2 command list matches system-architecture YAML manifest command list.
+
+    Returns (ok, detail_message).
+    """
+    sc_path = meta_root / 'framework' / 'system-contracts.md'
+    sa_path = meta_root / 'framework' / 'system-architecture.md'
+    if not sc_path.exists() or not sa_path.exists():
+        return True, 'skipped — one or both files missing'
+
+    sc_text = sc_path.read_text(encoding='utf-8', errors='ignore')
+    sa_text = sa_path.read_text(encoding='utf-8', errors='ignore')
+
+    # Extract commands from system-contracts §2 table (pattern: `| /command` or `| `/command`)
+    sc_cmds = set(re.findall(r'\|\s*`/([a-z][\w-]*)`', sc_text))
+    # Extract commands from system-architecture YAML manifest — slice the commands: section
+    # then collect every 2-space-indented `<name>:` command key.
+    sa_cmds: set[str] = set()
+    sa_start = sa_text.find('\ncommands:\n')
+    if sa_start >= 0:
+        # Commands section runs until next top-level (no-indent) key like `state_files:`
+        sa_end_m = re.search(r'\n([a-z_][\w_]*):\s*\n', sa_text[sa_start + 11:])
+        sa_section = sa_text[sa_start:sa_start + 11 + (sa_end_m.start() if sa_end_m else len(sa_text))]
+        sa_cmds = set(re.findall(r'^  ([a-z][\w-]+):\s*$', sa_section, re.MULTILINE))
+
+    only_in_sc = sc_cmds - sa_cmds
+    only_in_sa = sa_cmds - sc_cmds
+    if only_in_sc or only_in_sa:
+        parts = []
+        if only_in_sc:
+            parts.append(f'in contracts but not architecture manifest: {sorted(only_in_sc)}')
+        if only_in_sa:
+            parts.append(f'in architecture manifest but not contracts: {sorted(only_in_sa)}')
+        return False, '; '.join(parts)
+    return True, f'{len(sc_cmds)} commands match between contracts §2 and architecture manifest'
+
+
+# F20 fact-match callback registry: {(pathA, pathB) → callback(meta_root) → (ok, detail)}
+# Callbacks are symmetrical — registered once for any declared synchronized_with pair.
+F6_FACT_MATCH_CALLBACKS = {
+    frozenset({'framework/system-contracts.md', 'framework/system-architecture.md'}):
+        f20_fact_match_command_inventory,
+}
+
+
+def check_f20_synchronized_with(meta_root: Path) -> list[Result]:
+    """F20: synchronized_with symmetry + concern-specific fact-match callbacks.
+
+    (a) Symmetry — if A.synchronized_with contains B, then B.synchronized_with must contain A.
+        Exception: WARN (not FAIL) when B has no frontmatter yet — retrofit pending.
+    (b) Fact-match — registered callbacks verify the synchronized fact actually matches.
+    """
+    results = []
+
+    # Build sync graph from frontmatter
+    sync_graph: dict[str, set[str]] = {}
+    frontmatters: dict[str, dict] = {}
+    for rel, path in iter_framework_docs(meta_root):
+        fm = parse_frontmatter(path)
+        if fm is None:
+            continue
+        frontmatters[rel] = fm
+        sw = fm.get('synchronized_with')
+        if isinstance(sw, list) and sw:
+            sync_graph[rel] = set(sw)
+
+    # (a) Symmetry check
+    for a, peers in sync_graph.items():
+        for b in peers:
+            b_norm = b.lstrip('./')
+            if b_norm not in frontmatters:
+                # Peer has no frontmatter — retrofit pending
+                results.append(warn('F20', f'{a} synchronized_with {b_norm}, but peer has no frontmatter (retrofit pending)'))
+                continue
+            peer_sw = frontmatters[b_norm].get('synchronized_with')
+            if not isinstance(peer_sw, list) or a not in [p.lstrip('./') for p in peer_sw]:
+                results.append(fail('F20', f'{a} synchronized_with {b_norm}, but {b_norm} does not reciprocate',
+                                    f'{b_norm} synchronized_with = {peer_sw}'))
+
+    # (b) Fact-match callbacks
+    for a, peers in sync_graph.items():
+        for b in peers:
+            b_norm = b.lstrip('./')
+            pair = frozenset({a, b_norm})
+            callback = F6_FACT_MATCH_CALLBACKS.get(pair)
+            if callback is None:
+                continue
+            ok_flag, detail = callback(meta_root)
+            if not ok_flag:
+                results.append(fail('F20', f'fact-match {a} ↔ {b_norm}: {detail}'))
+            else:
+                results.append(ok('F20', f'fact-match {a} ↔ {b_norm}: {detail}'))
+
+    if not results:
+        results.append(ok('F20', 'no synchronized_with declarations yet (retrofit pending)'))
+    elif not any(r.status in ('FAIL', 'WARN') for r in results):
+        # At least one pair passed; silent on symmetry unless fail
+        pass  # the fact-match OK lines already report
+
+    return results
+
+
+def check_f21_protocol_path_discipline(meta_root: Path) -> list[Result]:
+    """F21: type: protocol docs contain no vault-specific bare references.
+
+    Enforces invariant I2 (parameterized runtime): protocols must not hardcode
+    vault-specific paths or slugs. References to `agensy/...` are allowed
+    (framework-level). References to `synthesis_<vault>` patterns are flagged:
+      - Bare prose references (outside backticks) → FAIL  (clear hardcoding)
+      - Backtick-wrapped references             → WARN  (examples/templates;
+        still discouraged but a softer signal because Claude reads backticks
+        as formatting, not as hardcoded runtime values)
+    """
+    results = []
+    proto_dir = meta_root / 'framework' / 'universal-commands'
+    if not proto_dir.exists():
+        return [fail('F21', f'universal-commands/ not found under {meta_root}')]
+
+    hard_violations = []   # bare prose → FAIL
+    soft_violations = []   # in backticks, wikilinks, or code fences → WARN
+    files_scanned = 0
+
+    def _slug_is_in_code_span(line: str, pos: int) -> bool:
+        """True if position `pos` is inside a backtick-span or double-bracket wikilink on this line."""
+        prefix = line[:pos]
+        # Backtick span: odd count of ` before pos.
+        if prefix.count('`') % 2 == 1:
+            return True
+        # Wikilink: `[[` before pos and `]]` after pos on same line.
+        if '[[' in prefix:
+            last_open = prefix.rfind('[[')
+            last_close = prefix.rfind(']]')
+            if last_close < last_open and ']]' in line[pos:]:
+                return True
+        return False
+
+    for path in sorted(proto_dir.glob('*.md')):
+        files_scanned += 1
+        try:
+            lines = path.read_text(encoding='utf-8', errors='ignore').splitlines()
+        except (OSError, IOError):
+            continue
+        in_code_fence = False
+        for i, line in enumerate(lines, start=1):
+            # Track triple-backtick code fences
+            if line.lstrip().startswith('```'):
+                in_code_fence = not in_code_fence
+                continue
+            for m in F6_VAULT_SLUG_RE.finditer(line):
+                slug = m.group(1)
+                snippet = f'{path.name}:{i}  synthesis_{slug}  — {line.strip()[:80]}'
+                if in_code_fence or _slug_is_in_code_span(line, m.start()):
+                    soft_violations.append(snippet)
+                else:
+                    hard_violations.append(snippet)
+
+    if hard_violations:
+        results.append(fail('F21', f'{len(hard_violations)} bare vault-specific reference(s) in protocol files',
+                            '\n         '.join(hard_violations[:10]) +
+                            (f'\n         ... (+{len(hard_violations)-10} more)' if len(hard_violations) > 10 else '')))
+    if soft_violations:
+        results.append(warn('F21', f'{len(soft_violations)} backtick-wrapped vault reference(s) — examples/defaults; parameterize where possible',
+                            '\n         '.join(soft_violations[:5]) +
+                            (f'\n         ... (+{len(soft_violations)-5} more)' if len(soft_violations) > 5 else '')))
+    if not hard_violations and not soft_violations:
+        results.append(ok('F21', f'protocol path discipline: {files_scanned} files scanned, 0 vault-specific references'))
+    elif not hard_violations:
+        results.append(ok('F21', f'protocol path discipline: {files_scanned} files scanned, 0 hard violations ({len(soft_violations)} soft — see WARN)'))
+    return results
+
+
+def check_f22_supersession_chain(meta_root: Path) -> list[Result]:
+    """F22: every `supersedes:` pointer in a decision_record/experiment_log resolves, same type, older date, no cycles."""
+    results = []
+
+    # Build the supersession graph: {child_rel → parent_rel}
+    supersedes: dict[str, str] = {}
+    frontmatters: dict[str, dict] = {}
+    for rel, path in iter_framework_docs(meta_root):
+        fm = parse_frontmatter(path)
+        if fm is None:
+            continue
+        frontmatters[rel] = fm
+        s = fm.get('supersedes')
+        if s:
+            s_norm = s.lstrip('./') if isinstance(s, str) else None
+            if s_norm:
+                supersedes[rel] = s_norm
+
+    if not supersedes:
+        return [ok('F22', 'no supersession pointers declared (no chains to validate)')]
+
+    # (1) Pointer resolution + type match + date ordering
+    for child, parent in supersedes.items():
+        parent_path = meta_root / parent
+        if not parent_path.exists():
+            results.append(fail('F22', f'{child} supersedes missing file {parent}'))
+            continue
+        child_fm = frontmatters.get(child, {})
+        parent_fm = frontmatters.get(parent, {})
+        # Type match (alias-aware — canonical form)
+        child_t = F6_TYPE_ALIASES.get(child_fm.get('type'), child_fm.get('type'))
+        parent_t = F6_TYPE_ALIASES.get(parent_fm.get('type'), parent_fm.get('type'))
+        if child_t != parent_t:
+            results.append(fail('F22', f'{child} supersedes {parent} but canonical types differ',
+                                f'child={child_t}, parent={parent_t}'))
+        # Date ordering
+        child_date = child_fm.get('created', '')
+        parent_date = parent_fm.get('created', '')
+        if child_date and parent_date and child_date <= parent_date:
+            results.append(fail('F22', f'{child} supersedes {parent} but child created ({child_date}) not newer than parent ({parent_date})'))
+
+    # (2) Cycle detection via DFS
+    def find_cycle() -> list[str] | None:
+        visited: set[str] = set()
+        for start in supersedes.keys():
+            path = []
+            node = start
+            local_seen = set()
+            while node in supersedes:
+                if node in local_seen:
+                    # Found a cycle
+                    idx = path.index(node)
+                    return path[idx:] + [node]
+                local_seen.add(node)
+                path.append(node)
+                if node in visited:
+                    break  # already traced, no cycle through here
+                node = supersedes[node]
+            visited.update(local_seen)
+        return None
+
+    cycle = find_cycle()
+    if cycle:
+        results.append(fail('F22', f'supersession cycle detected: {" → ".join(cycle)}'))
+
+    if not any(r.status == 'FAIL' for r in results):
+        results.append(ok('F22', f'supersession chains: {len(supersedes)} pointer(s) validated, no cycles'))
+
+    return results
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -787,6 +1308,13 @@ def run_checks(vaults: list, meta_root: Path, category: str, single_check: str |
         maybe('F15', lambda: check_f15_contract_table_complete(meta_root))
         maybe('F16', lambda: check_f16_schema_mentions_blocks(meta_root))
         maybe('F17', lambda: check_f17_genesis_doc_count(meta_root))
+
+    if category in ('F6', 'all'):
+        maybe('F18', lambda: check_f18_frontmatter_schema(meta_root))
+        maybe('F19', lambda: check_f19_canonicity_uniqueness(meta_root))
+        maybe('F20', lambda: check_f20_synchronized_with(meta_root))
+        maybe('F21', lambda: check_f21_protocol_path_discipline(meta_root))
+        maybe('F22', lambda: check_f22_supersession_chain(meta_root))
 
     # If single check requested, filter results
     if check_filter:
@@ -838,7 +1366,7 @@ def main():
         description='framework-verify.py — architectural integrity checks for agensy'
     )
     parser.add_argument('--category', default='all',
-                        choices=['F1', 'F2', 'F3', 'F4', 'F5', 'all'],
+                        choices=['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'all'],
                         help='Which category of checks to run (default: all)')
     parser.add_argument('--json', action='store_true',
                         help='Output JSON format')

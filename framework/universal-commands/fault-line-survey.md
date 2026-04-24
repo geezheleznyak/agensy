@@ -3,6 +3,7 @@ description: Survey all maps' positions on the vault's central fault line
 type: universal-protocol
 audience: claude
 ---
+
 # /fault-line-survey
 
 Survey the vault's entire map library to build a comprehensive picture of where each thinker, concept, and framework sits on the vault's central fault line.

@@ -2,6 +2,7 @@
 type: reference
 audience: claude
 ---
+
 # Architecture Principles
 
 Complete briefing for Claude before analyzing or modifying framework documents. Starts with what the system IS, then layers on the invariants, trade-offs, and evaluation criteria governing it.
@@ -17,7 +18,7 @@ For the visual system map and structured YAML manifest: `system-architecture.md`
 
 ## §1 — The System in Brief
 
-The AGENSY framework is an **Agent-first system** for building and maintaining Obsidian knowledge vaults. Claude is the primary executor; the framework is the instruction set.
+The agensy framework is an **Agent-first system** for building and maintaining Obsidian knowledge vaults. Claude is the primary executor; the framework is the instruction set.
 
 **3-layer loading hierarchy** (context budget is finite — every layer is sized accordingly):
 - **Global CLAUDE.md** (~86 lines, always loaded): universal rules — atomicity, two-zone architecture, tier logic, slash command runtime, tool rules, memory management
@@ -30,7 +31,7 @@ The AGENSY framework is an **Agent-first system** for building and maintaining O
 
 **State architecture**: three memory files per vault — `MEMORY.md` (persistent decisions, dialogue log, max 150 lines), `session-state.md` (pre-computed session diagnostics, replaces vault-wide globbing at session start), `note-index.md` (bulk metadata cache, replaces hundreds of individual frontmatter reads for audit commands). One cross-vault file in agensy — `system-state.md` (dynamic operational state: note counts, audit dates, cross-vault user positions; updated by `/coverage-audit` and `/dialogue` Bridge mode).
 
-**Reference system**: 1 framework (agensy), 4+ accumulation vaults (e.g., theoria, politeia, oeconomia, historia), 1 training vault (e.g., bellum), 1 expression vault (e.g., logos). Cross-vault: 3 connection types — Type 1 knowledge→expression (one-way), Type 2 knowledge→training (one-way), Type 3 peer↔peer (bidirectional).
+**Seven vaults**: 1 framework (agensy), 4 accumulation (omega, kratos, oikos, clio), 1 training (belli), 1 expression (cogitationis). Cross-vault: 3 connection types — Type 1 knowledge→expression (one-way), Type 2 knowledge→training (one-way), Type 3 peer↔peer (bidirectional).
 
 ---
 
@@ -92,8 +93,6 @@ Consult this table first when assessing any proposed change.
 | `command-lifecycle.md` | Claude's session behavior globally | Affects every session start and milestone trigger |
 | State file schema (session-state, note-index) | All vaults that have these files | Add migration note; old format must remain parseable |
 
-See `system-contracts.md` §5 for the complementary breaking/non-breaking classification of these same changes.
-
 ---
 
 ## §5 — Evaluation Framework
@@ -136,7 +135,7 @@ Changes that look like improvements but degrade the system.
 
 Seven steps before implementing any framework change.
 
-1. **Read scope**: this document + `system-contracts.md` + the specific target file. Read the YAML manifest in `system-architecture.md` if you need to trace relationships.
+1. **Read scope**: this document + `system-contracts.md` + the specific target file. Read the YAML manifest in `system-architecture.md` if you need to trace relationships. For changes to the framework's own document system (new framework doc, frontmatter schema edits, canonicity reassignment, supersession records), also read `framework-meta-architecture.md`.
 
 2. **Check propagation**: consult §4. How many files outside agensy change? If >0, document the migration path before proceeding.
 

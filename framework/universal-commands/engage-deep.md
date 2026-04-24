@@ -3,6 +3,7 @@ description: Deep engagement notebook entry — rigorous intellectual encounter 
 type: universal-protocol
 audience: claude
 ---
+
 # /engage-deep [thinker/concept/claim]
 
 A deep engagement notebook entry. Different from an arc: the goal is not systematic exposition but rigorous intellectual encounter — finding where a subject creates pressure, what it forces you to revise, and what it demands as a response.

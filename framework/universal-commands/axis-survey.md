@@ -3,6 +3,7 @@ description: Survey all maps' positions on the vault's central engagement axis
 type: universal-protocol
 audience: claude
 ---
+
 # /axis-survey
 
 Survey the vault's entire map library to build a comprehensive picture of where each thinker, concept, and framework sits on the vault's central engagement axis (Q3).

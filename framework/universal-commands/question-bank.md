@@ -3,13 +3,14 @@ description: Manage persistent unresolved questions across vaults and sessions
 type: universal-protocol
 audience: claude
 ---
+
 # /question-bank [add|list|resolve]
 
 Manage the cross-vault question bank. Questions that emerge from dialogue but cannot yet be answered — questions that span vaults, require future arcs, or reveal gaps the vault cannot yet fill — are logged here and surface in future sessions.
 
 **Data file**: `[AGENSY_PATH]/question-bank.md`
 
-**Why agensy**: Questions span vaults. "Does the recon-strike complex make operational maneuver obsolete?" touches bellum (tactics), but answering it draws on politeia (industrial capacity) and oeconomia (cost-exchange economics). The framework vault is the cross-vault coordination layer.
+**Why agensy**: Questions span vaults. "Does the recon-strike complex make operational maneuver obsolete?" touches belli (tactics), but answering it draws on kratos (industrial capacity) and oikos (cost-exchange economics). agensy is the cross-vault coordination layer.
 
 ---
 

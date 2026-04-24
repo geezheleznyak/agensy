@@ -108,7 +108,7 @@ class VaultConfig:
         return set(int(x) for x in re.findall(r'^\s*- id:\s*(\d+)', self.text, re.MULTILINE))
 
     def _open_problem_key(self) -> str:
-        """Training vaults use open_challenges; accumulation vaults use open_problems."""
+        """belli uses open_challenges; others use open_problems."""
         if re.search(r'open_challenges', self.text):
             return 'open_challenges'
         return 'open_problems'
@@ -146,7 +146,7 @@ class VaultConfig:
         return domains
 
     def _detect_flat_folder(self) -> bool:
-        """True if multiple domains share the same folder (flat-folder pattern, e.g., training vaults)."""
+        """True if multiple domains share the same folder (belli pattern)."""
         folders = [d['folder'] for d in self.domains]
         return len(folders) != len(set(folders))
 
@@ -248,10 +248,10 @@ class VaultConfig:
                 return fields
         # Fallback: detect from synthesis sections text
         if self.ji_section_name == 'Judgment Instrument':
-            # Check if it mentions "Reads as" (adversarial vault pattern)
+            # Check if it mentions "Reads as" (kratos)
             if re.search(r'Reads as', self.text):
                 return ['Reads as', 'Threatens', 'Fault line']
-            # Some accumulation vaults use "Primary insight"
+            # oikos has Primary insight
             if re.search(r'Primary insight', self.text):
                 return ['Primary insight', 'Gives', 'Threatens', 'Fault line']
         return ['Gives', 'Threatens', 'Fault line']

@@ -3,6 +3,7 @@ description: Deep dive on one open problem using current vault material
 type: universal-protocol
 audience: claude
 ---
+
 # /engage-problem [N or name]
 
 Deep structural engagement with one of the vault's open problems. Surveys what the vault currently knows, maps competing positions, names the fault line tension, and identifies what would advance the problem.

@@ -137,19 +137,21 @@ agensy/
     commands.md              ← all 20 commands explained
     tools.md                 ← validation scripts reference
   framework/
-    genesis-protocol.md      ← 4-phase vault bootstrapping procedure
+    genesis-protocol.md      ← 5-phase vault bootstrapping procedure
     vault-config-schema.md   ← vault configuration template
     claude-md-template.md    ← CLAUDE.md template
     slash-command-suite.md   ← command index
-    system-contracts.md      ← architectural invariants
-    architecture-principles.md ← design rationale
-    system-architecture.md   ← system diagrams
+    architecture-principles.md ← WHY — design rationale and invariants
+    system-contracts.md      ← HOW — architectural contracts and design principles
+    system-architecture.md   ← WHAT — system diagrams and YAML manifest
+    framework-meta-architecture.md ← META — framework-as-system-of-documents
     inter-vault-protocol.md  ← cross-vault connection rules
     command-lifecycle.md     ← when to fire each command
-    system-model-schema.yaml ← v0.1 schema for per-vault system-model.yaml
+    map-to-article-extraction.md ← schema for /article-* expression pipeline
+    system-model-schema.yaml ← v0.2 schema for per-vault system-model.yaml
     system-model-architecture.md ← design rationale for the System Model Layer
     primitives.md            ← three-layer primitive vocabulary (nodes/edges/patterns)
-    universal-commands/      ← 21 command protocol files + 2 legacy/sub-protocol files
+    universal-commands/      ← 34 command protocol files + 2 backward-compat aliases
   vaults/
     theoria-config.md        ← example: philosophy + metaphysics vault config
     politeia-config.md       ← example: political theory vault config

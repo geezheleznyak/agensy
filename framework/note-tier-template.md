@@ -2,6 +2,7 @@
 type: template
 audience: claude
 ---
+
 # Note Tier Template
 
 Universal three-tier note system. The tier names and graduation criteria are domain-adapted in each vault's `vault-config.md`, but the structure is invariant. This document defines the universally fixed elements — the parts that never change regardless of domain.
@@ -52,29 +53,29 @@ open_problems: [list of open problem IDs from vault-config.open_problems]
 
 Domain-specific fields (defined per vault type, added alongside universal fields):
 
-**Accumulation vault (theoria model)**:
+**Accumulation vault (omega model)**:
 ```yaml
 project_questions: [list of driving question labels, e.g. metaphysical, anthropological, normative]
 evergreen-candidate: [true | false]
 ```
 
-**Training vault (bellum model)**:
+**Training vault (belli model)**:
 ```yaml
 level: [tactical | operational | strategic | all]
 open_challenges: [list of open problem IDs]
 ```
 
-**Expression vault (logos model)**:
+**Expression vault (cogitationis model)**:
 ```yaml
 status: [raw | developed | seed | outline | draft | revision | final]
-source_refs: []   # wikilinks to source vault notes this relies on
+omega_refs: []   # wikilinks to source vault notes this relies on
 ```
 
 ---
 
 ## Schema Selection Rule
 
-In accumulation vaults with mixed domains (the two-zone model), Tier 2 notes come in two schemas: **Synthesis** and **Reference**. The governing rule:
+In accumulation vaults with mixed domains (the omega model), Tier 2 notes come in two schemas: **Synthesis** and **Reference**. The governing rule:
 
 - The `evergreen-candidate` field at **note level** determines the schema — not the domain.
 - The domain's `evergreen_candidate` value in `vault-config.md` is the **default for new notes** in that domain.

@@ -1,7 +1,9 @@
-﻿---
-type: reference
-audience: claude
 ---
+created: 2026-03-16
+updated: 2026-03-30
+type: reference
+---
+
 # Genesis Protocol
 
 The five-phase self-building procedure for scaffolding a new vault from scratch. Follow in order. Do not skip phases or run them out of sequence — each phase depends on the outputs of the prior one.
@@ -20,7 +22,7 @@ The five-phase self-building procedure for scaffolding a new vault from scratch.
 
 Ask Q0.5 first (intellectual style), then Q1–Q7 in sequence. For each question:
 1. Ask the question in plain language (not just "answer Q1")
-2. Offer examples from existing vaults (theoria, bellum, logos) as anchors
+2. Offer examples from existing vaults (omega, belli, cogitationis) as anchors
 3. Push back if the answer is too vague — a vault cannot be scaffolded from a vague mission
 4. Record the answer in `vault-config.md` before moving to the next question
 
@@ -52,13 +54,11 @@ Must be statable in one sentence. If the user gives a list, pick the most founda
 
 **Q4 — Open Problems**: "List 8–15 genuinely open problems in this domain — questions the vault exists to work on, not to answer definitively." — Each problem needs a short name (for frontmatter references) and a one-sentence question. If the user gives fewer than 8, push: "What else would you want this vault to eventually be able to say something about?"
 
-**Q5 — Note Tier Structure**: "What are the three tiers of note in this vault? What is the minimal form (lookup/capture), the working form (mechanistic explanation), and the final form (permanent insight or output)? What triggers graduation from one tier to the next?" — Give the user the theoria model and bellum model as examples.
+**Q5 — Note Tier Structure**: "What are the three tiers of note in this vault? What is the minimal form (lookup/capture), the working form (mechanistic explanation), and the final form (permanent insight or output)? What triggers graduation from one tier to the next?" — Give the user the omega model and belli model as examples.
 
 **Q6 — Domain Taxonomy**: "What are the major sub-domains? For each: give a label, a folder path, a priority (core / tier1 / tier2), and whether notes in this domain can graduate to Tier 3." — Must have at least 3 domains. If the user gives too many (>12), help them consolidate.
 
 **Q7 — Output Layer**: "What does the final-form output look like? What is the artifact — an evergreen note, a doctrine document, a published essay, a training module? Who reads it? What does it do?" — Must match the vault type from Q1.
-
-> **Runtime note on Q7**: Claude typically proposes likely output forms proactively based on the vault type (Q1). The user need not have a predetermined answer — Claude offers examples and the user refines.
 
 **Checklist before proceeding to Phase 1**:
 - [ ] Q0.5 intellectual style preset chosen and recorded
@@ -189,7 +189,7 @@ description: [one-line description]
 
 $ARGUMENTS
 
-1. Read the protocol: `[AGENSY_PATH]/framework/universal-commands/[command-name].md`
+1. Read the protocol: `[AGENSY_PATH]\framework\universal-commands\[command-name].md`
 2. Read vault configuration: `vault-config.md` (vault root)
 3. Execute the protocol using this vault's parameters.
 ```
@@ -220,7 +220,7 @@ The `vault-config.md` from Phase 0 should already be in the vault root. In this 
 - **`note_template:`** — vault-specific mandatory sections for synthesis notes and reference notes, including the synthesis instrument template (Judgment Instrument / Connection to the Project / vault-equivalent). Universal commands use this to check quality and generate notes.
 - **`reference_docs:`** — paths to the vault's coverage plan, development plan, map reference, open problems file, and any other reference documents universal commands need to read.
 
-See `framework/vault-config-schema.md` for the full schema. See `vaults/politeia-config.md` in agensy as a reference implementation (accumulation vault, adversarial style).
+See `framework/vault-config-schema.md` for the full schema. See `synthesis_politeia/vault-config.md` as the reference implementation.
 
 ### Doc 12 — Memory Initialization
 
@@ -252,7 +252,19 @@ Last updated: YYYY-MM-DD | Total: 0 | Last full rebuild: never
 ```
 - First session date
 
-**Register in system-state.md**: After writing the three memory files, open `[AGENSY_PATH]/system-state.md` and add one row to the **Vault Registry** table:
+### Doc 13 — Vault-Type Substrate (conditional: expression, training)
+
+Copy the vault-type-specific substrate templates into the vault root based on the type chosen in Q0.5 / Q7:
+
+- **Expression vault** → copy every file from `[AGENSY_PATH]/framework/vault-type-templates/expression/` (except the sub-folder `README.md`) into the new vault's root. Files copied: `voice-profile.md`, `writer-positions.md`, `positions-index.md`, `article-presets.md`, `article-design-principles.md`, `source-map-registry.md`. These are scaffolds — the user will fill them during and after genesis. `/article-draft` will refuse to run until `voice-profile.md` is moved out of `status: unseeded`.
+- **Training vault** → copy every file from `[AGENSY_PATH]/framework/vault-type-templates/training/` (except the sub-folder `README.md`) into the new vault's root. Files copied: `curriculum-template.md` (rename to vault-specific, e.g., `[vault-name]-curriculum.md`), `principles-and-postulates-template.md` (rename to e.g., `principles-and-postulates.md`), `sources-master-list-template.md` (rename to e.g., `sources-master-list.md`). These are scaffolds — the user fills them during and after genesis.
+- **Accumulation vault** → skip this step. Accumulation vaults do not need additional substrate; the 12 preceding documents cover everything.
+
+Also extend `vault-config.md` with the `reference_docs.*` entries that point to the copied substrate files. For expression vaults this means adding `voice_profile`, `writer_positions`, `positions_index`, `article_presets`, `article_design_principles`, `source_map_registry`, and `map_to_article_schema` keys. For training vaults, add keys pointing to the curriculum, postulates, and sources files.
+
+See `framework/vault-type-templates/README.md` for which files each vault type needs and the fill-in order the vault owner should follow after genesis.
+
+**Register in system-state.md**: After writing the three memory files and (if applicable) copying substrate templates, open `[AGENSY_PATH]\system-state.md` and add one row to the **Vault Registry** table:
 
 ```
 | [vault-name] | Phase 0 (bootstrapped) | 0 | never |

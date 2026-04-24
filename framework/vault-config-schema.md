@@ -2,6 +2,7 @@
 type: schema
 audience: claude
 ---
+
 # vault-config.md Schema
 
 This is the genesis document for any new vault. Fill it in once, in a single session, before writing any other structural document. All other documents derive from these answers.
@@ -21,9 +22,9 @@ vault:
   name: [short descriptive name, e.g. "synthesis_theoria"]
   path: [absolute path to vault root]
   type: [accumulation | training | expression | hybrid]
-  # accumulation: builds up a knowledge base over time (theoria model)
-  # training: develops a skill or competency through progressive curriculum (bellum model)
-  # expression: turns knowledge/thinking into published output (logos model)
+  # accumulation: builds up a knowledge base over time (omega model)
+  # training: develops a skill or competency through progressive curriculum (belli model)
+  # expression: turns knowledge/thinking into published output (cogitationis model)
   # hybrid: explicitly combines two or more types (define below)
   created: [YYYY-MM-DD]
 ```
@@ -149,9 +150,9 @@ mission: >
    What kind of thinking does it produce?]
 ```
 
-**Example (theoria)**: Build a comprehensive philosophical and metaphysical framework — spanning ontology, philosophy of mind, epistemology, and philosophy of science — that yields integrated understanding of what is real, what can be known, and what the human being fundamentally is, in a world shaped by complexity, information, and artificial intelligence.
+**Example (omega)**: Build a metaphysical and anthropological framework for post-AI humanity — a system of ideas connecting cosmology, anthropology, and ethics through the world's major thinkers, tested against the challenge artificial intelligence poses to the human self-understanding.
 
-**Example (bellum)**: Build a unified, complete, and operationally tested knowledge framework for training a fresh military commander from zero to one in a rapidly changing environment characterized by AI-enabled warfare, drone proliferation, and shifting great-power competition.
+**Example (belli)**: Build a unified, complete, and operationally tested knowledge framework for training a fresh military commander from zero to one in a rapidly changing environment characterized by AI-enabled warfare, drone proliferation, and shifting great-power competition.
 
 ---
 
@@ -201,10 +202,10 @@ fault_line:
 
 *Failure mode*: "Is X good or bad?" or "Should we do X?" — these are preferences, not fault lines. The tension must be between genuine intellectual positions with real evidence on both sides.
 
-**Example (theoria)**: Does reality have intrinsic rational structure — a logos the mind tracks when it reasons — or is structure always imposed by minds, models, and practices on a fundamentally neutral substrate?
-Positions: `realist` | `constructivist` | `pragmatist` | `dissolves`
+**Example (omega)**: Is the universe's tendency toward increasing complexity an ontologically real tendency with normative significance — or is it an epistemic imposition (how we organize observations) or a normatively neutral mechanical byproduct?
+Positions: `supports` | `denies` | `complicates` | `dissolves`
 
-**Example (bellum)**: Is the AI/drone revolution creating genuine discontinuity requiring new first principles, or do eternal principles maintain continuity?
+**Example (belli)**: Is the AI/drone revolution creating genuine discontinuity requiring new first principles, or do eternal principles maintain continuity?
 Positions: `continuity` | `discontinuity` | `synthesis`
 
 ---
@@ -226,7 +227,7 @@ central_dialectic:
 
 *Failure mode*: A binary opposition with no synthesis path — that is adversarial framing, not dialectical.
 
-**Example (oeconomia)**: Do economic dynamics emerge primarily from structural forces (institutions, power, path-dependence) or from ideational/behavioral patterns (narratives, beliefs, animal spirits), and what integrative account captures both without collapsing either?
+**Example (oikos)**: Do economic dynamics emerge primarily from structural forces (institutions, power, path-dependence) or from ideational/behavioral patterns (narratives, beliefs, animal spirits), and what integrative account captures both without collapsing either?
 Positions: `structural` | `behavioral-ideational` | `complex-interactive`
 
 ---
@@ -433,7 +434,7 @@ note_template:
       # Examples (use engagement_axis.config_key from intellectual_style for the axis field):
       # accumulation: "project_questions: []", "[config_key]: [position]", "open_problems: [N]"
       # training:     "level: [tactical|operational|strategic|all]", "[config_key]: [position]", "open_challenges: [N]"
-      # expression:   "status: [raw|seed|outline|draft|revision|final]", "source_refs: []"
+      # expression:   "status: [raw|seed|outline|draft|revision|final]", "omega_refs: []"
       # Where [config_key] = fault_line | central_dialectic | central_mystery | design_problem
     mandatory_sections:
       - "Section name: description of what this section requires"

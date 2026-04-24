@@ -3,6 +3,7 @@ description: Multi-turn engagement between the user's thinking and vault framewo
 type: universal-protocol
 audience: claude
 ---
+
 # /dialogue [topic or opening thought]
 
 Engage the user's own thinking against the vault's frameworks in a multi-turn conversation. Every other command is Claude reading the vault and producing a document. `/dialogue` is Claude engaging the user's thinking — their developing positions, disagreements, and uncertainties — as a thinking partner.
@@ -78,14 +79,14 @@ State what emerged from the dialogue in 2–3 sentences. Then apply the 4-gate t
 |---|---|---|
 | **Novelty** | Search vault output folder for ≥70% content overlap with proposed claim | Point to existing note; if dialogue added nuance, suggest editing existing note |
 | **Atomicity** | Is this one claim or a cluster? | If cluster: decompose into candidates, test each separately |
-| **Connection** | Does it advance at least one OP or address a driving question? | If no: log to question bank or expression vault, not the knowledge vault |
+| **Connection** | Does it advance at least one OP or address a driving question? | If no: log to question bank or cogitationis, not the knowledge vault |
 | **User consent** | Propose the note title and opening paragraph. User approves? | If declined: respect. Log insight to dialogue log for potential future revisit |
 
 Route the output:
 
 ```
 Knowledge claim → Route 1 (standard note in vault)
-Personal position → Route 2 (expression vault Thought)
+Personal position → Route 2 (cogitationis Thought)
 Unresolved question → Route 3 (question bank)
 Already captured → Route 4 (cite existing notes)
 ```
@@ -102,8 +103,8 @@ Already captured → Route 4 (cite existing notes)
 - Append one row to `memory/note-index.md`: `| [path] | T2 | [domain] | true | [axis] | [ops] | user-dialogue | [date] |`
 
 **Route 2** — Personal position or developing argument:
-- Write a Thought note in the expression vault using the Thought template.
-- Frontmatter: `status: raw`, `source_refs: [relevant note titles]`
+- Write a cogitationis Thought note using the Thought template.
+- Frontmatter: `status: raw`, `omega_refs: [relevant note titles]`
 - First-person voice. Claim-titled.
 - Optionally also produce a Reflection in `30-Reflections/` if the dialogue had a significant personal dimension.
 
@@ -143,7 +144,7 @@ The 4-gate test prevents note inflation. Gate failures do not mean the dialogue 
 
 **Atomicity failure** → Decompose the cluster. Test each candidate separately through all 4 gates. Some candidates will pass; others won't. Write only those that pass.
 
-**Connection failure** → This insight may be genuinely valuable but not project-facing. Route 2 (personal position in expression vault) or Route 3 (question bank) are legitimate homes. Not every insight needs to be a vault note.
+**Connection failure** → This insight may be genuinely valuable but not project-facing. Route 2 (personal position in cogitationis) or Route 3 (question bank) are legitimate homes. Not every insight needs to be a vault note.
 
 **Consent failure** → The user may feel the insight is not ready, not quite right, or too personal. Respect this. Log the topic in the dialogue log so it can surface in a future session.
 

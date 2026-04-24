@@ -93,16 +93,43 @@ See `cross-vault-bridges.md` for bridge domains, vault treatments, tensions, and
 
 ## Framework Documents
 
+Architectural spine (WHY / HOW / WHAT / META — read in this order before any framework change):
+
 | Document | Purpose |
 |---|---|
-| `framework/vault-config-schema.md` | Fill-in-the-blanks template for creating a new vault config |
-| `framework/claude-md-template.md` | Universal CLAUDE.md with placeholder blocks for domain content |
-| `framework/note-tier-template.md` | Universal three-tier note schema |
-| `framework/map-type-template.md` | Four map type definitions and naming conventions |
-| `framework/slash-command-suite.md` | Command index (21 universal + vault-type-generated commands) |
-| `framework/genesis-protocol.md` | Step-by-step self-building procedure for new vaults |
-| `framework/inter-vault-protocol.md` | Rules governing connections between vaults |
-| `framework/command-lifecycle.md` | When to fire each command — four trigger types |
-| `framework/system-contracts.md` | Architectural invariants and design principles |
-| `framework/architecture-principles.md` | Complete mental model, invariants, evaluation framework |
-| `framework/system-architecture.md` | Mermaid diagrams and YAML system manifest |
+| `framework/architecture-principles.md` | WHY — core invariants, trade-offs, propagation table, evaluation axes, anti-patterns, change-analysis protocol |
+| `framework/system-contracts.md` | HOW — contract table (command → required vault-config keys), breaking-change rules, pre-framework vault integration |
+| `framework/system-architecture.md` | WHAT — four Mermaid diagrams (system map, dispatch, state loops, genesis) + machine-readable YAML manifest |
+| `framework/framework-meta-architecture.md` | META — framework-as-system-of-documents: 11 doc types, 5 stability tiers, canonicity rules, communication channels, supersession protocol, frontmatter spec |
+
+Runtime orchestration:
+
+| Document | Purpose |
+|---|---|
+| `framework/slash-command-suite.md` | Command index (34 universal protocol files + 2 backward-compat aliases) and stub format |
+| `framework/command-lifecycle.md` | When to fire what — 4 trigger types (automatic, milestone, session, analytical) |
+| `framework/genesis-protocol.md` | Five-phase self-building procedure (Q0.5–Q7 elicitation → 12 structural documents → baseline audit → first arc → self-regulation) |
+| `framework/inter-vault-protocol.md` | Rules governing the 3 cross-vault connection types (knowledge→expression; knowledge→training; peer↔peer) |
+
+Templates (consumed during genesis):
+
+| Document | Purpose |
+|---|---|
+| `framework/vault-config-schema.md` | Fill-in-the-blanks template for new vault-config.md |
+| `framework/claude-md-template.md` | Universal CLAUDE.md with `[CONFIG]` placeholders; ≤120 lines, vault-specific content only |
+| `framework/note-tier-template.md` | Universal three-tier note schema (Tier 1 capture → Tier 2 analysis → Tier 3 output) |
+| `framework/map-type-template.md` | Four map type definitions (person, concept, domain, framework) |
+
+System Model Layer:
+
+| Document | Purpose |
+|---|---|
+| `framework/primitives.md` | Canonical node (6) / edge (10) / pattern (7) vocabulary for the System Model Layer; v0.2 adds timescale bands, subtype free-string, secondary_types dual-tag |
+| `framework/system-model-schema.yaml` | Machine-readable schema that every per-vault `system-model.yaml` extends (v0.2) |
+| `framework/system-model-architecture.md` | Rationale, file layout, integration points, self-maintenance policy (green/yellow/red dirt levels) |
+
+Expression-pipeline reference:
+
+| Document | Purpose |
+|---|---|
+| `framework/map-to-article-extraction.md` | Schema consumed by `/article-seed`, `/article-outline`, `/article-draft` for map-section → article-role extraction |

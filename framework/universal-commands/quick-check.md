@@ -3,6 +3,7 @@ description: Post-arc validation — mechanical checks + quality assessment on r
 type: universal-protocol
 audience: claude
 ---
+
 # /quick-check [scope]
 
 Validate recently created notes for mechanical compliance and synthesis quality. The linter catches structural failures automatically; quick-check catches the failures only Claude can assess — definitional openings, generic tensions, vague threats.
@@ -33,7 +34,7 @@ Before any Claude-mediated checks, run the vault linter on the target set. This 
 
 **Command**:
 ```bash
-python "[AGENSY_PATH]/tools/vault-linter.py" "<vault-root>" --category note --recent 20
+python "[AGENSY_PATH]/tools\vault-linter.py" "<vault-root>" --category note --recent 20
 ```
 
 Determine `<vault-root>` from vault-config.md location (the directory containing vault-config.md).
@@ -67,7 +68,7 @@ Determine `<vault-root>` from vault-config.md location (the directory containing
 1. Resolve the path. If relative, prepend vault root.
 2. Target set = that single note.
 
-**Training vault handling** (bellum): All Tier 2 notes use synthesis schema regardless of `evergreen-candidate`. Treat every discovered note as synthesis-schema for all checks below.
+**Training vault handling** (belli): All Tier 2 notes use synthesis schema regardless of `evergreen-candidate`. Treat every discovered note as synthesis-schema for all checks below.
 
 ---
 

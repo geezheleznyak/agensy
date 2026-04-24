@@ -3,6 +3,7 @@ description: Write a single Tier 3 judgment/evergreen note from a concept or sou
 type: universal-protocol
 audience: claude
 ---
+
 # /evergreen-note [concept from source]
 
 Write a single atomic Tier 3 note. Use when one clear structural insight is ready to be distilled — not for generating batches (use `/arc` for that).

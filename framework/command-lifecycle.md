@@ -2,6 +2,7 @@
 type: reference
 audience: claude
 ---
+
 # Command Lifecycle Protocol
 
 When to fire which command. The vault's analytical capacity is only fully deployed when commands are triggered at the right moments — not just when the user remembers to ask.

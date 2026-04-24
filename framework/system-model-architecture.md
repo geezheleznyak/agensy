@@ -1,12 +1,14 @@
----
+﻿---
 type: architecture
-schema_version: 0.1
 audience: claude
+schema_version: 0.2
 ---
 
 # Vault System Model Layer — Architecture
 
 The System Model Layer is a machine-readable per-vault description of each vault's domain as nodes (roles), edges (relations), and patterns (dynamical shapes), plus bindings to peer vaults via the bridge concept. It sits below slash commands and MOCs, above note content, and references — but does not duplicate — vault-config and cross-vault-bridges.
+
+Plan: `~/.claude/plans/we-produced-a-couple-snoopy-parasol.md` (merger of staged-flurry primitive-discovery and quiet-shannon system model proposals).
 
 ## Why This Layer Exists
 
@@ -34,13 +36,14 @@ Four user-requested capabilities drive the design:
 
 ## Three-Layer Vocabulary
 
-Frozen from a Phase 0 primitive-discovery experiment (2026-04-20). Full reference: `primitives.md`.
+Frozen from the Phase 0 experiment (`primitives-experiment.md`, 2026-04-20). Extended v0.2 based on Phase 2 and Phase 4 closure evidence (2026-04-24). Full reference: `primitives.md`.
 
 - **Nodes (6 categories)**: agents · states · flows · signals · constraints · structures
 - **Edges (5 core + 5 reserve)**: produces · reinforces · dampens · gates · couples [core]; consumes · reveals · conceals · requires · opposes [reserve]
 - **Patterns (7 types)**: positive_feedback · negative_feedback · threshold · reflexivity · selection · accumulation · path_dependence
+- **Pattern annotations (v0.2, optional)**: `timescale` (six bands) · `subtype` (emergent free-string) · `secondary_types` (dual-mechanism array)
 
-Cross-vault bindings are enabled by the patterns layer: the same pattern type instantiated in two vaults with different local nodes is the coupling unit. Names matching does not guarantee mechanical compatibility — that is tested at Phase 4 closure, not assumed.
+Cross-vault bindings are enabled by the patterns layer: the same pattern type instantiated in two vaults with different local nodes is the coupling unit. Names matching does not guarantee mechanical compatibility — that was tested at Phase 4 closure and passed for `reflexivity` across six instances. v0.2 tightens the matching criterion by adding `subtype` and `timescale` so a binding can assert not only "same pattern type" but "same pattern subtype at the same timescale."
 
 ## What the System Model Is NOT
 
@@ -58,13 +61,14 @@ Reuse constraints — avoid duplicating content that already lives elsewhere.
 
 ## File Layout
 
-**In AGENSY (framework, not per-vault)**:
+**In agensy (framework, not per-vault)**:
 
 ```
 framework/
   system-model-schema.yaml              canonical schema, vocabulary locked
   system-model-architecture.md          this file
   primitives.md                         human-readable vocabulary reference
+  primitives-experiment.md              Phase 0 gate decision (historical record)
   universal-commands/
     system-query.md                     read-only query protocol
     system-audit.md                     reconciliation protocol
@@ -88,31 +92,74 @@ framework/
 ## Integration Points
 
 - **Command lifecycle** (`framework/command-lifecycle.md`): `/system-audit` fires at the same cadence as `/coverage-audit` (milestone trigger, every N notes or on phase completion).
-- **System state** (`[AGENSY_PATH]/system-state.md`): Vault Registry gains a `System Model` column tracking per-vault status (absent / bootstrapped / audited-YYYY-MM-DD).
+- **System state** (`[AGENSY_PATH]/system-state.md`): Vault Registry gains a `System Model` column tracking per-vault status; a separate **System Model Freshness** table tracks drift (last_audit / dirt_level / outstanding_issues).
 - **Genesis protocol** (`framework/genesis-protocol.md`): new vaults created post-v0.1 optionally bootstrap an empty `system-model.yaml` in Doc 12; population deferred to an explicit `/system-build` session.
-- **Coverage-audit** (`framework/universal-commands/coverage-audit.md`): when a vault has a `system-model.yaml`, `/coverage-audit` Step 8 optionally invokes `/system-audit`.
+- **Coverage-audit** (`framework/universal-commands/coverage-audit.md`): if a vault has a `system-model.yaml`, `/coverage-audit` Step 9 **mandatorily** invokes `/system-audit` as chained protocol and writes its summary line to `memory/session-state.md`. This is the primary staleness prevention mechanism.
+
+## Self-Maintenance Policy
+
+The System Model Layer is a curated human-written artifact, not a live index. Without explicit maintenance, the YAML drifts from the note corpus as new T3 notes are written, nodes are renamed, edges added, and vault-configs change.
+
+**Three layers of staleness prevention**:
+
+### Layer 1 — Automatic at `/coverage-audit` (primary)
+
+`/coverage-audit` Step 9 (mandatory if `system-model.yaml` exists) fires `/system-audit` as a chained protocol. Because `/coverage-audit` is itself fired at milestone events (every ~10 new notes, phase completion, etc.), the system model is audited at the same natural cadence as the rest of the vault.
+
+`/system-audit` Step 9 computes a **dirt level** and updates the **System Model Freshness** table in `system-state.md`:
+
+| Level | Criterion | Response |
+|---|---|---|
+| 🟢 green | All issue counts ≤ 1 AND no broken linked_notes AND no binding type-mismatch | Informational — no action |
+| 🟡 yellow | Any issue count 2–5 | Schedule audit within the next few notes; `/system-build` nudges surface at `/arc` |
+| 🔴 red | Any issue count > 5 OR ≥ 1 broken linked_notes OR ≥ 1 binding type-mismatch | Top 3 drift items surface in the audit report as REMEDIATION RECOMMENDED; coverage-audit pulls them into its Step 5 gap list |
+
+### Layer 2 — On-demand at `/system-audit` (manual)
+
+The user can run `/system-audit` directly at any time. Same dirt-level output + freshness-table update. Useful before `/arc` or `/dialogue` in vaults where the last `/coverage-audit` was a while ago.
+
+### Layer 3 — Auto-regeneration (deferred to v2)
+
+Full auto-sync from note frontmatter is v2 work — reserved until v0.2 has demonstrated that hand-curated models survive their own hand-curation cost. Not on the current roadmap.
+
+### What this does NOT prevent
+
+- **Novel patterns emerging in notes but not yet encoded**: the audit flags unreferenced notes but does not guess the pattern. The user must run `/system-build` to encode.
+- **Stale understanding when `vault-config.md` changes**: the audit catches orphaned `domain` or `engagement_positions` references, but not semantic drift (e.g., if the engagement-axis *statement* changes while the positions stay named the same).
+- **Drift in peer vaults**: if vault A's nodes are renamed, vault B's bindings reference the old name. `/system-bridge verify` catches this; `/system-audit` in the binding vault flags it as `⚠️ binding drift` during `paired_with` resolution.
+
+### Escalation
+
+If any vault reaches `🔴 red` and remains red across two consecutive `/coverage-audit` runs, the user should treat that as a signal that either (a) the system-model needs a structural refresh (new nodes, removed dead references) or (b) the vault's substantive work has outpaced the model's capacity and the next natural step is a re-bootstrap. The closure records (`phase-N-closure.md`) are the precedents for this kind of refresh.
 
 ## Rollout Status
 
 | Phase | Scope | Status |
 |---|---|---|
 | 0 | Primitive discovery experiment | ✅ Complete 2026-04-20 — gate CLEAN |
-| 1 | Schema + docs | ✅ Complete |
-| 2 | First-vault pilot — bootstrap system-model.yaml + Mermaid | pending |
-| 3 | `/system-build` + `/system-bridge` + dogfood | pending |
-| 4 | Extend to additional vaults; cross-vault closure test | pending |
-| 5 | Deferred — auto-regeneration, Canvas, MCP | deferred |
+| 1 | Schema + docs (agensy only) | ✅ Complete 2026-04-20 |
+| 2 | kratos pilot — bootstrap system-model.yaml + Mermaid | ✅ Complete 2026-04-20 — closure PASS |
+| 3 | `/system-build` + `/system-bridge` + dogfood | ✅ Complete 2026-04-20 |
+| 4 | Extend to oikos, belli; cross-vault closure test | ✅ Complete 2026-04-20 — reflexivity PASS |
+| v0.2 | Schema v0.2 — timescale, subtype, secondary_types; binding mechanism check | ✅ Complete 2026-04-24 |
+| 5a | clio system model bootstrap | ✅ Complete 2026-04-24 — partial (gate unmet) |
+| 5b | omega system model bootstrap — universality test | ✅ Complete 2026-04-24 — closure PASS (bounded) |
+| Deferred | auto-regeneration, Canvas, MCP | deferred |
+
+See the plan file for phase gates, kill criteria, and verification.
 
 ## Risks and Live Concerns
 
-1. **Pattern-name collisions across vaults** — `reflexivity` in one vault Soros-style and in another OODA-style may be mechanically incompatible. Phase 4 closure gate catches this. Until closure passes, cross-vault bindings that rely on pattern-name matching only are provisional.
-2. **Schema churn** — v0.1 is expected to need 1–2 minor revisions during Phase 2 as the first hand-bootstrap surfaces edge cases. Budget for v0.2 after the pilot.
-3. **Bootstrap labor** — classifying ~200 notes per vault into nodes is multi-session work. Must be incremental and interactive, not batched.
+1. **Pattern-name collisions across vaults** — `reflexivity` in oikos Soros-style and in belli OODA-style may encode mechanically incompatible dynamics. **Status**: Phase 4 closure gate PASSED (six reflexivity instances across three vaults all share Soros observer-effect mechanism). v0.2 further tightens this via `subtype` + `timescale` annotations and `/system-audit` Step 5b binding mechanism check.
+2. **Schema churn** — v0.1 predicted 1–2 revisions during rollout; v0.2 shipped 2026-04-24 with additive-only changes (timescale, subtype, secondary_types). All v0.1 YAMLs remain valid. v0.3 candidates: node quality/confidence, edge weight.
+3. **Bootstrap labor** — classifying ~200 notes per vault into nodes is multi-session work. Must be incremental and interactive, not batched. Omega (~249 notes) is the largest remaining bootstrap and is also the universality test — acceptance of actor/process ontology by a concept-lattice-shaped vault is the v0.2-era claim under test.
 4. **Maintenance decay** — without regular `/system-audit`, the YAML rots relative to the note corpus. Mitigation: fire `/system-audit` at `/coverage-audit` and phase-completion events.
+5. **Subtype proliferation** (new in v0.2) — free-string `subtype:` risks taxonomy drift. Mitigation: primitives.md documents the observed subtype vocabulary; new subtypes should reuse existing strings when mechanistically identical, coin new strings only when divergent.
 
 ## See Also
 
 - `primitives.md` — the vocabulary with worked examples.
+- `primitives-experiment.md` — Phase 0 gate decision.
 - `system-model-schema.yaml` — canonical schema.
 - `universal-commands/system-query.md` — read-only queries.
 - `universal-commands/system-audit.md` — drift detection.

@@ -3,6 +3,7 @@ description: Check a note's graduation criteria and write the promoted Tier 3 ve
 type: universal-protocol
 audience: claude
 ---
+
 # /promote [note-path]
 
 Check whether a Tier 2 synthesis note is ready to graduate to Tier 3, and write the promoted version if it is.

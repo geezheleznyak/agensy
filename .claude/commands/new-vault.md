@@ -341,7 +341,7 @@ Ask: "What is the vault's root path?" — get the absolute path.
 
 Write `vault-config.md` to `[vault-root]/vault-config.md` using the full YAML structure from `framework/vault-config-schema.md`, populated with all confirmed Q0.5–Q7 answers. The `intellectual_style:` block (from Q0.5) must be included in full — including the derived `engagement_axis`, `engagement_field`, `pressure_points`, `internal_tensions`, `dialogue_philosophy`, and `graduated_depth` sub-blocks for the chosen preset. See `vault-config-schema.md` § Q0.5 for the complete block to populate.
 
-Also write `vault-config.md` as `[vault-name]-config.md` to `synthesis-meta/vaults/` for the registry.
+Also write `vault-config.md` as `[vault-name]-config.md` to `agensy/vaults/` for the registry.
 
 ---
 
@@ -404,4 +404,4 @@ Tell the user:
 >
 > **Your engagement field** is: **[engagement_field.name]** — every Connection to the Project section must fill it. [Style reminder: Threatens = what assumption it attacks | Complicates = what prior understanding it revises | Transforms = what perception it changes | Constrains = what design tradeoff it introduces.]
 
-Update `synthesis-meta/vault-registry.md` with the new vault entry.
+Update `agensy/vault-registry.md` with the new vault entry.

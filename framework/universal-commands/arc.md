@@ -3,6 +3,7 @@ description: Full arc — map + 8–12 atomic Tier 2 notes for any thinker, conc
 type: universal-protocol
 audience: claude
 ---
+
 # /arc [subject] [type]
 
 Build the full arc for a thinker, concept, or framework. Produces one map + 8–12 atomic Tier 2 notes.
@@ -76,7 +77,6 @@ Read the vault's map reference document at `reference_docs.map_reference`. Follo
 - ≥2 specific `[engagement_field.name]` entries (not just resources; see `intellectual_style.engagement_field.prompt` for the right question to answer)
 - Engagement axis position (one of `engagement_axis.positions[]`)
 - Atomic Notes to Generate list (8–15 candidates)
-- Primary Sources subsection: 3–5 canonical texts that anchor this arc. For each: Author — *Title* — one sentence on why it is load-bearing. For novel/emerging topics where no canonical sources exist, mark as TBD. Populate proactively when the subject is a named thinker or established framework; the map is incomplete without it.
 
 **Quality check before finishing map**:
 - [ ] Mermaid diagram built before prose?
@@ -132,7 +132,7 @@ Also update the Master Index MOC (in `folder_structure.mocs`):
 
 After the MOC update, invoke `/quick-check last-arc` automatically. Do not wait for the user to request it.
 
-Read `[AGENSY_PATH]/framework/universal-commands/quick-check.md` and execute with scope `last-arc`. The arc is not complete until the quick-check report is delivered.
+Read `[AGENSY_PATH]/framework\universal-commands\quick-check.md` and execute with scope `last-arc`. The arc is not complete until the quick-check report is delivered.
 
 **Cascade context**: vault-config.md is already in context from Step 0 (Runtime). When chaining into `/update-moc` and `/quick-check`, do NOT re-read vault-config.md — pass the loaded configuration forward. Re-read vault-config.md only if this arc is invoked standalone at a later point in a long session.
 

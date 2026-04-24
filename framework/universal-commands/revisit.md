@@ -3,6 +3,7 @@ description: Re-engage a dialogue-derived note with current vault context
 type: universal-protocol
 audience: claude
 ---
+
 # /revisit [note-path]
 
 Re-engage a dialogue-derived note against the vault's current state. The vault has grown since the note was written. Does the position still hold? Has new material confirmed, challenged, or complicated it?

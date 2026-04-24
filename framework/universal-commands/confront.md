@@ -3,6 +3,7 @@ description: Confrontation notebook entry — adversarial engagement with a thin
 type: universal-protocol
 audience: claude
 ---
+
 # /confront [thinker/concept/claim]
 
 A confrontation notebook entry. Different from an arc: the goal is not systematic exposition but adversarial engagement — finding where a subject fails, where it threatens comfortable assumptions, and where it demands a response.

@@ -1,7 +1,12 @@
 ﻿---
 type: reference
-audience: claude
+stability_tier: foundational
+canonicity: canonical
+canonical_for: [vault_config_contract, breaking_change_rules, pre_framework_integration]
+synchronized_with: [framework/system-architecture.md]
+audience: both
 ---
+
 # System Contracts
 
 Invariants, contracts, and design principles of the synthesis vault framework. This document captures what no other framework document contains: the **WHY** behind the 3-layer architecture, the **CONTRACT** between vault-config.md and universal commands, and the **RULES** for evolving the system without breaking existing vaults.
@@ -14,12 +19,13 @@ Read this before modifying any universal command protocol, adding a new vault ty
 
 ## 1. Why This Architecture
 
-For full principles, invariants, and the 7-step change protocol: read `architecture-principles.md` first.
+**3-layer loading hierarchy**: Context budget is finite. Global `~/.claude/CLAUDE.md` stays under 100 lines; vault CLAUDE.md stays under 120 lines. Vault CLAUDE.md contains ONLY vault-specific content — universal rules are not repeated. This is a hard budget constraint, not a preference.
 
-Brief orientation for cold readers:
-- **3-layer loading hierarchy**: context budget is finite — global CLAUDE.md ≤100 lines, vault CLAUDE.md ≤120 lines, vault-specific content never duplicated into global
-- **Parameterized runtime**: universal protocols never hardcode vault-specific values; all vault identity flows through `vault-config.md` at runtime
-- **Stub pattern**: vault command files are pure pointers to protocols in agensy; a fix in one protocol propagates to all vaults instantly
+**Parameterized runtime**: Universal command protocols are written once and execute in any vault by reading `vault-config.md` at runtime. Protocols never hardcode vault-specific values. Violating this constraint requires duplicating protocols per vault — which defeats the entire architecture.
+
+**Stub pattern**: Vault command files are 11-line pointers to universal protocols. The protocol logic lives once in agensy. A bug fix or protocol improvement propagates automatically to all vaults.
+
+For the complete system picture (components, relationships, propagation rules, YAML manifest): `architecture-principles.md` and `system-architecture.md`.
 
 ---
 
@@ -50,8 +56,29 @@ Every universal command reads `vault-config.md` at runtime. **Required** keys mu
 | `/positions` | None (reads across vaults by searching for `source: user-dialogue` in frontmatter) | — |
 | `/revisit` | `folder_structure.output`, `open_problems[]`, `intellectual_style`, `engagement_axis` | — |
 | `/question-bank` | None (reads/writes `[AGENSY_PATH]/question-bank.md` directly) | — |
+| `/system-query` | `domains[]`, `engagement_axis.positions[]` | — (reads `system-model.yaml`, `cross-vault-bridges.md`, `system-model-schema.yaml`) |
+| `/system-audit` | `domains[]`, `engagement_axis.positions[]`, `folder_structure.output` | — (also reads `system-model-schema.yaml`, `cross-vault-bridges.md`, peer-vault `system-model.yaml` where available) |
+| `/system-build` | `domains[]`, `engagement_axis.positions[]` | — (reads `system-model-schema.yaml`, `cross-vault-bridges.md` for binding ops) |
+| `/system-bridge` | `domains[]` | — (reads `cross-vault-bridges.md`, `system-state.md` Vault Registry, peer-vault `system-model.yaml`) |
+| `/article-scan` | `reference_docs.source_map_registry`, `reference_docs.map_to_article_schema`, `cross_vault_dependency.source_vaults` | — |
+| `/article-seed` | `reference_docs.map_to_article_schema`, `reference_docs.writer_positions`, `reference_docs.article_presets`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `folder_structure.thoughts` | — |
+| `/article-outline` | `reference_docs.map_to_article_schema`, `reference_docs.article_presets`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `folder_structure.essays`, `note_template.synthesis` | — |
+| `/article-draft` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.map_to_article_schema`, `reference_docs.article_presets`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `output_layer.publication_target` | — |
+| `/article-revise` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_presets`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `note_template.synthesis.five_questions` | — |
+| `/article-promote` | `reference_docs.source_map_registry`, `reference_docs.positions_index`, `reference_docs.writer_positions`, `folder_structure.output`, `folder_structure.mocs`, `output_layer.graduation_folder` | — |
+| `/article-critique` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles`, `folder_structure.critic` | — |
+| `/article-companion` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `reference_docs.article_presets`, `folder_structure.essays` | — |
+| `/co-find` | None (reads `[AGENSY_PATH]/vault-registry.md`, `cogitationis/positions-index.md`, `[AGENSY_PATH]/cross-vault-bridges.md`) | — |
+| `/co-combine` | None (reads each map file + source vault config; reads `[AGENSY_PATH]/cross-vault-bridges.md`) | — |
+| `/co-suggest` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles`, `reference_docs.positions_index` | — |
+| `/co-critique` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles` | — |
+| `/co-capture` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `folder_structure.essays` | — |
 
 **Universal required keys** (needed by ≥6 commands): `domains[]`, `open_problems[]`, `intellectual_style` (with `engagement_axis`), `note_tiers`. Every vault must define all four.
+
+**Expression-vault required keys** (needed by the article-* / co-* pipeline, consumed only in cogitationis or vaults that host a map-to-article workflow): `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.article_presets`, `reference_docs.map_to_article_schema`, `reference_docs.source_map_registry`, `reference_docs.article_design_principles`, `folder_structure.essays`, `folder_structure.thoughts`, `folder_structure.critic`, `output_layer.publication_target`, `output_layer.graduation_folder`. A non-expression vault that never runs article-* / co-* does not need these.
+
+**System-model required keys** (needed by the system-query / system-audit / system-build / system-bridge commands): `domains[]`, `engagement_axis.positions[]` are consumed from vault-config; the actual ontology is loaded from `[vault]/system-model.yaml` (see `framework/system-model-architecture.md` and `framework/system-model-schema.yaml`).
 
 **Deprecated key**: `fault_line` (top-level) is deprecated in favor of `intellectual_style.engagement_axis`. Still supported for backward compatibility — commands detect its presence and construct an adversarial-style `intellectual_style` block from it. Migrate at your convenience.
 
@@ -85,13 +112,13 @@ When writing a new universal command or modifying an existing one:
 
 Known vault structures that universal protocols must handle:
 
-**Per-folder domains** (theoria, politeia): Each domain has a unique folder path. Walk by folder — note counts map 1:1 to domain.
+**Per-folder domains** (kratos, omega): Each domain has a unique folder path. Walk by folder — note counts map 1:1 to domain.
 
-**Flat-folder domains** (bellum): Multiple domains share one folder (`20-Evergreen/`). Glob once; classify by `domain:` frontmatter field. Never count the same note against multiple domains.
+**Flat-folder domains** (belli): Multiple domains share one folder (`20-Evergreen/`). Glob once; classify by `domain:` frontmatter field. Never count the same note against multiple domains.
 
 **Dedicated map folder** (all active vaults define `folder_structure.maps`): Maps go there, not to the domain note folder. The arc and axis-survey protocols check this key first.
 
-**Training vault** (bellum): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always).
+**Training vault** (belli): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always).
 
 **Pre-framework vaults**: May be missing `reference_docs` files (coverage plan, development plan). Create stubs before running commands that require them — see Section 6.
 
@@ -99,15 +126,13 @@ Known vault structures that universal protocols must handle:
 
 ## 5. Breaking Change Criteria
 
-See `architecture-principles.md` §4 for the complementary propagation scope of these same changes.
-
 | Change | Breaking? | Required action |
 |---|---|---|
 | Add a REQUIRED key to vault-config.md | Yes | Add key to all active vault-configs; update contract table |
 | Add an OPTIONAL key with fallback | No | Document fallback in the protocol |
 | Change a protocol's vault-config.md reads | Depends | Update contract table; verify all active vaults have the key |
 | Change mandatory note frontmatter fields | Yes | Update `note_template` blocks in all active vault-configs |
-| Add a new universal command | No | Add stub to all vault `.claude/commands/` directories; update contract table. **Note**: if a vault has custom commands that share names with new universals, rename the vault-specific ones (e.g., `/dialogue` → `/[vault]-dialogue`) |
+| Add a new universal command | No | Add stub to all vault `.claude/commands/` directories; update contract table. **Note**: omega's vault-specific commands that share names with new universals must be renamed (e.g., `/dialogue` → `/philosopher-dialogue`) |
 | Rename a universal command | Yes | Update stubs in all vaults; update contract table |
 | Use `intellectual_style.engagement_axis` instead of `fault_line` | No (backward compat shim exists) | Commands read both; construct adversarial style from `fault_line` if `intellectual_style` absent |
 

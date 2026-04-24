@@ -1,4 +1,4 @@
----
+﻿---
 description: Reconcile a vault's system-model.yaml against the schema, vault-config, bridges, and the note corpus
 type: universal-protocol
 audience: claude
@@ -76,13 +76,43 @@ Report: `⚠️ binding drift: N` with bridge_id, side, and broken id.
 
 ---
 
-## Step 6 — Pattern-Name Collision Warning
+## Step 5b — Binding Mechanism Check (v0.2)
+
+For every `cross_vault_bindings[]` entry that pairs local patterns with patterns in a peer vault via `paired_with[vault].patterns`:
+
+1. **Type match** — compare the `type` field of each local pattern against each paired peer pattern.
+   - Same `type` → pass silently.
+   - Different `type` (and neither is in the other's `secondary_types`) → `⚠️ binding type-mismatch`. This is the hardest failure: the bridge asserts a structural pairing that the primitives do not support.
+   - Different `type` but one is in the other's `secondary_types` → `ℹ️ binding type-match via secondary_type` — pass with note.
+
+2. **Subtype divergence** — if both patterns carry a `subtype` field, compare strings.
+   - Same `subtype` → strong pairing (best case). Report silently.
+   - Different `subtype` → `ℹ️ binding subtype-divergence` — informational, not an error. The pairing may still be meaningful at the coarser `type` level.
+   - One side has `subtype`, the other does not → `ℹ️ binding subtype-asymmetric` — prompts annotating the unannotated side.
+
+3. **Timescale divergence** — if both patterns carry a `timescale` field, compare bands.
+   - Same band → silently pass.
+   - Adjacent bands (e.g., `weeks-to-months` paired with `years`) → silently pass; natural cross-scale pairing.
+   - Bands apart (e.g., `seconds-to-minutes` paired with `decades+`) → `ℹ️ binding timescale-gap` — the shared mechanism operates at incompatible speeds; query results should preserve the distinction.
+   - `mixed` on either side → silently pass; explicit acknowledgment by definition.
+
+4. **Aggregate report**:
+   - `⚠️ binding type-mismatch: N` (errors — review bindings).
+   - `ℹ️ binding divergences: N` (sub-type / timescale / asymmetry — informational).
+
+This step is peer-readable — runs fully only when paired vaults' `system-model.yaml` files are accessible. If a peer is not bootstrapped, skip its comparisons silently.
+
+Reference: `primitives.md` "Pattern-Name Warning" section and Layer 3b–3c.
+
+---
+
+## Step 6 — Pattern-Name Collision Warning (heuristic, retained from v0.1)
 
 For patterns with `type ∈ {reflexivity, positive_feedback, threshold, ...}` that appear in multiple vaults (if cross-vault bindings touch them):
 - Compare the `subgraph.nodes` node-categories distribution across the paired vaults.
 - If the category distributions diverge sharply (e.g., one side is agent-heavy and the other is structure-heavy), flag as a **potential pattern-name collision**.
 
-This is a heuristic, not a hard error. Report as `⚠️ potential pattern-name collision: N` — the user decides whether the binding is provisional or confirmed. Reference `primitives.md` "Pattern-Name Warning" section.
+This is a heuristic, not a hard error. Report as `⚠️ potential pattern-name collision: N` — the user decides whether the binding is provisional or confirmed. v0.2 Step 5b provides more direct type/subtype/timescale checks; this step remains as a categorical-distribution backstop.
 
 ---
 
@@ -107,6 +137,8 @@ Schema version: 0.1 · Date: YYYY-MM-DD
 📝 unlinked entities: N
 📥 unreferenced notes: N
 ⚠️ binding drift: N
+⚠️ binding type-mismatch: N
+ℹ️ binding divergences: N
 ⚠️ potential pattern-name collision: N
 
 ## Details
@@ -131,9 +163,30 @@ Produce 3–5 concrete next actions at the end. Not an exhaustive list — just 
 
 ---
 
-## Step 9 — Update System State
+## Step 9 — Update System State + Compute Dirt Level
 
 Update `[AGENSY_PATH]/system-state.md` Vault Registry — set this vault's `System Model` column to `audited-YYYY-MM-DD`. If the row does not yet have a system-model column populated, add one with the current audit date.
+
+**Compute dirt level** from this audit's issue counts:
+
+| Level | Criterion |
+|---|---|
+| 🟢 green | All issue counts ≤ 1 AND no broken linked_notes AND no binding type-mismatch |
+| 🟡 yellow | Any issue count 2–5 AND no broken linked_notes AND no binding type-mismatch |
+| 🔴 red | Any issue count > 5 OR ≥ 1 broken linked_notes OR ≥ 1 binding type-mismatch |
+
+Update the **System Model Freshness** table in `system-state.md` with:
+- `last_audit`: today's date
+- `dirt_level`: green / yellow / red (with emoji)
+- `outstanding_issues`: the dominant issue type (e.g., "3 unlinked entities + 2 unreferenced notes")
+
+**Escalation policy** — if `dirt_level` is `red`, surface the top 3 drift items to the user at the end of the audit report with a "REMEDIATION RECOMMENDED" header. For `yellow` or `green`, the report is informational only.
+
+**One-line summary** — emit a single structured line at the end of the report for downstream capture by `/coverage-audit` Step 9:
+
+```
+SYSTEM_AUDIT_SUMMARY: vault=<name> dirt=<green|yellow|red> schema=N config=N broken_notes=N unlinked=N unref=N binding_drift=N type_mismatch=N divergences=N
+```
 
 Do NOT modify `system-model.yaml` itself — the audit is read-only by design. Remediation is `/system-build`.
 

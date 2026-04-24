@@ -3,6 +3,7 @@ description: Refresh a MOC with new notes added since last update
 type: universal-protocol
 audience: claude
 ---
+
 # /update-moc [moc-name]
 
 Refresh a Map of Content with all notes added since its last update.

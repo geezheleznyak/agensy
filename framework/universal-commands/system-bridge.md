@@ -1,4 +1,4 @@
----
+﻿---
 description: Diff a vault's cross_vault_bindings against cross-vault-bridges.md; propose new, flag missing, detect drift
 type: universal-protocol
 audience: claude
@@ -99,7 +99,7 @@ If the user invoked `/system-bridge pair <peer-vault>`:
    - If valid: diff the `paired_with[peer_vault]` block against the peer's model. Flag `local_nodes` expected on the peer side that don't resolve in their model (candidate updates).
 3. If the peer vault has not bootstrapped: report `⏳ peer not bootstrapped` and skip the peer-side checks.
 
-Pair mode is the day-before-a-bootstrap-extension pass — use it when adding oeconomia or bellum so the politeia-facing bindings can be validated.
+Pair mode is the day-before-a-bootstrap-extension pass — use it when adding oikos or belli so the kratos-facing bindings can be validated.
 
 ---
 

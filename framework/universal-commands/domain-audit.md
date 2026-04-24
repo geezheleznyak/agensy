@@ -3,6 +3,7 @@ description: Deep audit of one domain — inventory, quality check, promotion ca
 type: universal-protocol
 audience: claude
 ---
+
 # /domain-audit [domain-slug]
 
 Deep audit of a single domain. More thorough than `/coverage-audit` for the same domain — includes quality checks and promotion candidates.

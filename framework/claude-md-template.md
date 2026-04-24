@@ -2,6 +2,7 @@
 type: template
 audience: claude
 ---
+
 # CLAUDE.md Template
 
 This is the universal CLAUDE.md template for generating a vault's CLAUDE.md. Three layers: Fixed (never changes), Scaffold (same structure, domain content from Q1–Q4), Generated (derived from Q5–Q7). Blocks marked `[CONFIG: Qn]` are replaced with content from `vault-config.md`.
@@ -34,7 +35,7 @@ Your mission: [CONFIG: Q1 — one sentence from vault-config.mission]
 
 ## Vault-Specific Principles
 
-[CONFIG: Q1/vault-type — list only the principles NOT in the global file. For adversarial vaults (e.g., politeia): "cold-blooded", "structural", "diagnostic". For training vaults (e.g., bellum): "operational", "adversarial", "level-aware", "friction-tested". For accumulation vaults (e.g., theoria): "insightful synthesis". Omit any principle that is already in the global Core Principles.]
+[CONFIG: Q1/vault-type — list only the principles NOT in the global file. For kratos: "cold-blooded", "structural", "diagnostic". For belli: "operational", "adversarial", "level-aware", "friction-tested". For omega: "insightful synthesis". Omit any principle that is already in the global Core Principles.]
 
 ## Vault Structure
 
@@ -75,7 +76,7 @@ Every Tier 2 synthesis-schema note must reference at least one open problem by n
 
 ## Two-Zone Architecture
 
-*Applies to accumulation vaults with mixed-domain content. Skip this section for training or expression vaults.*
+*Applies to accumulation vaults with mixed-domain content (omega model). Skip this section for training or expression vaults.*
 
 The schema a note uses is determined by the NOTE's `evergreen-candidate` field, not the domain default.
 
@@ -191,7 +192,7 @@ aliases: []
 
 **Accumulation vault**: `project_questions: [list of driving question labels]`
 **Training vault**: `level: [tactical | operational | strategic | all]`, `open_challenges: [list]`
-**Expression vault**: `status: [raw | developed | seed | outline | draft | revision | final]`, `source_refs: []`
+**Expression vault**: `status: [raw | developed | seed | outline | draft | revision | final]`, `omega_refs: []`
 
 See `note-tier-template.md` § Fixed Frontmatter Schema for the full definitions.
 

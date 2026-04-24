@@ -3,6 +3,7 @@ description: Walk all domains, compare against coverage plan, list gaps and upda
 type: universal-protocol
 audience: claude
 ---
+
 # /coverage-audit
 
 Systematic audit of the entire vault against the coverage plan. Produces an updated count table and prioritized gap list.
@@ -111,3 +112,27 @@ Update `[AGENSY_PATH]/system-state.md` Vault Registry:
 - Set **Notes** to the total note count from Step 1 (all T2-Ref + T2-Syn + T3, excluding maps and T1)
 - Set **Last Audit** to today's date
 - If this vault has no row yet, add it
+
+---
+
+## Step 9 — Auto-Fire /system-audit (mandatory if system-model.yaml exists)
+
+**Self-maintenance guard against model staleness.**
+
+Check whether this vault has a `system-model.yaml` at the vault root.
+
+- **If present**: invoke `/system-audit` immediately, as a chained protocol. Collect its full output. Write the audit's issue summary (schema violations / config drift / broken linked_notes / unlinked entities / unreferenced notes / binding drift / type-mismatch / divergences) as a single line in `memory/session-state.md` under a new `last_system_audit_summary` field.
+- **If absent**: skip this step (record `last_system_audit_summary: not-applicable`).
+
+Update `[AGENSY_PATH]/system-state.md` **System Model Freshness** table row for this vault:
+- `last_audit`: today's date
+- `notes_added_since`: 0 (coverage-audit just resynced)
+- `dirt_level`: computed from /system-audit output — `green` if all issue counts ≤ 1; `yellow` if any count is 2–5; `red` if any count > 5 OR broken linked_notes > 0 OR binding type-mismatch > 0.
+
+If `dirt_level` is `red`, append the top 3 drift items to the coverage-audit's Step 5 Priority Gap List. The user sees it in the next Step 5 output without running a separate command.
+
+---
+
+## Why Step 9 Exists
+
+The System Model Layer (v0.2+) must NOT drift from the note corpus. `/coverage-audit` is the natural trigger: it already walks all notes and reads frontmatter, so it is the cheapest moment to verify the system-model against the ground truth. Without this hook, the system-model and the corpus diverge silently over time; Step 9 makes divergence visible at every audit.

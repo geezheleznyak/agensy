@@ -1,7 +1,12 @@
 ﻿---
-type: reference
-audience: claude
+type: topology
+stability_tier: foundational
+canonicity: canonical
+canonical_for: [topology_map, system_yaml_manifest]
+synchronized_with: [framework/system-contracts.md]
+audience: both
 ---
+
 # System Architecture
 
 **Reading order**: `architecture-principles.md` (WHY — invariants + change protocol) → `system-contracts.md` (HOW — contract table) → `system-architecture.md` (WHAT — topology and YAML manifest, read here last)
@@ -22,7 +27,7 @@ Every major component and the relationships between them. Subgraphs group by fun
 graph TD
     subgraph META["agensy — Framework Source"]
         FD["Framework Documents ×10<br/>genesis-protocol · vault-config-schema<br/>claude-md-template · note-tier-template<br/>map-type-template · command-lifecycle<br/>inter-vault-protocol · system-contracts<br/>architecture-principles · system-architecture"]
-        UP["Universal Protocols ×19<br/>arc · coverage-audit · axis-survey · what-next<br/>promote · compare · engage-problem · synthesis<br/>update-moc · evergreen-note · engage-deep<br/>domain-audit · dialogue · positions<br/>revisit · question-bank · quick-check"]
+        UP["Universal Protocols ×34<br/>core (17): arc · coverage-audit · axis-survey · what-next<br/>promote · compare · engage-problem · synthesis<br/>update-moc · evergreen-note · engage-deep · domain-audit<br/>dialogue · positions · revisit · question-bank · quick-check<br/>system-model (4): system-query · system-audit · system-build · system-bridge<br/>article-pipeline (8): article-scan/seed/outline/draft/revise/promote/critique/companion<br/>companion-co (5): co-find · co-combine · co-suggest · co-critique · co-capture<br/>+ 2 backward-compat aliases (confront, fault-line-survey)"]
     end
 
     subgraph CONF["Configuration — loaded into context"]
@@ -53,7 +58,7 @@ graph TD
     end
 
     subgraph VAULTS["Vault Instances"]
-        VACC["theoria · politeia · oeconomia · historia<br/>Accumulation<br/>2-zone · 3-tier · 4 styles"]
+        VACC["theoria · politeia · oeconomia<br/>Accumulation<br/>2-zone · 3-tier · 4 styles"]
         VTRA["bellum<br/>Training<br/>all-synthesis · doctrine tier"]
         VEXP["logos<br/>Expression<br/>draft → publish lifecycle"]
     end
@@ -325,11 +330,15 @@ loading_hierarchy:
 
     universal_protocols:
       location: "[AGENSY_PATH]/framework/universal-commands/"
-      count: 19
-      names: [arc, coverage-audit, axis-survey, what-next, promote, compare,
-              engage-problem, synthesis, update-moc, evergreen-note, engage-deep,
-              domain-audit, dialogue, positions, revisit, question-bank, quick-check,
-              confront, fault-line-survey]  # last 2 are backward-compat aliases
+      count: 34   # 17 core + 4 system-model + 8 article + 5 co  (+ 2 alias files)
+      core_17: [arc, coverage-audit, axis-survey, what-next, promote, compare,
+                engage-problem, synthesis, update-moc, evergreen-note, engage-deep,
+                domain-audit, dialogue, positions, revisit, question-bank, quick-check]
+      system_model_4: [system-query, system-audit, system-build, system-bridge]  # registered 2026-04-20
+      article_pipeline_8: [article-scan, article-seed, article-outline, article-draft,
+                            article-revise, article-promote, article-critique, article-companion]  # registered 2026-04-21/22
+      companion_co_5: [co-find, co-combine, co-suggest, co-critique, co-capture]  # registered 2026-04-22
+      backward_compat_aliases: [confront, fault-line-survey]  # point at engage-deep / axis-survey
 
 commands:
   arc:
@@ -449,7 +458,7 @@ commands:
     reads: [vault-config, relevant_notes]
     writes_content:
       route_1: "knowledge note in output folder"
-      route_2: "expression vault Thought"
+      route_2: "cogitationis Thought"
       route_3: "question-bank entry"
       route_4: "cite existing notes only"
     writes_state:
@@ -477,6 +486,133 @@ commands:
     reads: ["[AGENSY_PATH]/question-bank.md"]
     writes_content: [question_bank_update]
     required_keys: []  # operates on agensy directly
+
+  # ── System Model Layer (registered 2026-04-20; see system-model-architecture.md)
+  system-query:
+    triggers: [user_invocation]
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+            "[AGENSY_PATH]/cross-vault-bridges.md"]
+    writes_content: [query_result]
+    required_keys: [domains, engagement_axis]
+    cross_vault: true  # Shape F executes across peer vaults
+
+  system-audit:
+    triggers: [user_invocation, auto_post_coverage_audit]  # coverage-audit Step 9 chains this
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+            "[AGENSY_PATH]/cross-vault-bridges.md", "[AGENSY_PATH]/system-state.md",
+            "peer-vault-system-models"]
+    writes_content: [audit_report]
+    writes_state:
+      session_state: [last_system_audit_summary]
+      system_state_md: [system_model_freshness_row_update]
+    required_keys: [domains, engagement_axis, folder_structure]
+
+  system-build:
+    triggers: [user_invocation]
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+            "[AGENSY_PATH]/cross-vault-bridges.md"]
+    writes_content: ["{vault}/system-model.yaml"]
+    writes_state:
+      system_state_md: [vault_registry_system_model_column]  # bootstrap only
+    required_keys: [domains, engagement_axis]
+
+  system-bridge:
+    triggers: [user_invocation]
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/cross-vault-bridges.md",
+            "[AGENSY_PATH]/system-state.md", "peer-vault-system-models"]
+    writes_content: [bridge_diff_report, candidate_binding_blocks]
+    required_keys: [domains]
+
+  # ── Article Pipeline (cogitationis-facing, registered 2026-04-21/22) ───
+  # Consume expression-vault reference_docs and folder_structure keys.
+  article-scan:
+    triggers: [user_invocation]
+    reads: [vault-config, source-vault-configs, source-vault-maps]
+    writes_content: [source-map-registry]
+    required_keys: [reference_docs]  # reference_docs.source_map_registry + map_to_article_schema + cross_vault_dependency
+
+  article-seed:
+    triggers: [user_invocation]
+    reads: [vault-config, source-map, writer-positions, positions-index, article-presets, map-to-article-schema]
+    writes_content: [seed_note_in_thoughts_folder]
+    required_keys: [reference_docs, folder_structure]
+
+  article-outline:
+    triggers: [user_invocation]
+    reads: [vault-config, seed-note, source-map, writer-positions, positions-index, article-presets,
+            map-to-article-schema]
+    writes_content: [outline_in_essays_folder]
+    required_keys: [reference_docs, folder_structure, note_template]
+
+  article-draft:
+    triggers: [user_invocation]
+    reads: [vault-config, outline-essay, voice-profile, writer-positions, positions-index,
+            article-presets, map-to-article-schema, source-map]
+    writes_content: [draft_essay]
+    required_keys: [reference_docs, output_layer]
+
+  article-revise:
+    triggers: [user_invocation]
+    reads: [vault-config, draft-essay, voice-profile, writer-positions, positions-index, article-presets]
+    writes_content: [revised_essay]
+    required_keys: [reference_docs, note_template]
+
+  article-promote:
+    triggers: [user_invocation]
+    reads: [vault-config, revised-essay, source-map-registry, positions-index, writer-positions]
+    writes_content: [published_essay_in_40_Published, writing_dashboard_update,
+                     positions_index_rows_on_harvest, writer_positions_appends_on_harvest]
+    required_keys: [reference_docs, folder_structure, output_layer]
+
+  article-critique:
+    triggers: [user_invocation]
+    reads: [vault-config, essay, voice-profile, writer-positions, article-design-principles]
+    writes_content: [critique_document_in_critic_folder]
+    required_keys: [reference_docs, folder_structure]
+
+  article-companion:
+    triggers: [user_invocation]
+    reads: [vault-config, voice-profile, writer-positions, positions-index, source-map-registry, article-presets]
+    writes_content: [companion_essay_workspace_in_essays_folder]
+    required_keys: [reference_docs, folder_structure]
+
+  # ── Companion Collaborative (registered 2026-04-22) ────────────────────
+  # Read-only verbs the operator uses while writing by hand in companion mode.
+  co-find:
+    triggers: [user_invocation]
+    reads: ["[AGENSY_PATH]/vault-registry.md", "cogitationis/positions-index.md",
+            "[AGENSY_PATH]/cross-vault-bridges.md", "per-vault-sources"]
+    writes_content: [structured_dossier]
+    required_keys: []  # cross-vault reader; not vault-config bound
+    cross_vault: true
+
+  co-combine:
+    triggers: [user_invocation]
+    reads: [each-source-map, source-vault-configs, "[AGENSY_PATH]/cross-vault-bridges.md"]
+    writes_content: [bridge_report]
+    required_keys: []
+    cross_vault: true
+
+  co-suggest:
+    triggers: [user_invocation]
+    reads: [voice-profile, writer-positions, article-design-principles, positions-index, active-essay]
+    writes_content: [three_next_move_options_with_rationale]
+    required_keys: [reference_docs]
+
+  co-critique:
+    triggers: [user_invocation]
+    reads: [voice-profile, writer-positions, article-design-principles, selection-context]
+    writes_content: [critique_bullets_with_location_pointers]
+    required_keys: [reference_docs]
+
+  co-capture:
+    triggers: [user_invocation]
+    reads: [vault-config, voice-profile, writer-positions, positions-index, active-companion-essay,
+            dialogue-context]
+    writes_content: [voice_profile_sources_appends, positions_index_under_review_rows,
+                     writer_positions_appends]
+    writes_state: {}
+    required_keys: [reference_docs, folder_structure]
 
 state_files:
   memory_md:
@@ -542,37 +678,33 @@ lifecycle:
     behavior: "user-initiated; Claude proactively suggests when conditions met"
 
 vaults:
+  # Example reference system — paths are placeholders; replace with your machine's paths.
   agensy: { type: framework, style: null, compliance: native }
   synthesis_theoria:
-    path: "/path/to/synthesis_theoria/"
+    path: "/path/to/synthesis_theoria"
     type: accumulation
     style: adversarial
     compliance: partially_migrated
   synthesis_politeia:
-    path: "/path/to/synthesis_politeia/"
+    path: "/path/to/synthesis_politeia"
     type: accumulation
     style: adversarial
     compliance: native
   synthesis_oeconomia:
-    path: "/path/to/synthesis_oeconomia/"
+    path: "/path/to/synthesis_oeconomia"
     type: accumulation
-    style: dialectical
-    compliance: native
-  synthesis_bellum:
-    path: "/path/to/synthesis_bellum/"
-    type: training
     style: adversarial
     compliance: native
+  synthesis_bellum:
+    path: "/path/to/synthesis_bellum"
+    type: training
+    style: adversarial
+    compliance: pre_framework
   synthesis_logos:
-    path: "/path/to/synthesis_logos/"
+    path: "/path/to/synthesis_logos"
     type: expression
     style: null
     compliance: pre_framework
-  synthesis_historia:
-    path: "/path/to/synthesis_historia/"
-    type: accumulation
-    style: adversarial
-    compliance: native
 
 cross_vault:
   type_1: { direction: "one-way", pattern: "knowledge → expression", example: "theoria → logos" }

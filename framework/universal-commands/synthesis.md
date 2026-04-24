@@ -3,6 +3,7 @@ description: Position statement — what can this vault currently argue on a que
 type: universal-protocol
 audience: claude
 ---
+
 # /synthesis [question]
 
 Generate a position statement from vault material: what can the vault currently argue, with what confidence, and where does the argument break down?

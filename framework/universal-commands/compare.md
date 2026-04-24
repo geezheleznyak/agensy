@@ -3,6 +3,7 @@ description: Structural comparison of two thinkers, concepts, or frameworks on a
 type: universal-protocol
 audience: claude
 ---
+
 # /compare [s1] and [s2] on [question]
 
 Generate a systematic structural comparison of two subjects on a specific analytical question.
