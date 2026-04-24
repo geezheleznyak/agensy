@@ -84,6 +84,8 @@ Full protocol files live in `framework/universal-commands/[command-name].md`. Th
 
 **Output**: Ranked list of recommended next subjects with rationale.
 
+**Learner Layer extension** (v2.2.0+, opt-in): if `learner/` exists, Step 4.5 also (a) reads `learner-profile.md` for current obsessions, formal maturity, and learning style; (b) greps `interests-register.md` for matching active interests (boost); (c) walks `system-model.yaml` `user_engagement` annotations for prerequisite gap detection — deprioritizes (does NOT eliminate) candidates with `unseen` prereqs and surfaces the gap so you can override.
+
 ---
 
 ## Synthesis and Engagement Commands
@@ -127,6 +129,8 @@ Positions that emerge in `Bridge` mode are tracked in `system-state.md`.
 
 **Output**: Dialogue transcript + optional new synthesis note (Route 1/2/3 depending on what emerges).
 
+**Learner Layer extension** (v2.2.0+, opt-in): if `learner/` exists, Step 7 (a) detects trajectory-significant events (confidence shift, recurring question landing, stuck signal) and proposes one entry to `learning-trajectory.md`; (b) detects interest declarations ("I want to understand X better") and proposes entries to `interests-register.md`. Both propose-confirm — nothing is written without your approval.
+
 ---
 
 ## Orientation Commands
@@ -160,6 +164,8 @@ See `/axis-survey` above.
 **When to use**: When you want a bird's-eye view of your own positions — useful before writing, before a dialogue, or when checking for contradictions.
 
 **Output**: Position survey across all registered vaults.
+
+**Learner Layer extension** (v2.2.0+, opt-in): if `learner/` exists, Step 3 annotates each position with mastery state (`mastered | applied | contested | exploratory`) using `learning-trajectory.md` recent shifts and corresponding `system-model.yaml` `user_engagement` annotations. Output gains a per-domain mastery distribution row. Conservative downgrade rule applies — when uncertain, choose more conservative state.
 
 ---
 
@@ -287,6 +293,8 @@ Expression vaults turn source-vault maps into published essays through a seven-c
 **When to use**: After revise passes all audits, critique flags are addressed or dismissed, and five-questions-check is green.
 
 **Output**: Published essay + backlinks + dashboard update + positions-index rows + (optionally) writer-positions appends.
+
+**Learner Layer extension** (v2.2.0+, opt-in): if `learner/` exists, Step 7.6a runs an additional pass for **interest declarations** in the essay body — phrases like "deserves separate treatment", "I should look more deeply into W", "this opens questions about X". Detected interests propose entries to `interests-register.md` with `Follow-through: [[essay-path]]` linkback. Distinct from the substantive/methodological/cross-vault claim harvest — these are *future* lines of inquiry the essay surfaced but didn't pursue.
 
 ---
 

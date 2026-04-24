@@ -1,7 +1,6 @@
-﻿---
+---
 description: Promote a revised essay to 40-Published — backlink source maps, update Writing Dashboard
 type: universal-protocol
-audience: claude
 ---
 
 # /article-promote [essay-path]
@@ -124,7 +123,7 @@ For each novel candidate, propose one of four classifications (fourth added V1.7
   - Heuristic: the claim has a clear target (what it describes), a mechanism (why it holds), and at least one pressure point (when it fails). And: the claim could be cited in a future essay on an adjacent topic.
 - **Methodological claim** — about how to analyze, not about what's true in the domain. Appends to `writer-positions.md` §"Preferred Analytical Moves" (or §"Recurring Dispositions" if better fit). Does not get a T3.
   - Heuristic: the claim takes the form "before X, always Y" or "the way to read X is Z" — it is a move, not a finding.
-- **Cross-vault emergent claim** (V1.7, Type D only) — a substantive claim that none of the N source vaults alone is the natural home for, because the claim is itself about how phenomena in those vaults compose. Promotes to `[AGENSY_PATH]/cross-vault-bridges.md` as a new bridge entry (or extension of an existing bridge) AND to positions-index as a new row with `source vaults` listing all N. May also get a T3 in each source vault summarizing the braid's contribution to that vault's domain, but the primary artifact is the cross-vault bridge entry.
+- **Cross-vault emergent claim** (V1.7, Type D only) — a substantive claim that none of the N source vaults alone is the natural home for, because the claim is itself about how phenomena in those vaults compose. Promotes to `synthesis-meta/cross-vault-bridges.md` as a new bridge entry (or extension of an existing bridge) AND to positions-index as a new row with `source vaults` listing all N. May also get a T3 in each source vault summarizing the braid's contribution to that vault's domain, but the primary artifact is the cross-vault bridge entry.
   - Heuristic: the claim mentions phenomena or concepts native to two or more of the N source vaults in the same sentence, and the claim would lose meaning if reduced to any single vault's domain vocabulary.
   - Braid emergent claims (`C` itself, the essay's thesis) are almost always this classification, not the plain substantive-framework classification.
 - **Essay-specific** — contingent on the specific case, not generalizing. Remains in essay only. No promotion.
@@ -174,7 +173,7 @@ For each accepted **substantive promotion**:
    - Registered: today's date.
 
 For each accepted **cross-vault emergent promotion** (V1.7, Type D):
-1. Determine whether an existing bridge in `[AGENSY_PATH]/cross-vault-bridges.md` covers the claim's domain. If yes → extend that bridge with a new sub-entry; if no → add a new bridge entry at the end of the file with a new bridge number.
+1. Determine whether an existing bridge in `synthesis-meta/cross-vault-bridges.md` covers the claim's domain. If yes → extend that bridge with a new sub-entry; if no → add a new bridge entry at the end of the file with a new bridge number.
 2. The bridge entry records: (a) the emergent claim, (b) the N vaults and what each contributes, (c) the braid hinge mechanism in one sentence, (d) a backlink to the originating essay.
 3. Append a row to `positions-index.md`:
    - ID: next `P###`.
@@ -194,6 +193,46 @@ For each accepted **methodological promotion**:
 
 **Essay-specific** candidates: no action.
 
+### 7.6a — Interests-register harvest (Learner Layer)
+
+Skip this sub-step entirely if `synthesis-meta/learner/interests-register.md` does not exist (vault user has not adopted the Learner Layer).
+
+A published essay frequently surfaces *new* lines of inquiry the user wants to pursue but isn't ready to write about — phrases like "this opens questions about X I want to develop later," "the relationship between Y and Z deserves its own essay," "I should look more deeply into W." These are interest declarations distinct from the substantive/methodological/cross-vault claims handled in 7.3–7.5.
+
+Scan the essay body once more for **interest signals**:
+- Explicit deferrals: "deserves separate treatment," "I'll return to this," "another essay's territory"
+- Curiosity declarations: "I want to understand X better," "this fascinates me"
+- Reading intentions: "I should read more of [thinker]," "the literature on Y warrants engagement"
+
+For each detected signal, propose ONE entry to `learner/interests-register.md`'s Active Interests section, format per that file:
+```
+### [INTEREST-####] <short topic>
+
+- **Surfaced**: YYYY-MM-DD (vault: cogitationis — context: published essay [essay title])
+- **What**: <one-sentence>
+- **Why now**: <the trigger sentence from the essay, optionally>
+- **Status**: active
+- **Follow-through**: [[<essay path>]]
+- **Last touched**: YYYY-MM-DD
+```
+
+Generate next ID by reading current highest INTEREST-#### and incrementing.
+
+Confirmation block (separate from the 7.4 claim block):
+```
+Interest harvest candidates from [essay title]:
+
+1. [INTEREST] "<one-sentence interest>"
+   Surfaced from: "<quoted essay phrase>"
+   Proposed status: active
+
+Accept each? (Y / edit / N to reject)
+```
+
+Append accepted entries to interests-register.md Active Interests. No T3 created. No positions-index touch.
+
+**Token-budget**: do NOT load the whole interests-register; tail-read for the highest existing ID, append.
+
 ### 7.6 — Record harvest outcome in essay frontmatter
 
 Append to the promoted essay:
@@ -206,6 +245,9 @@ harvest:
   methodological_promotions:
     - section: "Preferred Analytical Moves"
       entry: "<one-line summary>"
+  interest_harvests:
+    - register_id: INTEREST-####
+      what: "<short topic>"
   essay_specific: <count>
   rejections: <count>
 ```
@@ -215,7 +257,7 @@ harvest:
 harvest:
   run_date: YYYY-MM-DD
   cross_vault_promotions:
-    - bridge_entry: "[[[AGENSY_PATH]/cross-vault-bridges.md#Bridge N]]"
+    - bridge_entry: "[[synthesis-meta/cross-vault-bridges.md#Bridge N]]"
       positions_index_id: P###
       source_vaults: [kratos, oikos, ...]
       companion_t3s:

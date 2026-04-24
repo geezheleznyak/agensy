@@ -7,6 +7,44 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.2.0] — 2026-04-24
+
+### Added — Learner Layer Phase B (trajectory + interest capture)
+
+Wires the Learner Layer (declared in v2.1.0) into the four protocols that produce its data. All extensions skip themselves entirely if a `learner/` directory does not exist at the user's vault-collection root — vaults without Learner Layer adoption see zero behavior change. All writes follow the propose-confirm pattern: Claude detects candidate, proposes entry, user accepts or edits before any file is written.
+
+- `framework/universal-commands/dialogue.md` Step 7 — trajectory delta + interest signal capture. Detects confidence shifts, recurring questions, stuck signals; proposes one entry to `learner/learning-trajectory.md` if anything trajectory-significant happened. Detects interest declarations ("I want to understand X better"); proposes entries to `learner/interests-register.md`. Tail-reads trajectory (~10 entries), grep-only on interests-register — token-budget bounded.
+
+- `framework/universal-commands/what-next.md` Step 4.5 — readiness check + learner context. Loads `learner/learner-profile.md` for current obsessions, formal maturity, learning style calibration. Greps `learner/interests-register.md` for matching active interests (boost). Walks `system-model.yaml` `user_engagement` annotations to detect prerequisite gaps; deprioritizes (does NOT eliminate) candidates with `unseen` prereqs and surfaces the gap explicitly so the user can override.
+
+- `framework/universal-commands/positions.md` Step 3 — mastery state annotation per position. 4-state ladder (`mastered | applied | contested | exploratory`) cross-referenced against `learning-trajectory.md` recent shifts and corresponding `system-model.yaml` `user_engagement` annotations. Conservative downgrade rule: when uncertain, choose more conservative state. Step 5 output gains a per-domain mastery distribution row.
+
+- `framework/universal-commands/article-promote.md` Step 7.6a — interests-register harvest. After the existing claim harvest (7.3–7.5), an additional pass for interest declarations in the essay body ("deserves separate treatment", "I should look more deeply into W"). Proposes entries to `learner/interests-register.md` with `Follow-through: [[essay-path]]` linkback. Frontmatter `harvest:` block extended with `interest_harvests:` list.
+
+### Documentation
+
+- `CLAUDE.md`: directory tree updated to reflect v2.0.0 reorg subdirs (catch-up; was missed in 2.0.0) AND adds optional `learner/` subdir entries. Adds **Task 4: Maintain the Learner Layer** with the propose-confirm rules and per-extension references.
+- `docs/concepts.md`: new **Learner Layer** section covering the three artifacts, propose-confirm discipline, token-budget rules, opt-in adoption path, and relationship to System Model + cogitationis writer-positions/voice-profile patterns.
+- `docs/commands.md`: per-command Learner Layer extension notes added to `/dialogue`, `/what-next`, `/positions`, `/article-promote`. Each note explains what the extension adds when `learner/` is present.
+- `README.md`: adds new "What it solves" bullet — *"My agent doesn't know me — every session starts cold"* — pointing at the Learner Layer.
+
+### Migration guidance
+
+This is an additive minor release. No vault-side action required for v2.2.0 adoption. The Learner Layer extensions to all four protocols are gated on the existence of a `learner/` directory at the user's vault-collection root — adoption is opt-in.
+
+If you want to use the Learner Layer:
+1. Adopt v2.1.0 first (the layer's bedrock — `learner-layer-architecture.md` + template + schema v0.3).
+2. Author your own `learner-profile.md` from `framework/templates/learner-profile-template.md`.
+3. Initialize empty stubs at `learner/learning-trajectory.md` and `learner/interests-register.md` (use the format headers from the meta versions as a guide, or copy from any reference setup).
+4. Optionally annotate ~10–30% of your `system-model.yaml` nodes with `user_engagement` and `last_engaged`.
+5. From v2.2.0 forward, the four extended commands (`/dialogue`, `/what-next`, `/positions`, `/article-promote`) automatically pick up your Learner Layer artifacts.
+
+### Notes
+
+`learner/` user data (profile, trajectory, interests-register, archives) remains private and is excluded from the public mirror by design — same exclusion pattern as `memory/`. The four protocol extensions in this release are the framework-side instructions for *how* Claude maintains the layer; the layer's actual contents are user-specific and live in each maintainer's working directory.
+
+---
+
 ## [2.1.1] — 2026-04-24
 
 ### Removed

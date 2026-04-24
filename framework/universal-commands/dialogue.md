@@ -1,7 +1,6 @@
-﻿---
+---
 description: Multi-turn engagement between the user's thinking and vault frameworks
 type: universal-protocol
-audience: claude
 ---
 
 # /dialogue [topic or opening thought]
@@ -126,13 +125,68 @@ Add an entry to the vault's `memory/MEMORY.md` Dialogue Log:
 - YYYY-MM-DD | [topic] | [mode] | [user's position in one sentence, or — if no clear position emerged] | Route [N]: [note path / question-bank entry N / no output]
 ```
 
-**Bridge mode addition**: If mode = `Bridge` and a clear position emerged (not `—`), also append one line to `[AGENSY_PATH]/system-state.md` under `## User Positions (Cross-Vault)`:
+**Bridge mode addition**: If mode = `Bridge` and a clear position emerged (not `—`), also append one line to `C:\Users\grego\obsidian_repos\synthesis-meta\system-state.md` under `## User Positions (Cross-Vault)`:
 
 ```
 - YYYY-MM-DD | [user's position in one sentence] | [vaults implicated]
 ```
 
 Do not append if the dialogue produced only Route 3 (question bank) or Route 4 (already captured) without a new cross-vault stance.
+
+---
+
+## Step 7 — Trajectory & Interest Capture (Learner Layer)
+
+After logging the dialogue, surface candidate Learner Layer entries via **propose-confirm**. Skip this step entirely if `synthesis-meta/learner/` does not exist (vault user has not adopted the Learner Layer).
+
+### 7.1 — Trajectory delta detection
+
+Read the **tail** of `synthesis-meta/learner/learning-trajectory.md` (the most recent ~10 entries via `Read` with `offset` near end-of-file; do NOT read the whole file). This gives recent-trajectory context for shift detection.
+
+Detect whether THIS session produced a trajectory-significant event:
+- **Confidence shift**: the user reversed or substantially refined a position they previously held (cross-reference Step 4 output against tail)
+- **Recurring question landed**: a question that has appeared in prior trajectory entries finally got resolved (or got reframed, which counts)
+- **Stuck signal**: the same tension came up again unresolved — note as a "stuck" entry so future sessions see the recurrence
+
+If none: skip to 7.2 (do NOT propose a trajectory entry just because a session happened — only when something shifted).
+
+If yes: propose ONE trajectory entry in the format declared in `learning-trajectory.md`:
+```
+### YYYY-MM-DD — [vault] — [topic short tag]
+
+- **Opened**: <what was engaged>
+- **Shifted**: <delta — terse>
+- **Stuck**: <if applicable>
+- **Source**: /dialogue
+- **Refs**: <note paths or position IDs>
+```
+
+Ask: "Trajectory entry for `learning-trajectory.md`? (Y / edit / skip)" — only on Y or edit-then-Y, append to the **Active Entries** section of the file.
+
+### 7.2 — Interest signal detection
+
+Detect interest declarations in the user's turns: phrases like "I want to understand X better," "this fascinates me," "remind me to read Y," "I should look into Z," "this opens up questions about W I want to pursue."
+
+For each detected signal, propose ONE interests-register entry in the format declared in `interests-register.md`:
+```
+### [INTEREST-####] [Short topic name]
+
+- **Surfaced**: YYYY-MM-DD (vault: [vault] — context: dialogue on [topic])
+- **What**: <one-sentence>
+- **Why now**: <the trigger>
+- **Status**: active
+- **Last touched**: YYYY-MM-DD
+```
+
+Generate next ID by reading the current highest INTEREST-#### in the file's Active Interests section and incrementing.
+
+Ask: "Interest entry for `interests-register.md`? (Y / edit / skip)"
+
+### 7.3 — Token-budget discipline
+
+- Tail-read trajectory only (≤30 lines).
+- Grep interests-register only if the user said something interest-y (don't read the whole file by default).
+- If neither 7.1 nor 7.2 surfaces a candidate, the cost of Step 7 is zero file writes and ≤30 lines of context.
 
 ---
 

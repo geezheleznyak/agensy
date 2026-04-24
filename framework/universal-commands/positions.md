@@ -1,7 +1,6 @@
-﻿---
+---
 description: Cross-vault survey of the user's own intellectual positions
 type: universal-protocol
-audience: claude
 ---
 
 # /positions
@@ -42,12 +41,19 @@ For each vault:
 
 ---
 
-## Step 3 — Extract Core Claims
+## Step 3 — Extract Core Claims (with mastery annotation)
 
 For each user-originated note found:
 - State the core claim in one sentence (note title + opening paragraph).
 - State the engagement axis position.
 - State the date written.
+- **Annotate mastery state** (Learner Layer extension — skip if `synthesis-meta/learner/learner-profile.md` does not exist):
+  - `mastered` — user has used this position multiple times in subsequent dialogues, defended it under challenge, and not revised it materially in the past 6 months. (Cross-reference: `learning-trajectory.md` shows no recent shift entries on this topic; system-model node `user_engagement: mastered` if a corresponding node exists.)
+  - `applied` — position is referenced in user's writing (Tier 3 notes, cogitationis essays) and used as a building block, but not actively contested in recent sessions
+  - `contested` — position has open tension with another user position (intra- or cross-vault) per Step 4 below
+  - `exploratory` — position was recently formed (≤30 days), or trajectory shows recurring shifts on this topic, or no subsequent dialogue has tested it
+
+If uncertain between two states, choose the more conservative (downgrade — `mastered → applied → contested → exploratory` direction). Do NOT silently mark as `mastered` without supporting evidence.
 
 ---
 
@@ -71,10 +77,12 @@ For each tension: name the two notes, state the conflict precisely, ask whether 
 ### [Vault Name]
 
 **Domain: [slug]**
-- [Note title] — [engagement axis position] — [date] — [open problems covered]
+- [Note title] — [engagement axis position] — [mastery state] — [date] — [open problems covered]
 - ...
 
 **Open problems with no user position yet**: OP-N, OP-M, ...
+
+**Mastery distribution** (this domain): mastered: N | applied: N | contested: N | exploratory: N
 
 ---
 

@@ -17,6 +17,7 @@ Knowledge compounds the same way the universe does — each insight opening onto
 - **"AI gives me summaries, not synthesis"** — `/dialogue` and the engagement field mandate a position, not a description
 - **"I work across domains but the connections don't stick"** — cross-vault bridges make domain overlaps explicit and searchable
 - **"I keep rebuilding the same structure for every project"** — the genesis protocol gives any new domain a complete vault in one session
+- **"My agent doesn't know me — every session starts cold"** — the optional Learner Layer (v2.1.0+) captures your formative thinkers, current obsessions, learning style, and per-concept mastery so recommendations and explanations adapt to *who you actually are* across sessions, with all writes propose-confirm (the user is the authority on themselves; nothing is silently inferred)
 
 ---
 

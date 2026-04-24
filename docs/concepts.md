@@ -147,6 +147,29 @@ A node is *not* a claim about the world — it's a thing that appears in the vau
 
 ---
 
+## Learner Layer
+
+Optional horizontal layer (v2.1.0+): captures the user as a **learner-in-progress** — what they're acquiring, struggling with, curious about, ready for. Sits parallel to the System Model layer: where System Model describes the structural shape of each vault's domain, Learner Layer describes the user's traversal of those domains over time.
+
+**Three artifacts** in a `learner/` subdirectory at your vault-collection root:
+- **`learner-profile.md`** — user-authored bedrock. Seven sections: formative thinkers, formal/mathematical maturity, languages, current obsessions (3–7 active threads), taboo areas, learning style, goals at 6mo / 2yr / 10yr horizons. Cap: 300 lines. The user edits it; Claude only proposes additions.
+- **`learning-trajectory.md`** — Claude-curated activity log. Per session: what was opened, what shifted, what stayed stuck. Cap: 200 lines / ~3 months active; older entries archived to `learner/trajectory-archive/YYYY-MM.md` (cold storage; never re-loaded).
+- **`interests-register.md`** — Claude-curated interest declarations. When the user says "I want to understand X better" or an essay surfaces a new line of inquiry, the candidate is proposed and (on confirmation) appended. Cap: 150 lines active.
+
+**Per-node mastery annotation** — schema v0.3 adds optional `user_engagement` (`unseen | surfaced | applied | mastered`) and `last_engaged` (date) fields to system-model nodes and patterns. Sparse by default — annotate only nodes the user has demonstrably engaged with; do NOT pre-fill `unseen`. Used by `/what-next` for readiness checks and `/positions` for mastery state propagation.
+
+**Curation discipline — propose-confirm pattern**: Claude detects a candidate, proposes the entry explicitly, the user accepts or edits before any file is written. No silent updates, no background curation. The user is the authority on themselves.
+
+**Token-budget discipline — none of these artifacts auto-load at session start.** They load only when commands explicitly need them: `/dialogue` Step 7 (trajectory + interest capture), `/what-next` Step 4.5 (readiness check + interest boost), `/positions` Step 3 (mastery state), `/article-promote` Step 7.6a (interests harvest). Tail-reads on the trajectory; grep-only on interests-register.
+
+**Why this exists**: the framework already captures the user as *position-holder* (cross-vault positions index) and as *author* (cogitationis writer-positions/voice-profile). It did not capture the user as *learner-in-progress* — what they're acquiring, what's stuck, what they're curious about. Without this layer, sessions start cold and recommendations cannot be calibrated to user readiness.
+
+**Opt-in**: vaults without a `learner/` subdirectory are unaffected. Every Learner Layer extension to every command checks for the directory's existence and skips itself if absent. To adopt: copy `framework/templates/learner-profile-template.md` to `learner/learner-profile.md` and work through the seven sections (Q&A with Claude is the intended workflow). The framework documents declaring this layer (`framework/principles/learner-layer-architecture.md`, `framework/templates/learner-profile-template.md`) ship in agensy; the user-data side (`learner/` subdir contents) is private and excluded from any public mirror.
+
+See `framework/principles/learner-layer-architecture.md` for the full design.
+
+---
+
 ## Framework Meta-Architecture
 
 The framework documents themselves form a designed system with explicit rules, not just a loose pile of files. `framework/principles/framework-meta-architecture.md` is the fourth architectural-spine document (alongside WHY / HOW / WHAT — see below) that names this sub-architecture.
