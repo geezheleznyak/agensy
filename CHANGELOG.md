@@ -7,6 +7,27 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [1.2.1] — 2026-04-24
+
+### Added — User-facing documentation for v1.2.0
+
+- `docs/article-pipeline.md`: end-to-end walkthrough of the expression-vault pipeline — prerequisites (six substrate files), the seven commands (scan → seed → outline → draft → revise → critique → promote) with what each reads / produces / refuses, a worked example across three sessions, and troubleshooting for common pipeline-fights-you situations
+- `docs/companion-mode.md`: when-to-use decision guide, the four read-only verbs (`/co-find`, `/co-combine`, `/co-suggest`, `/co-critique`), the capture verb (`/co-capture`) with its user-confirmation gate, a worked session end-to-end, and a pipeline-vs-companion comparison table
+
+### Changed
+
+- `README.md`: command count 20 → 34 (+2 aliases) across three mentions; added §7 Expression Pipeline and §8 Framework Meta-Architecture to Key Features; added v0.2 System Model extensions (timescale, subtype, secondary_types) to §6
+- `docs/commands.md`: command count updated and grouped by family (17 core / 4 system-model / 8 article-pipeline / 5 companion); added Article Pipeline Commands section (one paragraph per command, with what-it-does / when-to-use / output); added Companion Mode Commands section; refreshed Command Trigger Reference with the new families
+- `docs/concepts.md`: extended §System Model Layer with v0.2 additions (`timescale`, `subtype`, `secondary_types`); added new §Framework Meta-Architecture concept (11 types, 5 stability tiers, canonicity, supersession, the four architectural-spine docs); added new §Vault-Type Substrate concept (expression / training / accumulation scaffold allocation)
+- `docs/tools.md`: rewrote §framework-verify.py with accurate category descriptions (F1–F5 were previously summarized incorrectly) and added §Category F6 — Meta-Architecture Integrity covering F18 (frontmatter schema compliance, with retrofit-WARN convention), F19 (canonicity uniqueness), F20 (synchronized-with symmetry + fact-match callbacks), F21 (protocol path discipline with backtick/code-fence exemption rule), F22 (decision-record supersession chain)
+- `docs/getting-started.md`: §Step 3 now explains the conditional Doc 13 (vault-type substrate copy) — expression vaults get six scaffolds, training vaults get three, accumulation vaults get none — plus fill-in order guidance and links to `article-pipeline.md` / `companion-mode.md`
+
+### Notes
+
+Documentation-only release. No framework, protocol, tool, or schema changes. All content in v1.2.0 remains exactly as shipped; this patch documents it for users.
+
+---
+
 ## [1.2.0] — 2026-04-24
 
 ### Added — Framework Meta-Architecture

@@ -134,11 +134,58 @@ Optional per-vault layer (v1.1.0+): a `system-model.yaml` file at the vault root
 
 A node is *not* a claim about the world — it's a thing that appears in the vault's mechanisms (e.g., `rising_power` is a node; "rising powers produce fear in dominant powers" is an *edge* between two nodes). Patterns are the recurring shapes the edges instantiate, and they are the layer that enables cross-vault composition — the same pattern type in two vaults with different local nodes is the coupling unit.
 
+**v0.2 extensions** (additive, optional, all v0.1 files remain valid):
+- **`timescale` bands** (on patterns and flow-nodes) — `seconds-to-minutes` · `hours-to-days` · `weeks-to-months` · `years` · `decades+` · `mixed`. Keeps fast-reflexivities (OODA-loop deception) and slow-reflexivities (institutional entrapment) from colliding in cross-vault queries as if they were the same mechanism.
+- **`subtype`** (free-string, emergent) — differentiates mechanistically distinct variants within a pattern type. Example: within `reflexivity`, subtypes observed across vaults include `target-erosion`, `narrative-fact-cycle`, `orientation-constitution`, `structural-entrapment`.
+- **`secondary_types`** (array) — for boundary-case patterns where two mechanisms genuinely live in the same subgraph. Example: capital accumulation with lock-in is primarily `accumulation` with `secondary_types: [path_dependence]`.
+
 **What it's for**: answering structural questions without reading every note — *what are the load-bearing actors in this vault?*, *where is the feedback?*, *which patterns recur across domains?*, *where do two vaults share a pattern instance?* The MOC layer answers *what topics exist*; the system model answers *what shape does this domain have*.
 
-**What it isn't**: not an auto-generated summary of notes (v0.1 is hand-curated), not a replacement for theorist maps (those index one thinker's logic), not a restatement of `vault-config.md` or `cross-vault-bridges.md` (it references them).
+**What it isn't**: not an auto-generated summary of notes (v0.2 remains hand-curated), not a replacement for theorist maps (those index one thinker's logic), not a restatement of `vault-config.md` or `cross-vault-bridges.md` (it references them).
 
-**Opt-in**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`. Four commands operate on it: `/system-query` (read), `/system-audit` (drift), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). See `framework/primitives.md` for the full vocabulary with worked examples, `framework/system-model-architecture.md` for the design rationale.
+**Opt-in**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`. Four commands operate on it: `/system-query` (read), `/system-audit` (drift, also auto-fires after `/coverage-audit`), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). See `framework/primitives.md` for the full vocabulary with worked examples, `framework/system-model-architecture.md` for the design rationale.
+
+---
+
+## Framework Meta-Architecture
+
+The framework documents themselves form a designed system with explicit rules, not just a loose pile of files. `framework/framework-meta-architecture.md` is the fourth architectural-spine document (alongside WHY / HOW / WHAT — see below) that names this sub-architecture.
+
+**Document taxonomy (11 types)** — every framework file carries a `type:` that places it in exactly one category: `invariant` · `topology` · `protocol` · `template` · `vocabulary` · `schema` · `reference` · `decision_record` · `experiment_log` · `registry` · `meta_workflow` · `validation_tool`. The type determines change rigor (invariants get the 7-step review; operational files get lightweight checks).
+
+**Stability tiers (5 bands)** — `bedrock` (never changed without a system rebuild) · `foundational` (months between changes; 7-step review) · `operational` (weeks; lightweight review) · `dynamic` (expected to change; automation often updates) · `historical` (immutable after creation).
+
+**Canonicity** — every fact has exactly one canonical home. Other representations must declare `derives_from` (generated from the canonical doc) or `synchronized_with` (independently maintained but declared to match). This is how the framework keeps the contract table, YAML manifest, command index, and verify tool from drifting — the relationships are machine-checkable, not vigilance-dependent.
+
+**Supersession protocol** — decision records are immutable. To revise a prior conclusion, write a new record with `supersedes: [path]` in its frontmatter. Both records stay on disk; readers trace the chain forward. Git log answers *when* something changed; supersession pointers answer *what decision this supersedes and what new evidence drove the change*.
+
+**Four architectural-spine docs**, read in order before any framework change:
+- `architecture-principles.md` — **WHY** (invariants, trade-offs, 7-step change protocol)
+- `system-contracts.md` — **HOW** (contract table, breaking-change rules)
+- `system-architecture.md` — **WHAT** (topology diagrams, YAML manifest)
+- `framework-meta-architecture.md` — **META** (document system, canonicity rules, frontmatter spec, supersession)
+
+For Category F6 verify checks (F18–F22) that enforce the meta-architecture mechanically, see `docs/tools.md`.
+
+---
+
+## Vault-Type Substrate
+
+Different vault types need different substrate files beyond the 12 standard genesis documents. `framework/vault-type-templates/` holds scaffolds organized by type:
+
+**Expression vaults** receive six additional files:
+- `voice-profile.md` — style layer (HOW the writer writes)
+- `writer-positions.md` — substance bedrock (WHAT the writer believes, user-authored)
+- `positions-index.md` — harvest-loop index to T3 framework claims earned in essays
+- `article-presets.md` — five narrative-arc blueprints (`framework-build`, `orthodoxy-counter`, `case-anatomy`, `diagnostic-lens`, `synthesis-braid`)
+- `article-design-principles.md` — craft principles P1–P10 learned across pilots
+- `source-map-registry.md` — per-source-vault readiness manifest
+
+**Training vaults** receive three scaffolds: `curriculum-template.md` (phased development arc), `principles-and-postulates-template.md` (load-bearing priors the vault teaches toward), `sources-master-list-template.md` (curated bibliography).
+
+**Accumulation vaults** receive none — the 12 universal genesis documents cover them completely.
+
+Genesis Protocol Phase 1 Doc 13 (conditional, vault-type-gated) copies the appropriate folder into a new vault. The scaffolds are *starting forms*, not finished content — the vault owner fills them during and after genesis. `/article-draft` refuses to run until `voice-profile.md` is seeded; `/article-revise` Pass C is softened when `writer-positions.md` is unfilled. See `framework/vault-type-templates/README.md` for the full pattern and fill-in order.
 
 ---
 

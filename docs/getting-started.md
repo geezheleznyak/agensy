@@ -77,15 +77,21 @@ Or just tell Claude: "I want to build a new vault on [domain]." You don't need t
 6. **What does output look like?** (what are you building toward — synthesis notes, judgment notes, essays?)
 7. **What are the cross-vault connections?** (how this vault connects to others you have or plan to build — Claude will propose likely bridges based on your domain; leave blank if this is your first vault)
 
-After Q7, Claude generates:
+After Q7, Claude generates (the 12 universal genesis documents plus one conditional):
 - Your vault's folder structure
 - `vault-config.md` (your answers, structured)
 - `CLAUDE.md` (Claude's operating instructions for your vault)
 - All domain subfolders
 - Starter MOC files
 - Command stubs for all universal commands
+- `memory/` initialization (MEMORY.md, session-state.md, note-index.md)
 
-**This takes 30–60 minutes.** Claude asks follow-up questions. Be thorough.
+**If Q0.5 / Q7 picked an expression or training vault**, Phase 1 Doc 13 also copies vault-type-specific substrate scaffolds from `framework/vault-type-templates/` into your vault root:
+- **Expression vault** → six scaffolds: `voice-profile.md`, `writer-positions.md`, `positions-index.md`, `article-presets.md`, `article-design-principles.md`, `source-map-registry.md`. Fill `voice-profile.md` first (the `/article-draft` command refuses to run until it's seeded); then `writer-positions.md` §1 and §2; the rest auto-populate during use. See `docs/article-pipeline.md` and `docs/companion-mode.md` for how these substrate files get consumed.
+- **Training vault** → three scaffolds: a phased curriculum (rename to `[vault-name]-curriculum.md`), load-bearing postulates, and a curated sources master list. Fill postulates first (they define what the curriculum teaches toward), then curriculum, then sources.
+- **Accumulation vault** → no additional substrate; the 12 universal documents cover it completely.
+
+**This takes 30–60 minutes for genesis itself.** Claude asks follow-up questions. Be thorough. Expression and training vault substrate scaffolds are *starting forms* — expect another 1–3 sessions after genesis to fill them with content specific to your domain.
 
 ---
 

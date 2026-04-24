@@ -76,7 +76,7 @@ Answer 7 questions. Claude builds your entire vault structure in one session —
 Every vault has a central intellectual tension. Every synthesis note must take a position on it. This makes passive summarizing structurally impossible — the schema enforces analytical pressure on every single note. Comfortable confirmation is not analysis.
 
 ### 3. Self-Regulating Command Lifecycle
-20 canonical commands that chain: `/arc` accumulates notes → `/coverage-audit` diagnoses gaps → `/axis-survey` tracks intellectual distribution → `/what-next` recommends next action. The vault tells you what to build next. You never have to decide where to start.
+34 universal commands (plus 2 backward-compat aliases) that chain: `/arc` accumulates notes → `/coverage-audit` diagnoses gaps → `/axis-survey` tracks intellectual distribution → `/what-next` recommends next action. The vault tells you what to build next. You never have to decide where to start. Expression vaults add an end-to-end essay pipeline (`/article-scan` → `/article-seed` → `/article-outline` → `/article-draft` → `/article-revise` → `/article-critique` → `/article-promote`) plus companion-mode verbs (`/co-find`, `/co-combine`, `/co-suggest`, `/co-critique`, `/co-capture`) for operator-driven writing.
 
 Slash commands are shorthand — you never have to memorize them. Describe any operation in plain English and Claude runs the protocol. `/arc Keynes` and "let's build an arc on Keynes" are equivalent.
 
@@ -87,7 +87,13 @@ Multiple vaults (economics, politics, history, philosophy, military theory) oper
 `/dialogue` turns the vault into a thinking partner. Your positions are tracked, challenged against existing notes, and can generate new synthesis notes directly from the conversation. Not retrieval — genuine intellectual friction.
 
 ### 6. Optional System Model Layer
-Each vault can opt in to a machine-readable structural ontology (`system-model.yaml`) declaring its actors, states, flows, constraints, and the dynamical patterns — feedback, threshold, reflexivity, path-dependence — they instantiate. Four commands operate on it: `/system-query` (read), `/system-audit` (drift), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). This is what lets an agent reason about a vault's domain *shape* without reading every note, and lets cross-vault queries find structurally matching patterns across domains.
+Each vault can opt in to a machine-readable structural ontology (`system-model.yaml`) declaring its actors, states, flows, constraints, and the dynamical patterns — feedback, threshold, reflexivity, path-dependence — they instantiate. Four commands operate on it: `/system-query` (read), `/system-audit` (drift), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). v0.2 adds optional `timescale` bands, `subtype` free-string, and `secondary_types` dual-tag for cross-vault pattern queries that respect mechanism-scale distinctions. This is what lets an agent reason about a vault's domain *shape* without reading every note, and lets cross-vault queries find structurally matching patterns across domains.
+
+### 7. Expression Pipeline (for expression vaults)
+Expression vaults turn source-vault maps into published essays via a seven-command pipeline: `/article-scan` scores source maps for readiness, `/article-seed` extracts thesis and pressure points into a seed note, `/article-outline` imposes a narrative arc from one of five presets (`framework-build`, `orthodoxy-counter`, `case-anatomy`, `diagnostic-lens`, `synthesis-braid`), `/article-draft` generates prose against a voice profile and writer positions, `/article-revise` runs adversarial passes, `/article-critique` catches frame-level issues that structurally escape revision, and `/article-promote` ships the essay and harvests novel claims back into the positions index. Companion mode (`/article-companion` + five `/co-*` verbs) flips the pipeline so the operator writes and AI augments with material discovery, bridge-surfacing, next-move options, and passage-level critique.
+
+### 8. Framework Meta-Architecture
+The framework documents themselves form a designed system with explicit invariants, document types, stability tiers, and canonicity rules (see `framework-meta-architecture.md`). Category F6 verify checks (F18–F22) enforce frontmatter schema, canonicity uniqueness, synchronized-with symmetry, protocol path discipline, and decision-record supersession integrity. This is what keeps the framework self-maintaining — drift between the contract table, YAML manifest, and verify tool is caught mechanically, not by reading every file.
 
 ---
 
@@ -109,7 +115,7 @@ agensy/ (this repo — framework vault)
 │
 ├── framework/               ← Claude-facing protocol files
 │   ├── genesis-protocol.md  ← the 7-question vault bootstrapping procedure
-│   ├── universal-commands/  ← 20 command protocols (read by Claude at runtime)
+│   ├── universal-commands/  ← 34 command protocols (+ 2 aliases) read by Claude at runtime
 │   └── ...
 ├── vaults/                  ← config extracts for each registered vault
 ├── tools/                   ← Python validation scripts
@@ -134,7 +140,7 @@ agensy/
   docs/
     getting-started.md       ← first vault walkthrough (start here)
     concepts.md              ← glossary of key terms
-    commands.md              ← all 20 commands explained
+    commands.md              ← all 34 commands explained
     tools.md                 ← validation scripts reference
   framework/
     genesis-protocol.md      ← 5-phase vault bootstrapping procedure
