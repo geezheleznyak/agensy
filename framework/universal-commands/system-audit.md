@@ -11,7 +11,7 @@ Systematic reconciliation of `[vault]/system-model.yaml` against the canonical s
 **Runtime**: Read the following inputs before executing:
 - `vault-config.md` from the vault root — `domains[]`, `engagement_axis.positions[]`, `folder_structure.output`.
 - `system-model.yaml` from the vault root.
-- `[AGENSY_PATH]/framework/system-model-schema.yaml` — canonical schema.
+- `[AGENSY_PATH]/framework/system-model/system-model-schema.yaml` — canonical schema.
 - `[AGENSY_PATH]/cross-vault-bridges.md` — valid bridge_ids.
 - Directory listing under the vault root (for `linked_notes` existence checks).
 

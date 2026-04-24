@@ -7,6 +7,68 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.0.0] — 2026-04-24
+
+### ⚠ BREAKING — Framework Directory Reorganization
+
+The flat `framework/` directory has been reorganized into five semantic subdirectories. Every reference to a framework document by path must be updated. The files themselves are unchanged in content; only their locations have moved.
+
+**Migration table** (the only thing downstream consumers need):
+
+| Old path | New path |
+|---|---|
+| `framework/architecture-principles.md` | `framework/principles/architecture-principles.md` |
+| `framework/system-contracts.md` | `framework/principles/system-contracts.md` |
+| `framework/system-architecture.md` | `framework/principles/system-architecture.md` |
+| `framework/framework-meta-architecture.md` | `framework/principles/framework-meta-architecture.md` |
+| `framework/genesis-protocol.md` | `framework/protocols/genesis-protocol.md` |
+| `framework/inter-vault-protocol.md` | `framework/protocols/inter-vault-protocol.md` |
+| `framework/command-lifecycle.md` | `framework/protocols/command-lifecycle.md` |
+| `framework/vault-config-schema.md` | `framework/templates/vault-config-schema.md` |
+| `framework/claude-md-template.md` | `framework/templates/claude-md-template.md` |
+| `framework/note-tier-template.md` | `framework/templates/note-tier-template.md` |
+| `framework/map-type-template.md` | `framework/templates/map-type-template.md` |
+| `framework/map-to-article-extraction.md` | `framework/templates/map-to-article-extraction.md` |
+| `framework/system-model-architecture.md` | `framework/system-model/system-model-architecture.md` |
+| `framework/system-model-schema.yaml` | `framework/system-model/system-model-schema.yaml` |
+| `framework/primitives.md` | `framework/system-model/primitives.md` |
+
+**Unchanged** (stay at their existing location):
+- `framework/slash-command-suite.md` — the index file, stays at `framework/` root
+- `framework/universal-commands/*` — already a subdirectory, all 34 protocol files + 2 aliases unchanged
+- `framework/vault-type-templates/*` — already a subdirectory, all substrate files unchanged
+- `docs/architecture-diagrams.md` — outside framework/, unchanged
+
+### Subdirectory rationale
+
+| Subdir | Holds | Role |
+|---|---|---|
+| `principles/` | architecture-principles, system-contracts, system-architecture, framework-meta-architecture | The WHY layer — invariants, contracts, topology, doc-system rules |
+| `protocols/` | genesis-protocol, inter-vault-protocol, command-lifecycle | Step-by-step procedures |
+| `templates/` | vault-config-schema, claude-md-template, note-tier-template, map-type-template, map-to-article-extraction | Fill-in-the-blanks templates and schemas |
+| `system-model/` | system-model-architecture, system-model-schema, primitives | The System Model layer — domain ontology vocabulary and schema |
+
+The flat structure had grown to 14 markdown files plus 2 subdirectories at one level, making the layer affiliation of each doc unclear at a glance. The semantic grouping makes the reading-order spine ("read principles/ first, then protocols/, …") visible from the directory tree alone.
+
+### Changed
+
+- All ~80 internal cross-references across `framework/`, `docs/`, `tools/framework-verify.py`, `vault-registry.md`, `cross-vault-bridges.md`, `CLAUDE.md`, `CONTRIBUTING.md`, and `.claude/commands/new-vault.md` updated to use the new subdir paths. Frontmatter fields (`synchronized_with`, `derives_from`, `supersedes`) updated in moved files.
+- `tools/framework-verify.py`: 4 hardcoded Path-joined constants (F15, F16, F17, F20 callbacks) updated to traverse the new subdirs. All 6 categories of architectural integrity checks remain functional.
+
+### Migration guidance for downstream consumers
+
+If you have:
+- **Scripts that reference framework docs by path**: apply the migration table above
+- **Custom CLAUDE.md files referencing framework docs**: same
+- **Forks of the agensy framework**: rebase your patches onto the new structure (file content unchanged, only paths moved)
+- **Mental model only**: nothing to do — the framework's semantics, contracts, and protocols are unchanged. The reorganization is purely organizational.
+
+### Notes
+
+This is a structural release — no behavioral, schema, or protocol changes. Doc count and content are identical to 1.2.2; only filesystem layout changed. The `git mv`-preserved history means `git log --follow framework/principles/architecture-principles.md` still shows the file's full evolution.
+
+---
+
 ## [1.2.2] — 2026-04-24
 
 ### Added

@@ -3,7 +3,7 @@ type: topology
 stability_tier: foundational
 canonicity: canonical
 canonical_for: [topology_map, system_yaml_manifest]
-synchronized_with: [framework/system-contracts.md]
+synchronized_with: [framework/principles/system-contracts.md]
 audience: both
 ---
 
@@ -11,7 +11,7 @@ audience: both
 
 **Reading order**: `architecture-principles.md` (WHY — invariants + change protocol) → `system-contracts.md` (HOW — contract table) → `system-architecture.md` (WHAT — topology and YAML manifest, read here last)
 
-The **YAML System Manifest** below is the canonical, machine-readable description of the framework topology — read this for precise component metadata and relationship data. **Visual diagrams** (Mermaid) rendering the same topology for human orientation live in a separate file: see `framework/system-diagrams.md`.
+The **YAML System Manifest** below is the canonical, machine-readable description of the framework topology — read this for precise component metadata and relationship data. **Visual diagrams** (Mermaid) rendering the same topology for human orientation live in a separate file: see `framework/principles/system-diagrams.md`.
 
 Claude does not need to read the diagrams file to reason about the framework — the YAML manifest carries the same information in structured form. The split keeps token cost low for routine framework-change work while preserving visual orientation for humans.
 
@@ -262,7 +262,7 @@ commands:
   # ── System Model Layer (registered 2026-04-20; see system-model-architecture.md)
   system-query:
     triggers: [user_invocation]
-    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model/system-model-schema.yaml",
             "[AGENSY_PATH]/cross-vault-bridges.md"]
     writes_content: [query_result]
     required_keys: [domains, engagement_axis]
@@ -270,7 +270,7 @@ commands:
 
   system-audit:
     triggers: [user_invocation, auto_post_coverage_audit]  # coverage-audit Step 9 chains this
-    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model/system-model-schema.yaml",
             "[AGENSY_PATH]/cross-vault-bridges.md", "[AGENSY_PATH]/system-state.md",
             "peer-vault-system-models"]
     writes_content: [audit_report]
@@ -281,7 +281,7 @@ commands:
 
   system-build:
     triggers: [user_invocation]
-    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model-schema.yaml",
+    reads: [vault-config, "{vault}/system-model.yaml", "[AGENSY_PATH]/framework/system-model/system-model-schema.yaml",
             "[AGENSY_PATH]/cross-vault-bridges.md"]
     writes_content: ["{vault}/system-model.yaml"]
     writes_state:

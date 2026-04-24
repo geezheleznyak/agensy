@@ -145,7 +145,7 @@ type: decision_record
 stability_tier: historical
 canonicity: canonical
 canonical_for: [phase_6_closure_rationale]
-supersedes: framework/phase-5-closure.md
+supersedes: framework/closures/phase-5-closure.md
 audience: both
 ---
 ```
@@ -262,7 +262,7 @@ updated: 2026-04-22
 type: protocol
 stability_tier: operational
 canonicity: synchronized
-synchronized_with: [framework/system-contracts.md, framework/system-architecture.md, framework/slash-command-suite.md]
+synchronized_with: [framework/principles/system-contracts.md, framework/principles/system-architecture.md, framework/slash-command-suite.md]
 audience: claude
 ---
 ```
@@ -276,7 +276,7 @@ type: decision_record
 stability_tier: historical
 canonicity: canonical
 canonical_for: [phase_6_closure_rationale]
-supersedes: framework/phase-5-closure.md
+supersedes: framework/closures/phase-5-closure.md
 audience: both
 ---
 ```
@@ -321,7 +321,7 @@ Honest list. Each item names its follow-up.
 
 ## See Also
 
-- `framework/architecture-principles.md` — invariants, change analysis protocol
-- `framework/system-contracts.md` — vault-config contract table
-- `framework/system-architecture.md` — topology diagrams + YAML manifest
+- `framework/principles/architecture-principles.md` — invariants, change analysis protocol
+- `framework/principles/system-contracts.md` — vault-config contract table
+- `framework/principles/system-architecture.md` — topology diagrams + YAML manifest
 - `tools/framework-verify.py` — Category F6 implementation

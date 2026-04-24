@@ -158,4 +158,4 @@ Run `/coverage-audit` after every 3–4 arcs. Run `/axis-survey` monthly. Use `/
 - **[concepts.md](concepts.md)** — understand the key terms (tier, zone, engagement axis, arc, MOC)
 - **[commands.md](commands.md)** — full reference for all 16 commands
 - **[tools.md](tools.md)** — run the validation scripts to check note quality
-- **`framework/genesis-protocol.md`** — the full genesis protocol if you want to understand what Claude is doing in Step 3
+- **`framework/protocols/genesis-protocol.md`** — the full genesis protocol if you want to understand what Claude is doing in Step 3

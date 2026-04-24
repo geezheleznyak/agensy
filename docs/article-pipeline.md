@@ -230,5 +230,5 @@ Typical pipeline time: one session for scan + seed + outline; one session for dr
 
 - `docs/commands.md §Article Pipeline Commands` — one-paragraph reference per command
 - `docs/companion-mode.md` — when you want to write the prose yourself
-- `framework/map-to-article-extraction.md` — the deterministic map-section → article-role extraction recipe
+- `framework/templates/map-to-article-extraction.md` — the deterministic map-section → article-role extraction recipe
 - `framework/vault-type-templates/expression/README.md` — substrate file roles and fill-in order

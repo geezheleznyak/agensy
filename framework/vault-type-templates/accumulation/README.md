@@ -24,4 +24,4 @@ Preventing the "wait, where's the accumulation folder?" question during future a
 
 - `framework/vault-type-templates/expression/` — substrate for expression vaults
 - `framework/vault-type-templates/training/` — substrate for training vaults
-- `framework/genesis-protocol.md` Phase 1 — the 12 documents that cover accumulation vaults in full
+- `framework/protocols/genesis-protocol.md` Phase 1 — the 12 documents that cover accumulation vaults in full

@@ -2,7 +2,7 @@
 type: reference
 stability_tier: foundational
 canonicity: derived
-derives_from: [framework/system-architecture.md]
+derives_from: [framework/principles/system-architecture.md]
 audience: human
 ---
 
@@ -305,7 +305,7 @@ graph TD
 
 ## See Also
 
-- `framework/system-architecture.md` — canonical YAML manifest (source of truth for topology)
-- `framework/architecture-principles.md` — invariants and change-analysis protocol
-- `framework/system-contracts.md` — contract table (command → required vault-config keys)
-- `framework/framework-meta-architecture.md` — document taxonomy, stability tiers, canonicity, supersession
+- `framework/principles/system-architecture.md` — canonical YAML manifest (source of truth for topology)
+- `framework/principles/architecture-principles.md` — invariants and change-analysis protocol
+- `framework/principles/system-contracts.md` — contract table (command → required vault-config keys)
+- `framework/principles/framework-meta-architecture.md` — document taxonomy, stability tiers, canonicity, supersession

@@ -143,13 +143,13 @@ A node is *not* a claim about the world — it's a thing that appears in the vau
 
 **What it isn't**: not an auto-generated summary of notes (v0.2 remains hand-curated), not a replacement for theorist maps (those index one thinker's logic), not a restatement of `vault-config.md` or `cross-vault-bridges.md` (it references them).
 
-**Opt-in**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`. Four commands operate on it: `/system-query` (read), `/system-audit` (drift, also auto-fires after `/coverage-audit`), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). See `framework/primitives.md` for the full vocabulary with worked examples, `framework/system-model-architecture.md` for the design rationale.
+**Opt-in**: vaults without a `system-model.yaml` are unaffected. Bootstrap with `/system-build bootstrap`. Four commands operate on it: `/system-query` (read), `/system-audit` (drift, also auto-fires after `/coverage-audit`), `/system-build` (write), `/system-bridge` (cross-vault binding reconciliation). See `framework/system-model/primitives.md` for the full vocabulary with worked examples, `framework/system-model/system-model-architecture.md` for the design rationale.
 
 ---
 
 ## Framework Meta-Architecture
 
-The framework documents themselves form a designed system with explicit rules, not just a loose pile of files. `framework/framework-meta-architecture.md` is the fourth architectural-spine document (alongside WHY / HOW / WHAT — see below) that names this sub-architecture.
+The framework documents themselves form a designed system with explicit rules, not just a loose pile of files. `framework/principles/framework-meta-architecture.md` is the fourth architectural-spine document (alongside WHY / HOW / WHAT — see below) that names this sub-architecture.
 
 **Document taxonomy (11 types)** — every framework file carries a `type:` that places it in exactly one category: `invariant` · `topology` · `protocol` · `template` · `vocabulary` · `schema` · `reference` · `decision_record` · `experiment_log` · `registry` · `meta_workflow` · `validation_tool`. The type determines change rigor (invariants get the 7-step review; operational files get lightweight checks).
 

@@ -2,7 +2,7 @@
 # Canonical schema for the Vault System Model Layer — v0.2
 # Per-vault [vault]/system-model.yaml files extend this file via `extends:`.
 # Vocabulary frozen from the Phase 0 primitive-discovery experiment
-# (see framework/primitives-experiment.md, 2026-04-20).
+# (see framework/system-model/primitives-experiment.md, 2026-04-20).
 # v0.2 additions (2026-04-24) are all additive; v0.1 YAMLs remain valid.
 
 schema:
@@ -10,7 +10,7 @@ schema:
   version: "0.2"
   created: 2026-04-20
   updated: 2026-04-24
-  source_experiment: framework/primitives-experiment.md
+  source_experiment: framework/system-model/primitives-experiment.md
   v0_2_motivation: >
     Closure gates from Phase 2 (kratos) and Phase 4 (oikos+belli) identified four
     caveats that v0.1 did not capture: (1) patterns span wildly different timescales

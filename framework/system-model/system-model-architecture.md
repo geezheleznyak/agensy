@@ -91,9 +91,9 @@ framework/
 
 ## Integration Points
 
-- **Command lifecycle** (`framework/command-lifecycle.md`): `/system-audit` fires at the same cadence as `/coverage-audit` (milestone trigger, every N notes or on phase completion).
+- **Command lifecycle** (`framework/protocols/command-lifecycle.md`): `/system-audit` fires at the same cadence as `/coverage-audit` (milestone trigger, every N notes or on phase completion).
 - **System state** (`[AGENSY_PATH]/system-state.md`): Vault Registry gains a `System Model` column tracking per-vault status; a separate **System Model Freshness** table tracks drift (last_audit / dirt_level / outstanding_issues).
-- **Genesis protocol** (`framework/genesis-protocol.md`): new vaults created post-v0.1 optionally bootstrap an empty `system-model.yaml` in Doc 12; population deferred to an explicit `/system-build` session.
+- **Genesis protocol** (`framework/protocols/genesis-protocol.md`): new vaults created post-v0.1 optionally bootstrap an empty `system-model.yaml` in Doc 12; population deferred to an explicit `/system-build` session.
 - **Coverage-audit** (`framework/universal-commands/coverage-audit.md`): if a vault has a `system-model.yaml`, `/coverage-audit` Step 9 **mandatorily** invokes `/system-audit` as chained protocol and writes its summary line to `memory/session-state.md`. This is the primary staleness prevention mechanism.
 
 ## Self-Maintenance Policy

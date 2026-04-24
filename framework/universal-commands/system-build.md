@@ -11,7 +11,7 @@ Write-side counterpart to `/system-query` and `/system-audit`. Proposes safe, sc
 **Runtime**: Read the following inputs before executing:
 - `vault-config.md` from the vault root — `domains[]`, `engagement_axis.positions[]`.
 - `system-model.yaml` from the vault root (create it if missing — see Step 0).
-- `[AGENSY_PATH]/framework/system-model-schema.yaml` — canonical schema.
+- `[AGENSY_PATH]/framework/system-model/system-model-schema.yaml` — canonical schema.
 - `[AGENSY_PATH]/cross-vault-bridges.md` — valid bridge_ids (for binding ops).
 
 If `system-model.yaml` does not exist at the vault root, offer to bootstrap it (Step 0). Otherwise jump to Step 1.
@@ -45,7 +45,7 @@ If the vault has no `system-model.yaml`:
    ```yaml
    vault: [vault-name from vault-config]
    schema_version: 0.1
-   extends: ../[AGENSY_PATH]/framework/system-model-schema.yaml
+   extends: ../[AGENSY_PATH]/framework/system-model/system-model-schema.yaml
 
    nodes: []
    edges: []

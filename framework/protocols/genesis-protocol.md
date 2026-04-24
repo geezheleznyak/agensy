@@ -220,7 +220,7 @@ The `vault-config.md` from Phase 0 should already be in the vault root. In this 
 - **`note_template:`** — vault-specific mandatory sections for synthesis notes and reference notes, including the synthesis instrument template (Judgment Instrument / Connection to the Project / vault-equivalent). Universal commands use this to check quality and generate notes.
 - **`reference_docs:`** — paths to the vault's coverage plan, development plan, map reference, open problems file, and any other reference documents universal commands need to read.
 
-See `framework/vault-config-schema.md` for the full schema. See `synthesis_politeia/vault-config.md` as the reference implementation.
+See `framework/templates/vault-config-schema.md` for the full schema. See `synthesis_politeia/vault-config.md` as the reference implementation.
 
 ### Doc 12 — Memory Initialization
 

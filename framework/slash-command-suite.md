@@ -7,7 +7,7 @@ audience: claude
 
 Index of all commands across the synthesis vault system. **Source of truth for protocol logic**: universal commands live in `framework/universal-commands/[command-name].md`. Vault stubs in `.claude/commands/` are 3-line pointers — they contain no protocol logic.
 
-**Command lifecycle and trigger types**: See `framework/command-lifecycle.md`.
+**Command lifecycle and trigger types**: See `framework/protocols/command-lifecycle.md`.
 
 ---
 
@@ -63,7 +63,7 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 **Backward-compat aliases** (adversarial vaults only): `/confront` = `/engage-deep`, `/fault-line-survey` = `/axis-survey`
 
-**System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. All four registered 2026-04-20. See `framework/system-model-architecture.md`.
+**System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. All four registered 2026-04-20. See `framework/system-model/system-model-architecture.md`.
 
 ---
 

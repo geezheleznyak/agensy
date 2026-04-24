@@ -57,7 +57,7 @@ reference_docs:
   article_presets:           "article-presets.md"
   article_design_principles: "article-design-principles.md"
   source_map_registry:       "source-map-registry.md"
-  map_to_article_schema:     "../agensy/framework/map-to-article-extraction.md"
+  map_to_article_schema:     "../agensy/framework/templates/map-to-article-extraction.md"
 ```
 
 (Relative paths are vault-owner's choice. The keys are what `/article-*` protocols look for.)
@@ -66,5 +66,5 @@ reference_docs:
 
 - `framework/universal-commands/article-*.md` — the eight article-pipeline protocols
 - `framework/universal-commands/co-*.md` — the five companion-mode protocols
-- `framework/map-to-article-extraction.md` — schema for map-section → article-role extraction
-- `framework/vault-config-schema.md` — where the `reference_docs.*` block is declared
+- `framework/templates/map-to-article-extraction.md` — schema for map-section → article-role extraction
+- `framework/templates/vault-config-schema.md` — where the `reference_docs.*` block is declared

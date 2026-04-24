@@ -3,7 +3,7 @@ type: reference
 stability_tier: foundational
 canonicity: canonical
 canonical_for: [vault_config_contract, breaking_change_rules, pre_framework_integration]
-synchronized_with: [framework/system-architecture.md]
+synchronized_with: [framework/principles/system-architecture.md]
 audience: both
 ---
 
@@ -78,7 +78,7 @@ Every universal command reads `vault-config.md` at runtime. **Required** keys mu
 
 **Expression-vault required keys** (needed by the article-* / co-* pipeline, consumed only in cogitationis or vaults that host a map-to-article workflow): `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.article_presets`, `reference_docs.map_to_article_schema`, `reference_docs.source_map_registry`, `reference_docs.article_design_principles`, `folder_structure.essays`, `folder_structure.thoughts`, `folder_structure.critic`, `output_layer.publication_target`, `output_layer.graduation_folder`. A non-expression vault that never runs article-* / co-* does not need these.
 
-**System-model required keys** (needed by the system-query / system-audit / system-build / system-bridge commands): `domains[]`, `engagement_axis.positions[]` are consumed from vault-config; the actual ontology is loaded from `[vault]/system-model.yaml` (see `framework/system-model-architecture.md` and `framework/system-model-schema.yaml`).
+**System-model required keys** (needed by the system-query / system-audit / system-build / system-bridge commands): `domains[]`, `engagement_axis.positions[]` are consumed from vault-config; the actual ontology is loaded from `[vault]/system-model.yaml` (see `framework/system-model/system-model-architecture.md` and `framework/system-model/system-model-schema.yaml`).
 
 **Deprecated key**: `fault_line` (top-level) is deprecated in favor of `intellectual_style.engagement_axis`. Still supported for backward compatibility — commands detect its presence and construct an adversarial-style `intellectual_style` block from it. Migrate at your convenience.
 

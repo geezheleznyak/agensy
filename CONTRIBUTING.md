@@ -21,8 +21,8 @@ AGENSY is a markdown-based framework — all protocols, templates, and schemas a
 Protocol files in `framework/` and `framework/universal-commands/` are Claude's operating instructions. They are not documentation — they are executable. Changes here change how Claude behaves in every vault.
 
 Before any protocol change:
-1. Read `framework/system-contracts.md` — this lists the invariants the framework cannot break. If your change violates a contract, it will be rejected.
-2. Read `framework/architecture-principles.md` §7 — this gives the 7-step analysis protocol for evaluating whether a change is safe.
+1. Read `framework/principles/system-contracts.md` — this lists the invariants the framework cannot break. If your change violates a contract, it will be rejected.
+2. Read `framework/principles/architecture-principles.md` §7 — this gives the 7-step analysis protocol for evaluating whether a change is safe.
 3. Ask: does this change break any existing vault that was built with the current protocol? If yes, is the migration path documented?
 
 ---
@@ -43,7 +43,7 @@ Before any protocol change:
 - [ ] Add the command to `framework/slash-command-suite.md`
 - [ ] Add a stub file to `.claude/commands/` following the existing pattern
 - [ ] Add the command to `docs/commands.md`
-- [ ] Update `framework/command-lifecycle.md` with the appropriate trigger type
+- [ ] Update `framework/protocols/command-lifecycle.md` with the appropriate trigger type
 
 ---
 

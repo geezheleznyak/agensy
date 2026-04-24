@@ -9,7 +9,7 @@ purpose: Registry of narrative-arc blueprints consumed by /article-seed (inferen
 
 # Article Presets
 
-Presets are the operationalization of the craft principles in `article-design-principles.md`. Each preset is a three-axis blueprint: argumentative intent × problem type × reader default. The preset-parameterized dimensions are the four arc structural choices — opening type, body arc, pressure type, closing type. Everything else in `framework/map-to-article-extraction.md` remains universal across presets.
+Presets are the operationalization of the craft principles in `article-design-principles.md`. Each preset is a three-axis blueprint: argumentative intent × problem type × reader default. The preset-parameterized dimensions are the four arc structural choices — opening type, body arc, pressure type, closing type. Everything else in `framework/templates/map-to-article-extraction.md` remains universal across presets.
 
 **Template status**: this file ships with five presets (`framework-build`, `orthodoxy-counter`, `case-anatomy`, `diagnostic-lens`, `synthesis-braid`) that transfer across users and topics. Tune budgets, principle references, or add new presets after your vault has run 2–3 pilot essays and you observe what your pipeline actually needs.
 
@@ -277,4 +277,4 @@ preset_inference_confidence: [high | medium | low]
 - [[article-design-principles]] — craft principles that the presets operationalize.
 - [[voice-profile]] — style layer (HOW); orthogonal to presets.
 - [[writer-positions]] — substance layer (WHAT); orthogonal to presets.
-- `framework/map-to-article-extraction.md` — extraction schema; presets govern the §Narrative Arc half.
+- `framework/templates/map-to-article-extraction.md` — extraction schema; presets govern the §Narrative Arc half.

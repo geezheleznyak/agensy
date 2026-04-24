@@ -6,7 +6,7 @@ audience: claude
 
 Concept-level map of domain overlaps between the active accumulation and training vaults. This file changes slowly — only when a new bridge domain is discovered (~every 10–15 arcs). Individual note paths go stale; conceptual bridges are durable.
 
-**How to use**: During arc building, check whether the subject falls within a listed bridge domain. If yes, search the sibling vault(s) using the provided search terms. Carry that awareness into the arc — do not mandate cross-vault references, but let sibling treatments deepen the analysis. See `framework/inter-vault-protocol.md` for reference format rules.
+**How to use**: During arc building, check whether the subject falls within a listed bridge domain. If yes, search the sibling vault(s) using the provided search terms. Carry that awareness into the arc — do not mandate cross-vault references, but let sibling treatments deepen the analysis. See `framework/protocols/inter-vault-protocol.md` for reference format rules.
 
 **Vaults covered**: theoria | politeia | oeconomia | bellum | (logos receives from theoria; does not contribute to accumulation arcs)
 

@@ -8,7 +8,7 @@ audience: claude
 
 Query the structural ontology of one or more vaults via their `system-model.yaml`. Read-only — never writes. Returns node / edge / pattern listings with linked-note paths resolved.
 
-**Runtime**: Read `vault-config.md` from the vault root. Check that `system-model.yaml` exists at the vault root. If it does not exist, respond: "No system model bootstrapped for this vault — run `/system-build` first." and stop. If the vault is `agensy`, the query targets `framework/system-model-schema.yaml` instead (schema-level questions, not vault-level).
+**Runtime**: Read `vault-config.md` from the vault root. Check that `system-model.yaml` exists at the vault root. If it does not exist, respond: "No system model bootstrapped for this vault — run `/system-build` first." and stop. If the vault is `agensy`, the query targets `framework/system-model/system-model-schema.yaml` instead (schema-level questions, not vault-level).
 
 Also extract from vault-config.md:
 - `domains[]` — for validating query scope by domain.

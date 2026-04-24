@@ -748,7 +748,7 @@ def check_f14_maps_folder_exists(vaults: list) -> list[Result]:
 
 def check_f15_contract_table_complete(meta_root: Path) -> list[Result]:
     """F15: system-contracts.md contract table lists all universal commands."""
-    sc_path = meta_root / 'framework' / 'system-contracts.md'
+    sc_path = meta_root / 'framework' / 'principles' / 'system-contracts.md'
     if not sc_path.exists():
         return [fail('F15', 'system-contracts.md not found')]
 
@@ -774,7 +774,7 @@ def check_f15_contract_table_complete(meta_root: Path) -> list[Result]:
 
 def check_f16_schema_mentions_blocks(meta_root: Path) -> list[Result]:
     """F16: vault-config-schema.md mentions all top-level blocks required by commands."""
-    schema_path = meta_root / 'framework' / 'vault-config-schema.md'
+    schema_path = meta_root / 'framework' / 'templates' / 'vault-config-schema.md'
     if not schema_path.exists():
         return [fail('F16', 'vault-config-schema.md not found')]
 
@@ -794,7 +794,7 @@ def check_f16_schema_mentions_blocks(meta_root: Path) -> list[Result]:
 
 def check_f17_genesis_doc_count(meta_root: Path) -> list[Result]:
     """F17: genesis-protocol.md Phase 1 lists at least 12 Doc entries (Docs 1–12 universal; Doc 13+ conditional per vault type)."""
-    genesis_path = meta_root / 'framework' / 'genesis-protocol.md'
+    genesis_path = meta_root / 'framework' / 'protocols' / 'genesis-protocol.md'
     if not genesis_path.exists():
         return [fail('F17', 'genesis-protocol.md not found')]
 
@@ -819,7 +819,7 @@ def check_f17_genesis_doc_count(meta_root: Path) -> list[Result]:
 # ─────────────────────────────────────────────────────────────────────────────
 # CATEGORY F6 — META-ARCHITECTURE INTEGRITY
 # Frontmatter-driven checks on the framework's own document system.
-# Canonical declaration: framework/framework-meta-architecture.md §11–§12
+# Canonical declaration: framework/principles/framework-meta-architecture.md §11–§12
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Enumerations from framework-meta-architecture.md §11
@@ -1031,8 +1031,8 @@ def f20_fact_match_command_inventory(meta_root: Path) -> tuple[bool, str]:
 
     Returns (ok, detail_message).
     """
-    sc_path = meta_root / 'framework' / 'system-contracts.md'
-    sa_path = meta_root / 'framework' / 'system-architecture.md'
+    sc_path = meta_root / 'framework' / 'principles' / 'system-contracts.md'
+    sa_path = meta_root / 'framework' / 'principles' / 'system-architecture.md'
     if not sc_path.exists() or not sa_path.exists():
         return True, 'skipped — one or both files missing'
 
@@ -1066,7 +1066,7 @@ def f20_fact_match_command_inventory(meta_root: Path) -> tuple[bool, str]:
 # F20 fact-match callback registry: {(pathA, pathB) → callback(meta_root) → (ok, detail)}
 # Callbacks are symmetrical — registered once for any declared synchronized_with pair.
 F6_FACT_MATCH_CALLBACKS = {
-    frozenset({'framework/system-contracts.md', 'framework/system-architecture.md'}):
+    frozenset({'framework/principles/system-contracts.md', 'framework/principles/system-architecture.md'}):
         f20_fact_match_command_inventory,
 }
 

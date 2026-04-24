@@ -57,7 +57,7 @@ agensy/
 ### Task 1: Bootstrap a New Vault
 
 When the user says they want to start a new vault:
-1. Read `framework/genesis-protocol.md`
+1. Read `framework/protocols/genesis-protocol.md`
 2. Run Phase 0 (Config Elicitation) — ask Q1–Q7 in sequence
 3. Write `vault-config.md` into the new vault root
 4. Run Phase 1 (Document Generation) — produce all 12 structural documents
@@ -69,7 +69,7 @@ When the user says they want to start a new vault:
 ### Task 2: Update Framework Documents
 
 When a pattern is discovered that should be universal — a better note structure, a new map section, a more effective command protocol:
-1. Read `framework/architecture-principles.md` before proposing any structural change — §7 gives the 7-step analysis protocol
+1. Read `framework/principles/architecture-principles.md` before proposing any structural change — §7 gives the 7-step analysis protocol
 2. Update the relevant framework document in `framework/`
 3. Note in the framework document what changed and why (brief inline comment)
 4. Assess whether existing vaults should be updated: if the change is backward-compatible, existing vaults can adopt it gradually; if it is breaking, list which vaults need migration

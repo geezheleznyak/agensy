@@ -23,7 +23,7 @@ This is already proto-article structure. Extraction is not *generation* — it i
 
 ## Map-Section → Article-Role Mapping
 
-For thinker-maps, concept-maps, and framework-maps in the agensy map ecosystem (see `[AGENSY_PATH]/framework/map-type-template.md`).
+For thinker-maps, concept-maps, and framework-maps in the agensy map ecosystem (see `[AGENSY_PATH]/framework/templates/map-type-template.md`).
 
 | Map section | → Article role | Extraction rule |
 |---|---|---|

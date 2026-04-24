@@ -42,4 +42,4 @@ Per `genesis-protocol.md` Phase 1, when Q0.5 selects training as vault type, the
 
 - `framework/vault-type-templates/expression/` — substrate for expression vaults (voice, positions, article pipeline)
 - `framework/vault-type-templates/accumulation/` — no substrate needed; standard genesis covers it
-- `framework/genesis-protocol.md` — when these get copied into a new vault
+- `framework/protocols/genesis-protocol.md` — when these get copied into a new vault

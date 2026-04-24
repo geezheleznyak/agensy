@@ -339,7 +339,7 @@ Wait for confirmation. Make any corrections. Do not proceed until the user expli
 
 Ask: "What is the vault's root path?" — get the absolute path.
 
-Write `vault-config.md` to `[vault-root]/vault-config.md` using the full YAML structure from `framework/vault-config-schema.md`, populated with all confirmed Q0.5–Q7 answers. The `intellectual_style:` block (from Q0.5) must be included in full — including the derived `engagement_axis`, `engagement_field`, `pressure_points`, `internal_tensions`, `dialogue_philosophy`, and `graduated_depth` sub-blocks for the chosen preset. See `vault-config-schema.md` § Q0.5 for the complete block to populate.
+Write `vault-config.md` to `[vault-root]/vault-config.md` using the full YAML structure from `framework/templates/vault-config-schema.md`, populated with all confirmed Q0.5–Q7 answers. The `intellectual_style:` block (from Q0.5) must be included in full — including the derived `engagement_axis`, `engagement_field`, `pressure_points`, `internal_tensions`, `dialogue_philosophy`, and `graduated_depth` sub-blocks for the chosen preset. See `vault-config-schema.md` § Q0.5 for the complete block to populate.
 
 Also write `vault-config.md` as `[vault-name]-config.md` to `agensy/vaults/` for the registry.
 
@@ -352,7 +352,7 @@ Tell the user:
 
 Generate all 12 documents in order, announcing each one:
 1. Folder structure
-2. CLAUDE.md (from `framework/claude-md-template.md` + vault-config answers)
+2. CLAUDE.md (from `framework/templates/claude-md-template.md` + vault-config answers)
 3. `[vault-name]-note-taxonomy.md`
 4. `[vault-name]-development-plan.md`
 5. `[vault-name]-coverage-plan.md`

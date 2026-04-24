@@ -256,8 +256,8 @@ Patterns sharing a name across vaults (e.g., `reflexivity` in oikos Soros-style 
 
 ## See Also
 
-- `framework/system-model-schema.yaml` — the canonical YAML schema.
-- `framework/system-model-architecture.md` — design rationale and relationship to other framework layers.
-- `framework/primitives-experiment.md` — the Phase 0 experiment that produced this vocabulary.
+- `framework/system-model/system-model-schema.yaml` — the canonical YAML schema.
+- `framework/system-model/system-model-architecture.md` — design rationale and relationship to other framework layers.
+- `framework/system-model/primitives-experiment.md` — the Phase 0 experiment that produced this vocabulary.
 - `framework/universal-commands/system-query.md` — how to query a system model.
 - `framework/universal-commands/system-audit.md` — how to audit a system model for drift.

@@ -42,6 +42,6 @@ If a new substrate file is added to an existing vault type (e.g., a new `/articl
 
 ## See Also
 
-- `framework/genesis-protocol.md` — when these get copied into a new vault
-- `framework/vault-config-schema.md` — Q0.5 (vault type) and Q7 (output layer) answers determine which sub-folder applies
-- `framework/framework-meta-architecture.md §2` — document taxonomy (these files are `template`-type, `operational`-tier)
+- `framework/protocols/genesis-protocol.md` — when these get copied into a new vault
+- `framework/templates/vault-config-schema.md` — Q0.5 (vault type) and Q7 (output layer) answers determine which sub-folder applies
+- `framework/principles/framework-meta-architecture.md §2` — document taxonomy (these files are `template`-type, `operational`-tier)

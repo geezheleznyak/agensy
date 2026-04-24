@@ -359,4 +359,4 @@ Read-only augmentation verbs operating during an active companion-mode essay. **
 | **Article pipeline** | `article-scan`, `article-seed`, `article-outline`, `article-draft`, `article-revise`, `article-critique`, `article-promote` — sequential per essay, user-driven |
 | **Companion mode** | `article-companion start`, `co-find`, `co-combine`, `co-suggest`, `co-critique`, `co-capture` — operator-initiated, no auto-chain |
 
-See `framework/command-lifecycle.md` for the full trigger protocol.
+See `framework/protocols/command-lifecycle.md` for the full trigger protocol.
