@@ -7,6 +7,37 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.1.0] — 2026-04-24
+
+### Added — Learner Layer
+
+A new horizontal framework layer that captures the user as a learner-in-progress (acquisition trajectory, struggle signals, interest declarations, per-concept mastery). Sits parallel to the System Model layer: System Model describes the structural shape of each vault's domain; Learner Layer describes the user's traversal of those domains over time. Mirrors the cogitationis writer-positions/voice-profile pattern (user-authored bedrock + Claude-curated trajectory + propose-confirm for all writes), applied to learning rather than authoring.
+
+- `framework/principles/learner-layer-architecture.md`: new file declaring the layer. Covers three artifacts (`learner-profile.md`, `learning-trajectory.md`, `interests-register.md`), curation discipline (propose-confirm pattern; Claude proposes, user accepts or edits before any file is written), token-budget rules (none of the new artifacts auto-load at session start; loaded only by commands that explicitly need them), integration with System Model and the cogitationis writer-positions/voice-profile pattern, and what-it-is-NOT boundaries. The user-data side of the layer (`learner/learner-profile.md`, etc.) lives in each user's working directory, not in agensy — mirrors the `memory/` exclusion pattern.
+- `framework/templates/learner-profile-template.md`: new fill-in-the-blanks template for the user-authored bedrock. Seven sections: formative thinkers and traditions (L1), formal/mathematical maturity (L2), languages (L3), current obsessions 3–7 active threads (L4), taboo areas (L5), learning style (L6), goals at 6mo / 2yr / 10yr horizons (L7). Hard cap: 300 lines; deeper sections graduate to `learner/learner-topics/`.
+
+### Changed
+
+- `framework/system-model/system-model-schema.yaml`: v0.2 → v0.3. Adds optional `user_engagement` enum (`unseen | surfaced | applied | mastered` — four-state mastery ladder) and `last_engaged` (YYYY-MM-DD) fields to nodes AND patterns. Sparse by default — annotate only nodes/patterns the user has actually engaged with; do NOT pre-fill `unseen` markers. Backward-compatible: existing v0.2 vault system-models remain valid without modification. Schema-level addition consumed: was a v0.3 candidate; now shipped. Schema validation rules added: `user_engagement` value must be in `user_engagement_states`; `last_engaged` required when `user_engagement` is set; `last_engaged` without `user_engagement` is a violation.
+- `framework/principles/architecture-principles.md` §1 "The System in Brief": registers the Learner Layer as the second horizontal framework layer (parallel to the System Model layer), with a one-paragraph note describing its scope, its parallel relationship to the cogitationis writer-positions/voice-profile pattern, and its loading discipline (none of its artifacts auto-load at session start).
+- `framework/protocols/agensy-sync-protocol.md`: §1 mapping table updated. (a) Added `framework/principles/learner-layer-architecture.md` and `framework/templates/learner-profile-template.md` to the Copy 1:1 list. (b) Added `learner/` to the Never-synced list with explicit reason: user-as-learner data is private and structurally parallel to `memory/`; framework documents declaring the layer DO sync, the user's actual learner data does NOT. (c) Pre-existing oversight fix: added `framework/principles/framework-meta-architecture.md` to the Copy 1:1 list (was already being synced in practice but not listed).
+
+### Migration guidance for downstream consumers
+
+This is an additive minor release. No vault-side action required for v2.1.0 adoption.
+
+If you maintain a vault `system-model.yaml`: the v0.3 schema is fully backward-compatible. You can continue using v0.2 conventions indefinitely. To adopt the new annotation, add `user_engagement: <state>` and `last_engaged: <date>` to nodes or patterns the user has actually engaged with — sparsely, not exhaustively. Default state for unannotated entries is implicitly `unseen`; do not pre-fill the YAML with `unseen` markers.
+
+If you want to use the Learner Layer in your own setup: copy `framework/templates/learner-profile-template.md` to a new `learner/` subdirectory at your vault-collection root, fill in the seven sections (Q&A-style with Claude is the intended workflow), and configure Claude to load it only via commands that explicitly need it (mirrors the cogitationis writer-positions/voice-profile loading pattern). The `learner/` subdirectory should be excluded from any public mirror or share — it's user-specific intellectual self-portrait data, equivalent in privacy to `memory/`.
+
+Phase B of the Learner Layer (trajectory capture extensions to `/dialogue`, `/what-next`, `/positions`, plus pilot `user_engagement` backfill on a single vault) is a separate forthcoming release.
+
+### Notes
+
+Schema-level additions log: v0.2 candidates that shipped — `timescale`, `subtype`, `secondary_types`. v0.3 candidates that shipped — `user_engagement`, `last_engaged`. Reserved for v0.4 — node `quality`/`confidence`, edge `weight`. The Learner Layer document set (`learner-layer-architecture.md` + `learner-profile-template.md` + the schema additions) was designed in plan `~/.claude/plans/so-i-was-thinking-elegant-wind.md` (2026-04-24, Phase A scope).
+
+---
+
 ## [2.0.0] — 2026-04-24
 
 ### ⚠ BREAKING — Framework Directory Reorganization
