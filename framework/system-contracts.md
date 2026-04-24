@@ -118,7 +118,9 @@ Known vault structures that universal protocols must handle:
 
 **Dedicated map folder** (all active vaults define `folder_structure.maps`): Maps go there, not to the domain note folder. The arc and axis-survey protocols check this key first.
 
-**Training vault** (belli): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always).
+**Training vault** (belli): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always). At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/training/*` into the vault root (curriculum, postulates, sources-master-list scaffolds).
+
+**Expression vault** (cogitationis): Consumes the `/article-*` and `/co-*` pipelines. At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/expression/*` — six substrate files: `voice-profile.md`, `writer-positions.md`, `positions-index.md`, `article-presets.md`, `article-design-principles.md`, `source-map-registry.md`. These are referenced via `vault-config.md` `reference_docs.*` keys. `/article-draft` refuses to run until `voice-profile.md` moves out of `status: unseeded`. No `domains[]` required (expression vaults can skip Q6 — F05 is a soft WARN by design). Article-pipeline protocols operate from an expression vault against maps in source (accumulation/training) vaults.
 
 **Pre-framework vaults**: May be missing `reference_docs` files (coverage plan, development plan). Create stubs before running commands that require them — see Section 6.
 

@@ -27,7 +27,7 @@ The agensy framework is an **Agent-first system** for building and maintaining O
 
 **Content architecture**: three tiers (T1 capture → T2 analysis → T3 output), two schemas per note (reference substrate or synthesis core, governed by `evergreen-candidate`), four intellectual styles (adversarial, dialectical, contemplative, constructive).
 
-**Execution architecture**: 19 universal command protocols live in agensy. Each vault holds thin stubs (~11 lines) in `.claude/commands/` that point to them. A bug fix in one protocol propagates to all vaults instantly.
+**Execution architecture**: 34 universal command protocols + 2 backward-compat aliases live in agensy (17 core knowledge-work + 4 system-model + 8 article-pipeline + 5 companion-mode). Each vault holds thin stubs (~11 lines) in `.claude/commands/` that point to them. A bug fix in one protocol propagates to all vaults instantly.
 
 **State architecture**: three memory files per vault — `MEMORY.md` (persistent decisions, dialogue log, max 150 lines), `session-state.md` (pre-computed session diagnostics, replaces vault-wide globbing at session start), `note-index.md` (bulk metadata cache, replaces hundreds of individual frontmatter reads for audit commands). One cross-vault file in agensy — `system-state.md` (dynamic operational state: note counts, audit dates, cross-vault user positions; updated by `/coverage-audit` and `/dialogue` Bridge mode).
 

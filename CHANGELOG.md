@@ -7,6 +7,25 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [1.2.2] — 2026-04-24
+
+### Added
+
+- `docs/architecture-diagrams.md`: new file holding the four Mermaid topology diagrams (Complete System Map, Command Dispatch & Lifecycle, State Management & Feedback Loops, Genesis Protocol) — previously embedded inline in `framework/system-architecture.md`. Diagrams updated to reflect v1.2.0 reality: the 4-doc architectural spine (WHY/HOW/WHAT/META), vault-type-templates layer, expression-vault substrate subgraph, `/coverage-audit` → `/system-audit` auto-fire chain, article pipeline + companion mode, Doc 13 conditional substrate copy.
+
+### Changed
+
+- `framework/system-architecture.md`: Mermaid diagrams removed (~230 lines) and replaced with a pointer line to `docs/architecture-diagrams.md`. The YAML System Manifest remains in place as the canonical machine-readable topology. Split motivated by token economy — Claude reads the YAML manifest for structured analysis; the visual diagrams are for human orientation and don't need to be in Claude's reading chain for every framework-change pass.
+- `framework/architecture-principles.md` §1 "The System in Brief": corrected stale command count (19 → 34 universal protocols + 2 backward-compat aliases), with the family breakdown (17 core + 4 system-model + 8 article-pipeline + 5 companion-co).
+- `framework/system-architecture.md` YAML manifest `genesis_protocol.phase_1` block: added Doc 13 (conditional vault-type substrate copy for expression/training vaults); output description updated from "12 structural documents" to "12 universal + 1 conditional".
+- `framework/system-contracts.md` §4 Structural Variants: added **Expression vault** row documenting the six substrate files, `reference_docs.*` runtime dependencies, the `/article-draft` voice-profile precondition, and the relaxed-domains convention.
+
+### Notes
+
+Documentation-only release (no protocol, schema, or tool changes). The Mermaid diagrams in `docs/architecture-diagrams.md` render natively in Obsidian; open the file for visual orientation. For Claude, the YAML manifest in `framework/system-architecture.md` carries the same topology in structured form and remains the canonical reference.
+
+---
+
 ## [1.2.1] — 2026-04-24
 
 ### Added — User-facing documentation for v1.2.0
