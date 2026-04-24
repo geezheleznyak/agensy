@@ -7,6 +7,22 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.1.1] — 2026-04-24
+
+### Removed
+
+- `framework/protocols/agensy-sync-protocol.md`: removed from agensy. This file is **meta-only by design** — it describes the upstream meta→agensy publish workflow, which is internal maintainer documentation, not framework-user documentation. Public agensy users do not consume agensy from upstream; they ARE downstream. Shipping the publish workflow added irrelevant noise to the public surface.
+
+### Fixed
+
+- v2.1.0 erroneously included this file based on an outdated self-reference inside the file's own mapping table. The mapping table on the meta side has been corrected: `agensy-sync-protocol.md` now lives in the "Never synced" section with explicit rationale, so this mistake will not recur.
+
+### Migration guidance
+
+If you had any local references or scripts pointing at `agensy/framework/protocols/agensy-sync-protocol.md` (you almost certainly did not — the file existed in agensy for less than one release), remove them. There is no replacement to point at; the file was never intended for downstream consumption.
+
+---
+
 ## [2.1.0] — 2026-04-24
 
 ### Added — Learner Layer
