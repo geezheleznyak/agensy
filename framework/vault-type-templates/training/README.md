@@ -17,6 +17,7 @@ Scaffolds for substrate files unique to training vaults — vaults whose Q1 miss
 | `curriculum-template.md` | Phased development arc — from foundations to terminal competence. Structure: sequential phases with prerequisites, core competencies, essential readings, and a culminating exercise per phase |
 | `principles-and-postulates-template.md` | Load-bearing priors the vault commits to before inquiry begins — the postulates every note, map, and curriculum phase must be consistent with |
 | `sources-master-list-template.md` | Master bibliography of texts the vault treats as canonical — with each entry scored for weight, recency, and which curriculum phase it anchors |
+| `phase-learning-methodology-template.md` | Methodology doctrine — atomicity test, phase-inventory mandatory-first-step rule, atomicity-drift hard stop, prerequisites-as-absent override, and the 7-step `/teach` cadence with verification gate. Codifies *how* curriculum phases turn into vault knowledge |
 
 ## Scope honesty
 
@@ -30,7 +31,8 @@ Per `genesis-protocol.md` Phase 1, when Q0.5 selects training as vault type, the
 
 1. **`principles-and-postulates.md` first** — the postulates define what the curriculum teaches toward. Without them, curriculum phases drift into topic-coverage rather than competence development.
 2. **`curriculum-template.md` next** — structure the phased arc once postulates are clear. Each phase maps to a subset of postulates: Phase N covers the competencies needed to internalize Postulates X, Y, Z.
-3. **`sources-master-list.md` last** — after postulates and curriculum exist, the source-list is what anchors each curriculum phase's required readings.
+3. **`sources-master-list.md` next** — after postulates and curriculum exist, the source-list is what anchors each curriculum phase's required readings.
+4. **`phase-learning-methodology.md` last (before Phase 0 begins)** — instantiate from the template; fill `[VAULT-SPECIFIC: …]` placeholders with the local Five Gates schema, map types, and per-phase strategy. Without this artifact in place, the first `/teach` session falls into the KL-failure pattern (atomicity drift, missing prerequisites). `synthesis_bellum`'s instance was authored 2026-03-08; `synthesis_mathesis`'s instance was authored 2026-04-25 alongside the template extraction.
 
 ## What's NOT in scope for training templates
 

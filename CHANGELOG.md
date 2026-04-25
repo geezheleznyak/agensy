@@ -7,6 +7,45 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.3.0] — 2026-04-25
+
+### Added — Training-vault phase-learning-methodology template
+
+A new universal template at `framework/vault-type-templates/training/phase-learning-methodology-template.md` codifying the methodology doctrine for any training vault — what was previously implicit in `synthesis_bellum`'s vault-local instance is now explicit and reusable. Abstracted from `synthesis_bellum`'s proven instance (2026-03-08) and amended through the `synthesis_mathesis` KL-divergence failure case (2026-04-24): a teaching session that tried to inline six prerequisite concepts into one lesson, demonstrating that the vault-local methodology — sound in its rules — was missing two safeguards that this template now codifies.
+
+- `framework/vault-type-templates/training/phase-learning-methodology-template.md`: new template. Contains:
+  - **Atomicity Principle** — one idea = one note; four atomization tests (downstream link, stand-alone gate, framework decomposition, principle list).
+  - **Phase Inventory mandatory-first-step rule** — full atomic inventory + dependency DAG before a single note is written. Protection against scope gap.
+  - **Atomicity Drift Hard Stop ("the KL-failure pattern")** — new safeguard. Mid-`/teach`, if Claude finds itself defining a second atomic concept inline, stop and announce a graph update. Never bundle.
+  - **Prerequisites-as-Absent Override** — new safeguard. When `learner-profile.md` L2 declares "treat prerequisites as absent unless demonstrated," the cadence's pre-flight check is mandatory and non-skippable.
+  - **The `/teach` Cadence — 7-step loop** — Step 0 (silent context read) → Step 1 (frontier selection) → Step 2 (pre-flight check) → Step 3 (teach one atom) → Step 4 (verification gate: Feynman-back + diagnostic) → Step 5 (atomic note authoring) → Step 6 (bookkeeping). Session-complete gate has 4 conditions.
+  - **Frontier Marker Schema** — universal `phase-status.md` field schema (`current_phase`, `current_stratum`, `last_completed_atom`, `next_reachable_set`, `pending_reinforcements`, per-phase exit checklist). Single source of truth for "where am I."
+  - **Phase Production Protocol** — 8-step protocol for opening a new phase (read phase doc → inventory + DAG → identify merges → identify recommended-readings map work → initialize frontier → run `/teach` cadence → build maps → completion check).
+
+- `framework/vault-type-templates/training/README.md`: updated to register the new template (4th row in the Template table) and to add it as step 4 in the Order of Fill (last to instantiate, just before Phase 0 begins).
+
+### Changed
+
+- The `Order of fill` section reorders: `sources-master-list.md` is now step 3 (was "last"); `phase-learning-methodology.md` is the new step 4 ("last (before Phase 0 begins)"). Functional change for any training-vault genesis: instantiate methodology before the first `/teach` session.
+
+### Migration guidance
+
+Additive minor release. No mandatory action for existing training vaults. `synthesis_bellum`'s vault-local `phase-learning-methodology.md` (authored 2026-03-08, predating this template) continues to operate unchanged — the rules in the template are the same rules, plus the two new safeguards. Optional adoption path:
+
+1. Read the new template at `framework/vault-type-templates/training/phase-learning-methodology-template.md`.
+2. Compare to your vault-local methodology doc.
+3. Copy the **Atomicity Drift Hard Stop** and **Prerequisites-as-Absent Override** sections into your local doc, plus the §`/teach` Cadence and §Frontier Marker Schema sections.
+4. (Optional) Author a `phase-status.md` at your vault root using the universal schema.
+5. (Optional) Refactor your local doc to follow the template's section order.
+
+The two new safeguards are valuable specifically for training vaults where the user is acquiring a domain from zero (rather than vaults where the user is mature and synthesizing). They are most visible when the user has explicitly tightened `learner-profile.md` L2 to "treat prerequisites as absent."
+
+### Notes
+
+This release is the first time the framework codifies methodology that was previously vault-local. Before this, `synthesis_bellum`'s methodology doc was a one-off; the template extraction makes it canonical and discoverable for new training vaults at genesis. The training-vault template directory now has 4 templates (curriculum, principles-and-postulates, sources-master-list, phase-learning-methodology) covering the full substrate a training vault needs beyond the universal genesis skeleton.
+
+---
+
 ## [2.2.0] — 2026-04-24
 
 ### Added — Learner Layer Phase B (trajectory + interest capture)
