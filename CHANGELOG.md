@@ -7,6 +7,40 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.4.0] — 2026-04-26
+
+### Added — Learner Layer Phase A.1 (First-Use Gate + `/learner-profile` command)
+
+Phase A.1 was authored 2026-04-24 alongside Phase B but did not ride along in the v2.2.0 release. This release ships it.
+
+- `framework/universal-commands/learner-profile.md`: new universal command — `/learner-profile [init | revise | status]`. Bootstraps or revises the cross-vault learner profile via propose-confirm Q&A on the seven L1–L7 bedrock sections. Reads no `vault-config.md`; operates on `agensy/learner/` directly. Same pattern as `/question-bank` and `/positions`. Exists to unblock the First-Use Gate on hard-gate Learner-Layer-aware commands (`/teach`, `/curriculum`, future `/recall`).
+
+- `framework/principles/learner-layer-architecture.md`: adds new **First-Use Gate** section (~60 lines). Defines hard-gate vs. soft-gate command behavior when `learner-profile.md` is missing or empty. Hard-gate commands (`/teach`, `/curriculum`, `/recall`) **refuse** and redirect to `/learner-profile init`. Soft-gate commands (`/dialogue`, `/what-next`, `/positions`, `/article-promote`) **warn, log the gap, and proceed**. Specifies the `## Step 0 — First-use gate` block every Learner-Layer-aware command must contain. Frontmatter `canonical_for` extended with `learner_first_use_gate`.
+
+### Changed
+
+- `framework/slash-command-suite.md`: count line bumps from "34 protocol files + 2 backward-compat aliases" to "35 protocol files + 2 backward-compat aliases"; categories tally adds "+ 1 learner-layer". `/learner-profile [init|revise|status]` row added to the universal-command table. New paragraph below the System Model Layer paragraph registering the Learner Layer command (Phase A.1, 2026-04-24).
+
+- `tools/framework-verify.py`: `COMMAND_REQUIRED_KEYS` dict gains a new Learner Layer section with the `learner-profile` entry (cross-vault, no required keys — operates on `agensy/learner/` directly).
+
+- `CLAUDE.md`: vault-structure tree updates `slash-command-suite.md` and `universal-commands/` count lines to 35; category breakdown adds `+ 1 learner-layer`.
+
+### Migration guidance
+
+Additive minor release. Existing Learner-Layer-aware commands gain soft-gate Step 0 in their protocols when next updated; future hard-gate commands inherit the gate from authoring time. No mandatory action for existing vaults — the new `/learner-profile` command simply becomes available wherever `agensy/learner/` exists. Vaults without the Learner Layer adopted (no `learner/` directory) see zero behavior change.
+
+If you want to use Phase A.1:
+
+1. Adopt v2.1.0+ first (Learner Layer bedrock — `learner-layer-architecture.md` + template + schema v0.3).
+2. Run `/learner-profile init` (or `/learner-profile status` if you already authored a profile manually). Init walks L1–L7 in propose-confirm, writes `learner-profile.md` at `status: seeded-v0.1`.
+3. Hard-gate commands like `/teach` and `/curriculum` (vault-specific in training vaults; deferred-Phase-C universal versions) now refuse cleanly when the profile is missing rather than producing un-tailored output.
+
+### Notes
+
+The Phase A.1 work is small and additive but load-bearing for the `/teach` and `/curriculum` hard-gate behavior — releasing it now unblocks any downstream vault that wants to author training-vault commands per the v2.3.0 phase-learning-methodology template's atomicity-drift safeguards.
+
+---
+
 ## [2.3.0] — 2026-04-25
 
 ### Added — Training-vault phase-learning-methodology template
@@ -63,7 +97,7 @@ Wires the Learner Layer (declared in v2.1.0) into the four protocols that produc
 ### Documentation
 
 - `CLAUDE.md`: directory tree updated to reflect v2.0.0 reorg subdirs (catch-up; was missed in 2.0.0) AND adds optional `learner/` subdir entries. Adds **Task 4: Maintain the Learner Layer** with the propose-confirm rules and per-extension references.
-- `docs/concepts.md`: new **Learner Layer** section covering the three artifacts, propose-confirm discipline, token-budget rules, opt-in adoption path, and relationship to System Model + cogitationis writer-positions/voice-profile patterns.
+- `docs/concepts.md`: new **Learner Layer** section covering the three artifacts, propose-confirm discipline, token-budget rules, opt-in adoption path, and relationship to System Model + logos writer-positions/voice-profile patterns.
 - `docs/commands.md`: per-command Learner Layer extension notes added to `/dialogue`, `/what-next`, `/positions`, `/article-promote`. Each note explains what the extension adds when `learner/` is present.
 - `README.md`: adds new "What it solves" bullet — *"My agent doesn't know me — every session starts cold"* — pointing at the Learner Layer.
 
@@ -104,15 +138,15 @@ If you had any local references or scripts pointing at `agensy/framework/protoco
 
 ### Added — Learner Layer
 
-A new horizontal framework layer that captures the user as a learner-in-progress (acquisition trajectory, struggle signals, interest declarations, per-concept mastery). Sits parallel to the System Model layer: System Model describes the structural shape of each vault's domain; Learner Layer describes the user's traversal of those domains over time. Mirrors the cogitationis writer-positions/voice-profile pattern (user-authored bedrock + Claude-curated trajectory + propose-confirm for all writes), applied to learning rather than authoring.
+A new horizontal framework layer that captures the user as a learner-in-progress (acquisition trajectory, struggle signals, interest declarations, per-concept mastery). Sits parallel to the System Model layer: System Model describes the structural shape of each vault's domain; Learner Layer describes the user's traversal of those domains over time. Mirrors the logos writer-positions/voice-profile pattern (user-authored bedrock + Claude-curated trajectory + propose-confirm for all writes), applied to learning rather than authoring.
 
-- `framework/principles/learner-layer-architecture.md`: new file declaring the layer. Covers three artifacts (`learner-profile.md`, `learning-trajectory.md`, `interests-register.md`), curation discipline (propose-confirm pattern; Claude proposes, user accepts or edits before any file is written), token-budget rules (none of the new artifacts auto-load at session start; loaded only by commands that explicitly need them), integration with System Model and the cogitationis writer-positions/voice-profile pattern, and what-it-is-NOT boundaries. The user-data side of the layer (`learner/learner-profile.md`, etc.) lives in each user's working directory, not in agensy — mirrors the `memory/` exclusion pattern.
+- `framework/principles/learner-layer-architecture.md`: new file declaring the layer. Covers three artifacts (`learner-profile.md`, `learning-trajectory.md`, `interests-register.md`), curation discipline (propose-confirm pattern; Claude proposes, user accepts or edits before any file is written), token-budget rules (none of the new artifacts auto-load at session start; loaded only by commands that explicitly need them), integration with System Model and the logos writer-positions/voice-profile pattern, and what-it-is-NOT boundaries. The user-data side of the layer (`learner/learner-profile.md`, etc.) lives in each user's working directory, not in agensy — mirrors the `memory/` exclusion pattern.
 - `framework/templates/learner-profile-template.md`: new fill-in-the-blanks template for the user-authored bedrock. Seven sections: formative thinkers and traditions (L1), formal/mathematical maturity (L2), languages (L3), current obsessions 3–7 active threads (L4), taboo areas (L5), learning style (L6), goals at 6mo / 2yr / 10yr horizons (L7). Hard cap: 300 lines; deeper sections graduate to `learner/learner-topics/`.
 
 ### Changed
 
 - `framework/system-model/system-model-schema.yaml`: v0.2 → v0.3. Adds optional `user_engagement` enum (`unseen | surfaced | applied | mastered` — four-state mastery ladder) and `last_engaged` (YYYY-MM-DD) fields to nodes AND patterns. Sparse by default — annotate only nodes/patterns the user has actually engaged with; do NOT pre-fill `unseen` markers. Backward-compatible: existing v0.2 vault system-models remain valid without modification. Schema-level addition consumed: was a v0.3 candidate; now shipped. Schema validation rules added: `user_engagement` value must be in `user_engagement_states`; `last_engaged` required when `user_engagement` is set; `last_engaged` without `user_engagement` is a violation.
-- `framework/principles/architecture-principles.md` §1 "The System in Brief": registers the Learner Layer as the second horizontal framework layer (parallel to the System Model layer), with a one-paragraph note describing its scope, its parallel relationship to the cogitationis writer-positions/voice-profile pattern, and its loading discipline (none of its artifacts auto-load at session start).
+- `framework/principles/architecture-principles.md` §1 "The System in Brief": registers the Learner Layer as the second horizontal framework layer (parallel to the System Model layer), with a one-paragraph note describing its scope, its parallel relationship to the logos writer-positions/voice-profile pattern, and its loading discipline (none of its artifacts auto-load at session start).
 - `framework/protocols/agensy-sync-protocol.md`: §1 mapping table updated. (a) Added `framework/principles/learner-layer-architecture.md` and `framework/templates/learner-profile-template.md` to the Copy 1:1 list. (b) Added `learner/` to the Never-synced list with explicit reason: user-as-learner data is private and structurally parallel to `memory/`; framework documents declaring the layer DO sync, the user's actual learner data does NOT. (c) Pre-existing oversight fix: added `framework/principles/framework-meta-architecture.md` to the Copy 1:1 list (was already being synced in practice but not listed).
 
 ### Migration guidance for downstream consumers
@@ -121,13 +155,13 @@ This is an additive minor release. No vault-side action required for v2.1.0 adop
 
 If you maintain a vault `system-model.yaml`: the v0.3 schema is fully backward-compatible. You can continue using v0.2 conventions indefinitely. To adopt the new annotation, add `user_engagement: <state>` and `last_engaged: <date>` to nodes or patterns the user has actually engaged with — sparsely, not exhaustively. Default state for unannotated entries is implicitly `unseen`; do not pre-fill the YAML with `unseen` markers.
 
-If you want to use the Learner Layer in your own setup: copy `framework/templates/learner-profile-template.md` to a new `learner/` subdirectory at your vault-collection root, fill in the seven sections (Q&A-style with Claude is the intended workflow), and configure Claude to load it only via commands that explicitly need it (mirrors the cogitationis writer-positions/voice-profile loading pattern). The `learner/` subdirectory should be excluded from any public mirror or share — it's user-specific intellectual self-portrait data, equivalent in privacy to `memory/`.
+If you want to use the Learner Layer in your own setup: copy `framework/templates/learner-profile-template.md` to a new `learner/` subdirectory at your vault-collection root, fill in the seven sections (Q&A-style with Claude is the intended workflow), and configure Claude to load it only via commands that explicitly need it (mirrors the logos writer-positions/voice-profile loading pattern). The `learner/` subdirectory should be excluded from any public mirror or share — it's user-specific intellectual self-portrait data, equivalent in privacy to `memory/`.
 
 Phase B of the Learner Layer (trajectory capture extensions to `/dialogue`, `/what-next`, `/positions`, plus pilot `user_engagement` backfill on a single vault) is a separate forthcoming release.
 
 ### Notes
 
-Schema-level additions log: v0.2 candidates that shipped — `timescale`, `subtype`, `secondary_types`. v0.3 candidates that shipped — `user_engagement`, `last_engaged`. Reserved for v0.4 — node `quality`/`confidence`, edge `weight`. The Learner Layer document set (`learner-layer-architecture.md` + `learner-profile-template.md` + the schema additions) was designed in plan `~/.claude/plans/so-i-was-thinking-elegant-wind.md` (2026-04-24, Phase A scope).
+Schema-level additions log: v0.2 candidates that shipped — `timescale`, `subtype`, `secondary_types`. v0.3 candidates that shipped — `user_engagement`, `last_engaged`. Reserved for v0.4 — node `quality`/`confidence`, edge `weight`.
 
 ---
 
@@ -278,7 +312,7 @@ Documentation-only release. No framework, protocol, tool, or schema changes. All
 - `framework/architecture-principles.md`: §7.1 change-analysis protocol now also references `framework-meta-architecture.md` for framework-structure changes
 - `framework/slash-command-suite.md`: header count 17 → 34 protocol files + 2 backward-compat aliases; pipeline-family split explained
 - `framework/coverage-audit.md`: new Step 9 mandatory-if-system-model auto-fires `/system-audit` and updates System Model Freshness table with dirt-level classification (🟢/🟡/🔴)
-- `framework/system-model-architecture.md`: expanded Self-Maintenance Policy with three-layer staleness prevention and escalation rules; Rollout Status updated through Phase 5 (omega universality test) with the bounded-universality result explicitly noted
+- `framework/system-model-architecture.md`: expanded Self-Maintenance Policy with three-layer staleness prevention and escalation rules; Rollout Status updated through Phase 5 (theoria universality test) with the bounded-universality result explicitly noted
 - `vault-registry.md`: Framework Documents table expanded and grouped (architectural spine / runtime orchestration / templates / System Model Layer / expression pipeline) — ~20 rows vs. prior 11
 - `CLAUDE.md`: vault structure listing updated; command count 21 → 34 + 2 aliases; reading-order convention now explicit (architecture-principles → system-contracts → system-architecture → framework-meta-architecture)
 - `README.md`: vault structure listing updated with the new META doc and pipeline additions
@@ -334,8 +368,8 @@ Backward-compatible. Existing vaults without a `system-model.yaml` are unaffecte
 - `framework/architecture-principles.md`, `framework/system-contracts.md`, `framework/system-architecture.md`,
   `framework/genesis-protocol.md`, `framework/command-lifecycle.md`, `framework/inter-vault-protocol.md`,
   `framework/claude-md-template.md`, `framework/universal-commands/arc.md`, `framework/universal-commands/question-bank.md`,
-  `framework/universal-commands/what-next.md`: replaced all `synthesis-meta/...` path references with
-  `[AGENSY_PATH]/...` and conceptual "lives in synthesis-meta" with "lives in agensy"
+  `framework/universal-commands/what-next.md`: replaced absolute upstream-meta paths with
+  `[AGENSY_PATH]/...` and conceptual upstream-meta references with `agensy`
 
 ### Changed
 

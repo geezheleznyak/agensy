@@ -22,7 +22,7 @@ The five-phase self-building procedure for scaffolding a new vault from scratch.
 
 Ask Q0.5 first (intellectual style), then Q1–Q7 in sequence. For each question:
 1. Ask the question in plain language (not just "answer Q1")
-2. Offer examples from existing vaults (omega, belli, cogitationis) as anchors
+2. Offer examples from existing vaults (theoria, bellum, logos) as anchors
 3. Push back if the answer is too vague — a vault cannot be scaffolded from a vague mission
 4. Record the answer in `vault-config.md` before moving to the next question
 
@@ -54,7 +54,7 @@ Must be statable in one sentence. If the user gives a list, pick the most founda
 
 **Q4 — Open Problems**: "List 8–15 genuinely open problems in this domain — questions the vault exists to work on, not to answer definitively." — Each problem needs a short name (for frontmatter references) and a one-sentence question. If the user gives fewer than 8, push: "What else would you want this vault to eventually be able to say something about?"
 
-**Q5 — Note Tier Structure**: "What are the three tiers of note in this vault? What is the minimal form (lookup/capture), the working form (mechanistic explanation), and the final form (permanent insight or output)? What triggers graduation from one tier to the next?" — Give the user the omega model and belli model as examples.
+**Q5 — Note Tier Structure**: "What are the three tiers of note in this vault? What is the minimal form (lookup/capture), the working form (mechanistic explanation), and the final form (permanent insight or output)? What triggers graduation from one tier to the next?" — Give the user the theoria model and bellum model as examples.
 
 **Q6 — Domain Taxonomy**: "What are the major sub-domains? For each: give a label, a folder path, a priority (core / tier1 / tier2), and whether notes in this domain can graduate to Tier 3." — Must have at least 3 domains. If the user gives too many (>12), help them consolidate.
 

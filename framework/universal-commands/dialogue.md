@@ -78,14 +78,14 @@ State what emerged from the dialogue in 2–3 sentences. Then apply the 4-gate t
 |---|---|---|
 | **Novelty** | Search vault output folder for ≥70% content overlap with proposed claim | Point to existing note; if dialogue added nuance, suggest editing existing note |
 | **Atomicity** | Is this one claim or a cluster? | If cluster: decompose into candidates, test each separately |
-| **Connection** | Does it advance at least one OP or address a driving question? | If no: log to question bank or cogitationis, not the knowledge vault |
+| **Connection** | Does it advance at least one OP or address a driving question? | If no: log to question bank or logos, not the knowledge vault |
 | **User consent** | Propose the note title and opening paragraph. User approves? | If declined: respect. Log insight to dialogue log for potential future revisit |
 
 Route the output:
 
 ```
 Knowledge claim → Route 1 (standard note in vault)
-Personal position → Route 2 (cogitationis Thought)
+Personal position → Route 2 (logos Thought)
 Unresolved question → Route 3 (question bank)
 Already captured → Route 4 (cite existing notes)
 ```
@@ -102,7 +102,7 @@ Already captured → Route 4 (cite existing notes)
 - Append one row to `memory/note-index.md`: `| [path] | T2 | [domain] | true | [axis] | [ops] | user-dialogue | [date] |`
 
 **Route 2** — Personal position or developing argument:
-- Write a cogitationis Thought note using the Thought template.
+- Write a logos Thought note using the Thought template.
 - Frontmatter: `status: raw`, `omega_refs: [relevant note titles]`
 - First-person voice. Claim-titled.
 - Optionally also produce a Reflection in `30-Reflections/` if the dialogue had a significant personal dimension.
@@ -125,7 +125,7 @@ Add an entry to the vault's `memory/MEMORY.md` Dialogue Log:
 - YYYY-MM-DD | [topic] | [mode] | [user's position in one sentence, or — if no clear position emerged] | Route [N]: [note path / question-bank entry N / no output]
 ```
 
-**Bridge mode addition**: If mode = `Bridge` and a clear position emerged (not `—`), also append one line to `C:\Users\grego\obsidian_repos\synthesis-meta\system-state.md` under `## User Positions (Cross-Vault)`:
+**Bridge mode addition**: If mode = `Bridge` and a clear position emerged (not `—`), also append one line to `agensy/system-state.md` under `## User Positions (Cross-Vault)`:
 
 ```
 - YYYY-MM-DD | [user's position in one sentence] | [vaults implicated]
@@ -137,11 +137,11 @@ Do not append if the dialogue produced only Route 3 (question bank) or Route 4 (
 
 ## Step 7 — Trajectory & Interest Capture (Learner Layer)
 
-After logging the dialogue, surface candidate Learner Layer entries via **propose-confirm**. Skip this step entirely if `synthesis-meta/learner/` does not exist (vault user has not adopted the Learner Layer).
+After logging the dialogue, surface candidate Learner Layer entries via **propose-confirm**. Skip this step entirely if `agensy/learner/` does not exist (vault user has not adopted the Learner Layer).
 
 ### 7.1 — Trajectory delta detection
 
-Read the **tail** of `synthesis-meta/learner/learning-trajectory.md` (the most recent ~10 entries via `Read` with `offset` near end-of-file; do NOT read the whole file). This gives recent-trajectory context for shift detection.
+Read the **tail** of `agensy/learner/learning-trajectory.md` (the most recent ~10 entries via `Read` with `offset` near end-of-file; do NOT read the whole file). This gives recent-trajectory context for shift detection.
 
 Detect whether THIS session produced a trajectory-significant event:
 - **Confidence shift**: the user reversed or substantially refined a position they previously held (cross-reference Step 4 output against tail)
@@ -198,7 +198,7 @@ The 4-gate test prevents note inflation. Gate failures do not mean the dialogue 
 
 **Atomicity failure** → Decompose the cluster. Test each candidate separately through all 4 gates. Some candidates will pass; others won't. Write only those that pass.
 
-**Connection failure** → This insight may be genuinely valuable but not project-facing. Route 2 (personal position in cogitationis) or Route 3 (question bank) are legitimate homes. Not every insight needs to be a vault note.
+**Connection failure** → This insight may be genuinely valuable but not project-facing. Route 2 (personal position in logos) or Route 3 (question bank) are legitimate homes. Not every insight needs to be a vault note.
 
 **Consent failure** → The user may feel the insight is not ready, not quite right, or too personal. Respect this. Log the topic in the dialogue log so it can surface in a future session.
 

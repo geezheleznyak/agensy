@@ -22,9 +22,9 @@ vault:
   name: [short descriptive name, e.g. "synthesis_theoria"]
   path: [absolute path to vault root]
   type: [accumulation | training | expression | hybrid]
-  # accumulation: builds up a knowledge base over time (omega model)
-  # training: develops a skill or competency through progressive curriculum (belli model)
-  # expression: turns knowledge/thinking into published output (cogitationis model)
+  # accumulation: builds up a knowledge base over time (theoria model)
+  # training: develops a skill or competency through progressive curriculum (bellum model)
+  # expression: turns knowledge/thinking into published output (logos model)
   # hybrid: explicitly combines two or more types (define below)
   created: [YYYY-MM-DD]
 ```
@@ -150,9 +150,9 @@ mission: >
    What kind of thinking does it produce?]
 ```
 
-**Example (omega)**: Build a metaphysical and anthropological framework for post-AI humanity — a system of ideas connecting cosmology, anthropology, and ethics through the world's major thinkers, tested against the challenge artificial intelligence poses to the human self-understanding.
+**Example (theoria)**: Build a metaphysical and anthropological framework for post-AI humanity — a system of ideas connecting cosmology, anthropology, and ethics through the world's major thinkers, tested against the challenge artificial intelligence poses to the human self-understanding.
 
-**Example (belli)**: Build a unified, complete, and operationally tested knowledge framework for training a fresh military commander from zero to one in a rapidly changing environment characterized by AI-enabled warfare, drone proliferation, and shifting great-power competition.
+**Example (bellum)**: Build a unified, complete, and operationally tested knowledge framework for training a fresh military commander from zero to one in a rapidly changing environment characterized by AI-enabled warfare, drone proliferation, and shifting great-power competition.
 
 ---
 
@@ -202,10 +202,10 @@ fault_line:
 
 *Failure mode*: "Is X good or bad?" or "Should we do X?" — these are preferences, not fault lines. The tension must be between genuine intellectual positions with real evidence on both sides.
 
-**Example (omega)**: Is the universe's tendency toward increasing complexity an ontologically real tendency with normative significance — or is it an epistemic imposition (how we organize observations) or a normatively neutral mechanical byproduct?
+**Example (theoria)**: Is the universe's tendency toward increasing complexity an ontologically real tendency with normative significance — or is it an epistemic imposition (how we organize observations) or a normatively neutral mechanical byproduct?
 Positions: `supports` | `denies` | `complicates` | `dissolves`
 
-**Example (belli)**: Is the AI/drone revolution creating genuine discontinuity requiring new first principles, or do eternal principles maintain continuity?
+**Example (bellum)**: Is the AI/drone revolution creating genuine discontinuity requiring new first principles, or do eternal principles maintain continuity?
 Positions: `continuity` | `discontinuity` | `synthesis`
 
 ---
@@ -227,7 +227,7 @@ central_dialectic:
 
 *Failure mode*: A binary opposition with no synthesis path — that is adversarial framing, not dialectical.
 
-**Example (oikos)**: Do economic dynamics emerge primarily from structural forces (institutions, power, path-dependence) or from ideational/behavioral patterns (narratives, beliefs, animal spirits), and what integrative account captures both without collapsing either?
+**Example (oeconomia)**: Do economic dynamics emerge primarily from structural forces (institutions, power, path-dependence) or from ideational/behavioral patterns (narratives, beliefs, animal spirits), and what integrative account captures both without collapsing either?
 Positions: `structural` | `behavioral-ideational` | `complex-interactive`
 
 ---

@@ -73,7 +73,7 @@ Produce three options. The options must be *distinct* — not variants of the sa
 Each option must have:
 - **Direction**: a one-sentence statement of what the move does (no prose from the writer's voice; this is a direction, not a draft).
 - **Rationale**: 1–2 sentences on why this move serves the argument (what it adds, what risk it mitigates, what principle it realizes).
-- **Risk**: 1 sentence naming what the operator should watch for when executing this option (e.g., "requires engaging an orthogonal position from kratos — check positions-index P002 before writing").
+- **Risk**: 1 sentence naming what the operator should watch for when executing this option (e.g., "requires engaging an orthogonal position from politeia — check positions-index P002 before writing").
 
 ---
 

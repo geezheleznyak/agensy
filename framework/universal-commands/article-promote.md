@@ -9,7 +9,7 @@ Move a completed essay from `20-Essays/` to `40-Published/`, backlink to source 
 
 **[essay-path]**: absolute or vault-relative path to an essay at status `revision` with all five-questions check passing.
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from the expression vault root. Extract:
 - `reference_docs.source_map_registry`
 - `reference_docs.positions_index` — path to positions-index.md (V1.6)
 - `reference_docs.writer_positions` — for methodological-promotion target (V1.6)
@@ -35,7 +35,7 @@ If any check fails: refuse with a specific reason. Do not promote incomplete ess
 ### 2.1 Final wikilink sweep
 Grep the body for `[[` patterns. Any internal vault wikilink remaining → refuse. All references must be in `source_refs` frontmatter (audit trail), not inline.
 
-**Exception**: wikilinks to other published cogitationis essays (essay → essay cross-references) are allowed.
+**Exception**: wikilinks to other published essays in the expression vault (essay → essay cross-references) are allowed.
 
 ### 2.2 Word count sanity
 - **Type A**: verify the final word count is within range 2,000–4,500 words (generous). Under 1,500 → warn "essay is short; confirm". Over 5,000 → warn "essay is long; confirm".
@@ -68,8 +68,8 @@ For each entry in `source_refs` frontmatter (source-vault maps):
 
 1. Traverse to the source map file in its source vault.
 2. Check if the source map has an "Essays citing this" or "Published derivatives" section. If no: add one at the bottom (before any trailing horizontal rule).
-3. Append a line: `- [YYYY-MM-DD] [[<vault path to cogitationis essay>]] — <one-sentence description>`
-4. **Type D only**: the description should state the framework's role in the braid, not just the essay title. Example: `- [2026-04-21] [[cogitationis/40-Published/... - The Pole Is Obsolete]] — Mearsheimer's multipolar-instability claim, in braid with Strange + Arthur to argue the pole is an unstable unit of analysis under AGI.` This makes it clear to a future reader of the source map how the framework participated in the composition, not just that it was cited.
+3. Append a line: `- [YYYY-MM-DD] [[<vault path to expression-vault essay>]] — <one-sentence description>`
+4. **Type D only**: the description should state the framework's role in the braid, not just the essay title. Example: `- [2026-04-21] [[logos/40-Published/... - The Pole Is Obsolete]] — Mearsheimer's multipolar-instability claim, in braid with Strange + Arthur to argue the pole is an unstable unit of analysis under AGI.` This makes it clear to a future reader of the source map how the framework participated in the composition, not just that it was cited.
 
 This creates the reverse link: source maps know which essays have been derived from them. For Type D, each of the N source maps gets its own backlink with a framework-role-specific description.
 
@@ -123,7 +123,7 @@ For each novel candidate, propose one of four classifications (fourth added V1.7
   - Heuristic: the claim has a clear target (what it describes), a mechanism (why it holds), and at least one pressure point (when it fails). And: the claim could be cited in a future essay on an adjacent topic.
 - **Methodological claim** — about how to analyze, not about what's true in the domain. Appends to `writer-positions.md` §"Preferred Analytical Moves" (or §"Recurring Dispositions" if better fit). Does not get a T3.
   - Heuristic: the claim takes the form "before X, always Y" or "the way to read X is Z" — it is a move, not a finding.
-- **Cross-vault emergent claim** (V1.7, Type D only) — a substantive claim that none of the N source vaults alone is the natural home for, because the claim is itself about how phenomena in those vaults compose. Promotes to `synthesis-meta/cross-vault-bridges.md` as a new bridge entry (or extension of an existing bridge) AND to positions-index as a new row with `source vaults` listing all N. May also get a T3 in each source vault summarizing the braid's contribution to that vault's domain, but the primary artifact is the cross-vault bridge entry.
+- **Cross-vault emergent claim** (V1.7, Type D only) — a substantive claim that none of the N source vaults alone is the natural home for, because the claim is itself about how phenomena in those vaults compose. Promotes to `agensy/cross-vault-bridges.md` as a new bridge entry (or extension of an existing bridge) AND to positions-index as a new row with `source vaults` listing all N. May also get a T3 in each source vault summarizing the braid's contribution to that vault's domain, but the primary artifact is the cross-vault bridge entry.
   - Heuristic: the claim mentions phenomena or concepts native to two or more of the N source vaults in the same sentence, and the claim would lose meaning if reduced to any single vault's domain vocabulary.
   - Braid emergent claims (`C` itself, the essay's thesis) are almost always this classification, not the plain substantive-framework classification.
 - **Essay-specific** — contingent on the specific case, not generalizing. Remains in essay only. No promotion.
@@ -160,7 +160,7 @@ Reclassifications are free-form — user can override any of the three classific
 ### 7.5 — Execute accepted promotions
 
 For each accepted **substantive promotion**:
-1. Determine the target source vault (typically the source-map's vault, but the user may redirect — e.g., a claim about narratives may belong in oikos rather than kratos).
+1. Determine the target source vault (typically the source-map's vault, but the user may redirect — e.g., a claim about narratives may belong in oeconomia rather than politeia).
 2. Draft the T3 note using that vault's synthesis-note template: title as claim-sentence, body with mechanism + cases + pressure, backlinks to essay + source map, frontmatter fields per vault schema (`fault_line`, `open_problems`, `evergreen-candidate: true`, `source`, `originating_essay`).
 3. Write the T3 to `synthesis_<vault>/20-Judgment/YYYYMMDDHHMM - <Claim>.md` (or vault's equivalent T3 folder).
 4. Append a row to `positions-index.md`:
@@ -173,7 +173,7 @@ For each accepted **substantive promotion**:
    - Registered: today's date.
 
 For each accepted **cross-vault emergent promotion** (V1.7, Type D):
-1. Determine whether an existing bridge in `synthesis-meta/cross-vault-bridges.md` covers the claim's domain. If yes → extend that bridge with a new sub-entry; if no → add a new bridge entry at the end of the file with a new bridge number.
+1. Determine whether an existing bridge in `agensy/cross-vault-bridges.md` covers the claim's domain. If yes → extend that bridge with a new sub-entry; if no → add a new bridge entry at the end of the file with a new bridge number.
 2. The bridge entry records: (a) the emergent claim, (b) the N vaults and what each contributes, (c) the braid hinge mechanism in one sentence, (d) a backlink to the originating essay.
 3. Append a row to `positions-index.md`:
    - ID: next `P###`.
@@ -184,7 +184,7 @@ For each accepted **cross-vault emergent promotion** (V1.7, Type D):
    - Originating Essay: wikilink.
    - Status: `active`.
    - Registered: today's date.
-4. **Optional companion T3s**: if the braid's contribution to any *single* source vault is also a standalone substantive claim (e.g., the braid argued Strange's structural-power architecture collapses under compute mediation — that's a kratos-native claim even though it emerged from a braid), draft a T3 in that vault's `20-Judgment/` with a backlink to the cross-vault bridge entry. Mark the T3 frontmatter `derived_from_braid: true` and `originating_essay: <wikilink>`. These companion T3s are *additional* to the cross-vault bridge entry, not replacements.
+4. **Optional companion T3s**: if the braid's contribution to any *single* source vault is also a standalone substantive claim (e.g., the braid argued Strange's structural-power architecture collapses under compute mediation — that's a politeia-native claim even though it emerged from a braid), draft a T3 in that vault's `20-Judgment/` with a backlink to the cross-vault bridge entry. Mark the T3 frontmatter `derived_from_braid: true` and `originating_essay: <wikilink>`. These companion T3s are *additional* to the cross-vault bridge entry, not replacements.
 
 For each accepted **methodological promotion**:
 1. Identify the best section in `writer-positions.md` (usually §"Preferred Analytical Moves", sometimes §"Recurring Dispositions").
@@ -195,7 +195,7 @@ For each accepted **methodological promotion**:
 
 ### 7.6a — Interests-register harvest (Learner Layer)
 
-Skip this sub-step entirely if `synthesis-meta/learner/interests-register.md` does not exist (vault user has not adopted the Learner Layer).
+Skip this sub-step entirely if `agensy/learner/interests-register.md` does not exist (vault user has not adopted the Learner Layer).
 
 A published essay frequently surfaces *new* lines of inquiry the user wants to pursue but isn't ready to write about — phrases like "this opens questions about X I want to develop later," "the relationship between Y and Z deserves its own essay," "I should look more deeply into W." These are interest declarations distinct from the substantive/methodological/cross-vault claims handled in 7.3–7.5.
 
@@ -208,7 +208,7 @@ For each detected signal, propose ONE entry to `learner/interests-register.md`'s
 ```
 ### [INTEREST-####] <short topic>
 
-- **Surfaced**: YYYY-MM-DD (vault: cogitationis — context: published essay [essay title])
+- **Surfaced**: YYYY-MM-DD (vault: logos — context: published essay [essay title])
 - **What**: <one-sentence>
 - **Why now**: <the trigger sentence from the essay, optionally>
 - **Status**: active
@@ -257,9 +257,9 @@ harvest:
 harvest:
   run_date: YYYY-MM-DD
   cross_vault_promotions:
-    - bridge_entry: "[[synthesis-meta/cross-vault-bridges.md#Bridge N]]"
+    - bridge_entry: "[[agensy/cross-vault-bridges.md#Bridge N]]"
       positions_index_id: P###
-      source_vaults: [kratos, oikos, ...]
+      source_vaults: [politeia, oeconomia, ...]
       companion_t3s:
         - "[[synthesis_<vault>/20-Judgment/...]]"  # optional
   substantive_promotions: [...]  # per-framework extensions, if any

@@ -33,9 +33,9 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 ---
 
-## Universal Commands (34 protocol files + 2 backward-compat aliases)
+## Universal Commands (35 protocol files + 2 backward-compat aliases)
 
-*17 core knowledge-work + 4 system-model + 8 article-pipeline + 5 companion-co. Full inventory below; the article-* and co-* rows are also repeated in the §Expression Vault Commands section for pipeline context.*
+*17 core knowledge-work + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer. Full inventory below; the article-* and co-* rows are also repeated in the §Expression Vault Commands section for pipeline context.*
 
 | Command | Trigger type | Protocol file |
 |---|---|---|
@@ -60,10 +60,13 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 | `/system-audit` | Milestone (post coverage-audit) | `universal-commands/system-audit.md` |
 | `/system-build [mode] [args]` | User | `universal-commands/system-build.md` |
 | `/system-bridge [mode] [peer]` | User | `universal-commands/system-bridge.md` |
+| `/learner-profile [init\|revise\|status]` | User (first-use; revision) | `universal-commands/learner-profile.md` |
 
 **Backward-compat aliases** (adversarial vaults only): `/confront` = `/engage-deep`, `/fault-line-survey` = `/axis-survey`
 
 **System Model Layer commands** (v0.1): `/system-query` is always available where a vault has a `system-model.yaml`; `/system-audit` fires on the same cadence as `/coverage-audit`. `/system-build` is the only write path into `system-model.yaml` — read-only commands never mutate it. `/system-bridge` is a read-only binding reconciliation tool that proposes edits and routes writes through `/system-build`. All four registered 2026-04-20. See `framework/system-model/system-model-architecture.md`.
+
+**Learner Layer commands** (Phase A.1, registered 2026-04-24): `/learner-profile` bootstraps or revises the cross-vault `agensy/learner/learner-profile.md` via propose-confirm Q&A on the seven L1–L7 bedrock sections. Reads no vault-config; operates on `agensy/` framework-level artifacts directly (same pattern as `/question-bank`, `/positions`). Exists to unblock the First-Use Gate on Learner-Layer-aware commands — see `framework/principles/learner-layer-architecture.md § First-Use Gate`.
 
 ---
 
@@ -115,7 +118,7 @@ Output: stress-test analysis in `00-Inbox/`
 
 **Map-to-Article Pipeline** (registered 2026-04-21; V1.5 preset-aware update 2026-04-21; V1.6 position index & harvest loop 2026-04-21; V1 = Type A solo-map essays only; Types B/C/D deferred to V2)
 
-The article-* pipeline turns argument-dense source-vault maps into published essays. Protocols live in `universal-commands/article-*.md`; cogitationis is the consumer. Each command reads `vault-config.md` (cross_vault_dependency.source_vaults), `voice-profile.md` (style layer), `writer-positions.md` (substance layer, bedrock), and — as of V1.5 — `article-presets.md` (three-axis preset registry). V1.6 adds `positions-index.md` (pre-loaded cross-vault pointer table to substantive claims earned in prior essays; T3 bodies loaded on-demand). Pipeline: `/article-scan → /article-seed → /article-outline → /article-draft → /article-revise → /article-promote`.
+The article-* pipeline turns argument-dense source-vault maps into published essays. Protocols live in `universal-commands/article-*.md`; logos is the consumer. Each command reads `vault-config.md` (cross_vault_dependency.source_vaults), `voice-profile.md` (style layer), `writer-positions.md` (substance layer, bedrock), and — as of V1.5 — `article-presets.md` (three-axis preset registry). V1.6 adds `positions-index.md` (pre-loaded cross-vault pointer table to substantive claims earned in prior essays; T3 bodies loaded on-demand). Pipeline: `/article-scan → /article-seed → /article-outline → /article-draft → /article-revise → /article-promote`.
 
 **Preset-aware commands (V1.5)**: `/article-seed`, `/article-outline`, `/article-draft`, `/article-revise` consume the active essay's preset (recorded in seed/essay frontmatter). `/article-scan` and `/article-promote` remain preset-agnostic.
 
@@ -147,7 +150,7 @@ The article-* pipeline turns argument-dense source-vault maps into published ess
 | `/co-critique <selection> [--mode light\|adversarial]` | `universal-commands/co-critique.md` | selected passage | bulleted flags with fix suggestions; shares C1–C8 library with `/article-critique` in adversarial mode |
 | `/co-capture [flag\|sweep\|close] [--target voice\|positions\|methodological\|framework\|all]` | `universal-commands/co-capture.md` | active companion-mode dialogue | voice-profile source files, positions-index rows (status `under-review`), writer-positions.md appends; all substrate writes user-confirmed per-item |
 
-**Legacy expression commands** (cogitationis, retained for non-map-derived essays):
+**Legacy expression commands** (logos, retained for non-map-derived essays):
 
 **`/draft [title or thought-note path]`**
 Expand a Thought into an Essay. See `synthesis_logos/.claude/commands/draft.md` for the inline protocol. Prefer `/article-seed → /article-outline → /article-draft` for maps-to-articles work.

@@ -8,8 +8,6 @@ schema_version: 0.2
 
 The System Model Layer is a machine-readable per-vault description of each vault's domain as nodes (roles), edges (relations), and patterns (dynamical shapes), plus bindings to peer vaults via the bridge concept. It sits below slash commands and MOCs, above note content, and references — but does not duplicate — vault-config and cross-vault-bridges.
 
-Plan: `~/.claude/plans/we-produced-a-couple-snoopy-parasol.md` (merger of staged-flurry primitive-discovery and quiet-shannon system model proposals).
-
 ## Why This Layer Exists
 
 The existing framework stack maps ideas at three scales:
@@ -138,19 +136,19 @@ If any vault reaches `🔴 red` and remains red across two consecutive `/coverag
 |---|---|---|
 | 0 | Primitive discovery experiment | ✅ Complete 2026-04-20 — gate CLEAN |
 | 1 | Schema + docs (agensy only) | ✅ Complete 2026-04-20 |
-| 2 | kratos pilot — bootstrap system-model.yaml + Mermaid | ✅ Complete 2026-04-20 — closure PASS |
+| 2 | politeia pilot — bootstrap system-model.yaml + Mermaid | ✅ Complete 2026-04-20 — closure PASS |
 | 3 | `/system-build` + `/system-bridge` + dogfood | ✅ Complete 2026-04-20 |
-| 4 | Extend to oikos, belli; cross-vault closure test | ✅ Complete 2026-04-20 — reflexivity PASS |
+| 4 | Extend to oeconomia, bellum; cross-vault closure test | ✅ Complete 2026-04-20 — reflexivity PASS |
 | v0.2 | Schema v0.2 — timescale, subtype, secondary_types; binding mechanism check | ✅ Complete 2026-04-24 |
-| 5a | clio system model bootstrap | ✅ Complete 2026-04-24 — partial (gate unmet) |
-| 5b | omega system model bootstrap — universality test | ✅ Complete 2026-04-24 — closure PASS (bounded) |
+| 5a | historia system model bootstrap | ✅ Complete 2026-04-24 — partial (gate unmet) |
+| 5b | theoria system model bootstrap — universality test | ✅ Complete 2026-04-24 — closure PASS (bounded) |
 | Deferred | auto-regeneration, Canvas, MCP | deferred |
 
 See the plan file for phase gates, kill criteria, and verification.
 
 ## Risks and Live Concerns
 
-1. **Pattern-name collisions across vaults** — `reflexivity` in oikos Soros-style and in belli OODA-style may encode mechanically incompatible dynamics. **Status**: Phase 4 closure gate PASSED (six reflexivity instances across three vaults all share Soros observer-effect mechanism). v0.2 further tightens this via `subtype` + `timescale` annotations and `/system-audit` Step 5b binding mechanism check.
+1. **Pattern-name collisions across vaults** — `reflexivity` in oeconomia Soros-style and in bellum OODA-style may encode mechanically incompatible dynamics. **Status**: Phase 4 closure gate PASSED (six reflexivity instances across three vaults all share Soros observer-effect mechanism). v0.2 further tightens this via `subtype` + `timescale` annotations and `/system-audit` Step 5b binding mechanism check.
 2. **Schema churn** — v0.1 predicted 1–2 revisions during rollout; v0.2 shipped 2026-04-24 with additive-only changes (timescale, subtype, secondary_types). All v0.1 YAMLs remain valid. v0.3 candidates: node quality/confidence, edge weight.
 3. **Bootstrap labor** — classifying ~200 notes per vault into nodes is multi-session work. Must be incremental and interactive, not batched. Omega (~249 notes) is the largest remaining bootstrap and is also the universality test — acceptance of actor/process ontology by a concept-lattice-shaped vault is the v0.2-era claim under test.
 4. **Maintenance decay** — without regular `/system-audit`, the YAML rots relative to the note corpus. Mitigation: fire `/system-audit` at `/coverage-audit` and phase-completion events.

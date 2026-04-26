@@ -56,7 +56,7 @@ If the vault has no `system-model.yaml`:
 3. After creation, add the vault's row in `[AGENSY_PATH]/system-state.md` Vault Registry — set `System Model` = `bootstrapped-YYYY-MM-DD`.
 4. Stop. The user invokes `/system-build` again with the first real edit.
 
-Do **not** auto-populate nodes from the note corpus in bootstrap mode. Bootstrap is intentionally empty. The Phase 2 pilot (kratos) was hand-curated — future bootstraps should follow the same pattern, with explicit user choice on every entity.
+Do **not** auto-populate nodes from the note corpus in bootstrap mode. Bootstrap is intentionally empty. The Phase 2 pilot (politeia) was hand-curated — future bootstraps should follow the same pattern, with explicit user choice on every entity.
 
 ---
 

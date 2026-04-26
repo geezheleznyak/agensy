@@ -68,7 +68,7 @@ Determine `<vault-root>` from vault-config.md location (the directory containing
 1. Resolve the path. If relative, prepend vault root.
 2. Target set = that single note.
 
-**Training vault handling** (belli): All Tier 2 notes use synthesis schema regardless of `evergreen-candidate`. Treat every discovered note as synthesis-schema for all checks below.
+**Training vault handling** (bellum): All Tier 2 notes use synthesis schema regardless of `evergreen-candidate`. Treat every discovered note as synthesis-schema for all checks below.
 
 ---
 

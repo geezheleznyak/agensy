@@ -18,7 +18,7 @@ Survey all knowledge vaults for notes the user has originated through dialogue o
 
 ## Step 1 — Search All Vaults
 
-For each active knowledge vault (omega, belli, kratos, oikos):
+For each active knowledge vault (theoria, bellum, politeia, oeconomia):
 
 **If `memory/note-index.md` exists in that vault and is current (< 30 days old)**:
 - Read the vault's `memory/note-index.md` — one file read per vault
@@ -47,9 +47,9 @@ For each user-originated note found:
 - State the core claim in one sentence (note title + opening paragraph).
 - State the engagement axis position.
 - State the date written.
-- **Annotate mastery state** (Learner Layer extension — skip if `synthesis-meta/learner/learner-profile.md` does not exist):
+- **Annotate mastery state** (Learner Layer extension — skip if `agensy/learner/learner-profile.md` does not exist):
   - `mastered` — user has used this position multiple times in subsequent dialogues, defended it under challenge, and not revised it materially in the past 6 months. (Cross-reference: `learning-trajectory.md` shows no recent shift entries on this topic; system-model node `user_engagement: mastered` if a corresponding node exists.)
-  - `applied` — position is referenced in user's writing (Tier 3 notes, cogitationis essays) and used as a building block, but not actively contested in recent sessions
+  - `applied` — position is referenced in user's writing (Tier 3 notes, logos essays) and used as a building block, but not actively contested in recent sessions
   - `contested` — position has open tension with another user position (intra- or cross-vault) per Step 4 below
   - `exploratory` — position was recently formed (≤30 days), or trajectory shows recurring shifts on this topic, or no subsequent dialogue has tested it
 
@@ -63,7 +63,7 @@ Scan across all vaults for internal tensions in the user's own positions:
 
 **Intra-vault tensions**: Two user-originated notes in the same vault that take opposing positions on the same question. Example: "In Note A you argue X. In Note B (same vault) you argue not-X."
 
-**Cross-vault tensions**: User-originated notes in different vaults that make claims that conflict when applied to the same situation. Example: "In belli you argue that technology creates discontinuity. In omega you argue that structural complexity is continuous. These positions conflict when applied to AI-driven warfare."
+**Cross-vault tensions**: User-originated notes in different vaults that make claims that conflict when applied to the same situation. Example: "In bellum you argue that technology creates discontinuity. In theoria you argue that structural complexity is continuous. These positions conflict when applied to AI-driven warfare."
 
 For each tension: name the two notes, state the conflict precisely, ask whether this is an unresolved contradiction or a domain-specific qualification.
 
@@ -97,10 +97,10 @@ For each tension: name the two notes, state the conflict precisely, ask whether 
 
 | Vault | User notes | OPs with user positions | OPs without |
 |---|---|---|---|
-| omega | N | N | list |
-| belli | N | N | list |
-| kratos | N | N | list |
-| oikos | N | N | list |
+| theoria | N | N | list |
+| bellum | N | N | list |
+| politeia | N | N | list |
+| oeconomia | N | N | list |
 ```
 
 ---

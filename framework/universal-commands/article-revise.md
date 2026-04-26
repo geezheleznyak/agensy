@@ -11,7 +11,7 @@ Revise a draft against voice profile, writer positions, and standalone-ness cons
 **[essay-path]**: absolute or vault-relative path to an essay at status `draft` or `revision`.
 **[mode]**: `adversarial` (default) | `creative` | `light`. Reuses the style-preset pattern from `/engage-deep`.
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from logos vault root. Extract:
 - `reference_docs.voice_profile`
 - `reference_docs.writer_positions`
 - `reference_docs.article_presets` — path to article-presets.md (V1.5)
@@ -146,7 +146,7 @@ For non-negotiable violations (Pass C): mandatory. If user is unavailable: apply
 
 ## Step 4 — Five Questions Check (+ 6th, V1.9)
 
-At end of revision, apply the essay-level quality check from cogitationis `vault-config.md` `note_template.synthesis.five_questions`:
+At end of revision, apply the essay-level quality check from logos `vault-config.md` `note_template.synthesis.five_questions`:
 
 1. Is the core argument stateable in one sentence? → check against current thesis statement.
 2. Does the opening grip a cold reader with no vault context? → read first paragraph alone.

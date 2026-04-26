@@ -122,7 +122,10 @@ COMMAND_REQUIRED_KEYS = {
         'domains',
     ],
 
-    # ── Article Pipeline (cogitationis-facing, registered 2026-04-21/22) ─
+    # ── Learner Layer (Phase A.1, registered 2026-04-24) ─────────────────
+    'learner-profile': [],  # cross-vault: operates on agensy/learner/ directly
+
+    # ── Article Pipeline (logos-facing, registered 2026-04-21/22) ─
     # Consume reference_docs.* keys specific to expression vaults
     # (voice_profile, writer_positions, positions_index, article_presets,
     #  map_to_article_schema, source_map_registry).

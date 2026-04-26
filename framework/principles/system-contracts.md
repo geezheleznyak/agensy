@@ -68,7 +68,7 @@ Every universal command reads `vault-config.md` at runtime. **Required** keys mu
 | `/article-promote` | `reference_docs.source_map_registry`, `reference_docs.positions_index`, `reference_docs.writer_positions`, `folder_structure.output`, `folder_structure.mocs`, `output_layer.graduation_folder` | — |
 | `/article-critique` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles`, `folder_structure.critic` | — |
 | `/article-companion` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.source_map_registry`, `reference_docs.article_presets`, `folder_structure.essays` | — |
-| `/co-find` | None (reads `[AGENSY_PATH]/vault-registry.md`, `cogitationis/positions-index.md`, `[AGENSY_PATH]/cross-vault-bridges.md`) | — |
+| `/co-find` | None (reads `[AGENSY_PATH]/vault-registry.md`, `logos/positions-index.md`, `[AGENSY_PATH]/cross-vault-bridges.md`) | — |
 | `/co-combine` | None (reads each map file + source vault config; reads `[AGENSY_PATH]/cross-vault-bridges.md`) | — |
 | `/co-suggest` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles`, `reference_docs.positions_index` | — |
 | `/co-critique` | `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.article_design_principles` | — |
@@ -76,7 +76,7 @@ Every universal command reads `vault-config.md` at runtime. **Required** keys mu
 
 **Universal required keys** (needed by ≥6 commands): `domains[]`, `open_problems[]`, `intellectual_style` (with `engagement_axis`), `note_tiers`. Every vault must define all four.
 
-**Expression-vault required keys** (needed by the article-* / co-* pipeline, consumed only in cogitationis or vaults that host a map-to-article workflow): `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.article_presets`, `reference_docs.map_to_article_schema`, `reference_docs.source_map_registry`, `reference_docs.article_design_principles`, `folder_structure.essays`, `folder_structure.thoughts`, `folder_structure.critic`, `output_layer.publication_target`, `output_layer.graduation_folder`. A non-expression vault that never runs article-* / co-* does not need these.
+**Expression-vault required keys** (needed by the article-* / co-* pipeline, consumed only in logos or vaults that host a map-to-article workflow): `reference_docs.voice_profile`, `reference_docs.writer_positions`, `reference_docs.positions_index`, `reference_docs.article_presets`, `reference_docs.map_to_article_schema`, `reference_docs.source_map_registry`, `reference_docs.article_design_principles`, `folder_structure.essays`, `folder_structure.thoughts`, `folder_structure.critic`, `output_layer.publication_target`, `output_layer.graduation_folder`. A non-expression vault that never runs article-* / co-* does not need these.
 
 **System-model required keys** (needed by the system-query / system-audit / system-build / system-bridge commands): `domains[]`, `engagement_axis.positions[]` are consumed from vault-config; the actual ontology is loaded from `[vault]/system-model.yaml` (see `framework/system-model/system-model-architecture.md` and `framework/system-model/system-model-schema.yaml`).
 
@@ -112,15 +112,15 @@ When writing a new universal command or modifying an existing one:
 
 Known vault structures that universal protocols must handle:
 
-**Per-folder domains** (kratos, omega): Each domain has a unique folder path. Walk by folder — note counts map 1:1 to domain.
+**Per-folder domains** (politeia, theoria): Each domain has a unique folder path. Walk by folder — note counts map 1:1 to domain.
 
-**Flat-folder domains** (belli): Multiple domains share one folder (`20-Evergreen/`). Glob once; classify by `domain:` frontmatter field. Never count the same note against multiple domains.
+**Flat-folder domains** (bellum): Multiple domains share one folder (`20-Evergreen/`). Glob once; classify by `domain:` frontmatter field. Never count the same note against multiple domains.
 
 **Dedicated map folder** (all active vaults define `folder_structure.maps`): Maps go there, not to the domain note folder. The arc and axis-survey protocols check this key first.
 
-**Training vault** (belli): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always). At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/training/*` into the vault root (curriculum, postulates, sources-master-list scaffolds).
+**Training vault** (bellum): No reference/synthesis split — all Tier 2 notes use synthesis schema. Protocols that branch on `evergreen-candidate` should treat training vaults as all-synthesis (`evergreen_candidate: true` always). At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/training/*` into the vault root (curriculum, postulates, sources-master-list scaffolds).
 
-**Expression vault** (cogitationis): Consumes the `/article-*` and `/co-*` pipelines. At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/expression/*` — six substrate files: `voice-profile.md`, `writer-positions.md`, `positions-index.md`, `article-presets.md`, `article-design-principles.md`, `source-map-registry.md`. These are referenced via `vault-config.md` `reference_docs.*` keys. `/article-draft` refuses to run until `voice-profile.md` moves out of `status: unseeded`. No `domains[]` required (expression vaults can skip Q6 — F05 is a soft WARN by design). Article-pipeline protocols operate from an expression vault against maps in source (accumulation/training) vaults.
+**Expression vault** (logos): Consumes the `/article-*` and `/co-*` pipelines. At genesis, Phase 1 Doc 13 copies `framework/vault-type-templates/expression/*` — six substrate files: `voice-profile.md`, `writer-positions.md`, `positions-index.md`, `article-presets.md`, `article-design-principles.md`, `source-map-registry.md`. These are referenced via `vault-config.md` `reference_docs.*` keys. `/article-draft` refuses to run until `voice-profile.md` moves out of `status: unseeded`. No `domains[]` required (expression vaults can skip Q6 — F05 is a soft WARN by design). Article-pipeline protocols operate from an expression vault against maps in source (accumulation/training) vaults.
 
 **Pre-framework vaults**: May be missing `reference_docs` files (coverage plan, development plan). Create stubs before running commands that require them — see Section 6.
 
@@ -134,7 +134,7 @@ Known vault structures that universal protocols must handle:
 | Add an OPTIONAL key with fallback | No | Document fallback in the protocol |
 | Change a protocol's vault-config.md reads | Depends | Update contract table; verify all active vaults have the key |
 | Change mandatory note frontmatter fields | Yes | Update `note_template` blocks in all active vault-configs |
-| Add a new universal command | No | Add stub to all vault `.claude/commands/` directories; update contract table. **Note**: omega's vault-specific commands that share names with new universals must be renamed (e.g., `/dialogue` → `/philosopher-dialogue`) |
+| Add a new universal command | No | Add stub to all vault `.claude/commands/` directories; update contract table. **Note**: theoria's vault-specific commands that share names with new universals must be renamed (e.g., `/dialogue` → `/philosopher-dialogue`) |
 | Rename a universal command | Yes | Update stubs in all vaults; update contract table |
 | Use `intellectual_style.engagement_axis` instead of `fault_line` | No (backward compat shim exists) | Commands read both; construct adversarial style from `fault_line` if `intellectual_style` absent |
 

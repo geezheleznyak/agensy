@@ -1,18 +1,18 @@
 ﻿---
-description: Score maps in a source vault for article-readiness; update cogitationis source-map-registry
+description: Score maps in a source vault for article-readiness; update logos source-map-registry
 type: universal-protocol
 audience: claude
 ---
 
 # /article-scan [source-vault]
 
-Audit the maps in a source vault and produce a ranked readiness table. Outputs feed `source-map-registry.md` in the expression vault (cogitationis).
+Audit the maps in a source vault and produce a ranked readiness table. Outputs feed `source-map-registry.md` in the expression vault (logos).
 
-**[source-vault]**: name of a source vault (e.g., `synthesis_politeia`, `synthesis_theoria`, `synthesis_bellum`, `synthesis_oeconomia`, `synthesis_historia`). Default: all source vaults listed in cogitationis's `vault-config.md` under `cross_vault_dependency.source_vaults`.
+**[source-vault]**: name of a source vault (e.g., `synthesis_politeia`, `synthesis_theoria`, `synthesis_bellum`, `synthesis_oeconomia`, `synthesis_historia`). Default: all source vaults listed in logos's `vault-config.md` under `cross_vault_dependency.source_vaults`.
 
-**V1 restriction**: runs only from cogitationis. Other vaults do not consume this command. Reject invocation if invoked from a non-expression vault.
+**V1 restriction**: runs only from logos. Other vaults do not consume this command. Reject invocation if invoked from a non-expression vault.
 
-**Runtime**: Read `vault-config.md` from the cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from the logos vault root. Extract:
 - `reference_docs.source_map_registry` — path to source-map-registry.md
 - `cross_vault_dependency.source_vaults` — list of source vault names
 - `reference_docs.map_to_article_schema` — path to extraction schema
@@ -100,7 +100,7 @@ V1 behavior: leave the Pair/Braid Candidates section of `source-map-registry.md`
 
 ## Step 5 — Update source-map-registry.md
 
-Read `reference_docs.source_map_registry` (from cogitationis vault-config.md). Update in place:
+Read `reference_docs.source_map_registry` (from logos vault-config.md). Update in place:
 
 For each scanned map:
 - If the map is new to the registry: append a row under the correct source-vault section.
@@ -146,4 +146,4 @@ This command must be deterministic: scanning the same vault twice without map ch
 
 - If source vault has no `vault-config.md`: fail gracefully, report "vault lacks genesis doc".
 - If source vault has no maps: report empty result, do not error.
-- If cogitationis source-map-registry.md is missing: create it with the template from `synthesis_logos/source-map-registry.md` and note the creation in the report.
+- If logos source-map-registry.md is missing: create it with the template from `synthesis_logos/source-map-registry.md` and note the creation in the report.

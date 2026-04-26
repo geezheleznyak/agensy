@@ -10,7 +10,7 @@ Take a seed note from `10-Thoughts/` and produce a structured outline in `20-Ess
 
 **[seed-path]**: absolute or vault-relative path to a seed note created by `/article-seed`.
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from logos vault root. Extract:
 - `reference_docs.map_to_article_schema` — path to extraction recipe
 - `reference_docs.article_presets` — path to article-presets.md (V1.5)
 - `reference_docs.writer_positions` — path to writer-positions.md
@@ -34,7 +34,7 @@ Take a seed note from `10-Thoughts/` and produce a structured outline in `20-Ess
 
 1. Read the seed file fully, including frontmatter.
 2. Extract `preset` field from seed frontmatter (V1.5). If missing (pre-V1.5 seed), default to `framework-build`.
-3. Read `article-presets.md` from cogitationis root. Locate the block for the seed's preset. Extract `structure.opening`, `structure.body`, `structure.pressure`, `structure.closing` blocks and their word budgets.
+3. Read `article-presets.md` from logos root. Locate the block for the seed's preset. Extract `structure.opening`, `structure.body`, `structure.pressure`, `structure.closing` blocks and their word budgets.
 4. Read the source map(s):
    - **Type A**: single `source_map` frontmatter field.
    - **Type D**: all N entries in `source_maps` frontmatter list. Read each in full — the outline will need per-framework detail beyond what the seed carried.

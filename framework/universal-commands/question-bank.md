@@ -10,7 +10,7 @@ Manage the cross-vault question bank. Questions that emerge from dialogue but ca
 
 **Data file**: `[AGENSY_PATH]/question-bank.md`
 
-**Why agensy**: Questions span vaults. "Does the recon-strike complex make operational maneuver obsolete?" touches belli (tactics), but answering it draws on kratos (industrial capacity) and oikos (cost-exchange economics). agensy is the cross-vault coordination layer.
+**Why agensy**: Questions span vaults. "Does the recon-strike complex make operational maneuver obsolete?" touches bellum (tactics), but answering it draws on politeia (industrial capacity) and oeconomia (cost-exchange economics). agensy is the cross-vault coordination layer.
 
 ---
 

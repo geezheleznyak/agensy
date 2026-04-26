@@ -13,7 +13,7 @@ schema:
   updated: 2026-04-24
   source_experiment: framework/system-model/primitives-experiment.md
   v0_2_motivation: >
-    Closure gates from Phase 2 (kratos) and Phase 4 (oikos+belli) identified four
+    Closure gates from Phase 2 (politeia) and Phase 4 (oeconomia+bellum) identified four
     caveats that v0.1 did not capture: (1) patterns span wildly different timescales
     so cross-vault queries were category-blind; (2) `reflexivity` conflated ≥4
     mechanically distinct sub-types observed across vaults; (3) accumulation and
@@ -177,10 +177,10 @@ user_engagement_states:
 # ─────────────────────────────────────────────────────────────
 # CROSS-VAULT BINDINGS
 # Link a local pattern or node-set to a bridge_id in
-# synthesis-meta/cross-vault-bridges.md and its peer-vault counterpart.
+# agensy/cross-vault-bridges.md and its peer-vault counterpart.
 # ─────────────────────────────────────────────────────────────
 cross_vault_bindings_required_fields:
-  - bridge_id               # Must exist in synthesis-meta/cross-vault-bridges.md.
+  - bridge_id               # Must exist in agensy/cross-vault-bridges.md.
   - local_nodes             # List of node ids in this vault.
   - paired_with             # Dict: { [vault_name]: { nodes: [...], patterns: [...] } }
 
@@ -216,7 +216,7 @@ validation:
   - "Every pattern.type must be a key in pattern_types."
   - "Every pattern.subgraph.nodes must reference existing node ids."
   - "Every pattern.subgraph.edges must reference existing edge ids."
-  - "Every cross_vault_bindings[].bridge_id must exist in synthesis-meta/cross-vault-bridges.md."
+  - "Every cross_vault_bindings[].bridge_id must exist in agensy/cross-vault-bridges.md."
   - "Every linked_notes path must resolve to an existing file in the vault."
   # v0.2 additions
   - "If present, pattern.timescale must be a key in timescale_bands."

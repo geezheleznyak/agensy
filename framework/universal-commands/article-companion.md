@@ -11,12 +11,12 @@ Create a companion-mode essay workspace where the operator writes the prose them
 **Why this exists**: the pipeline (`/article-seed` → `/article-outline` → `/article-draft` → `/article-revise` → `/article-promote`) delegates prose generation to the AI and audits the output adversarially. That mode is the right tool when the operator wants a complete essay produced against the substrate. It is the wrong tool when the operator wants to write themselves and use the AI for the four moves AI is best at: finding material across vaults, combining concepts across frameworks, suggesting next-move options at stuck points, and applying critic-style pressure to selected passages. Companion mode separates those concerns.
 
 **<topic-or-source-map>**: one of:
-- A free-form topic (e.g., "reflexivity in oikos", "deterrence under autonomous systems") — the command will infer relevant source maps and T3s by keyword search.
+- A free-form topic (e.g., "reflexivity in oeconomia", "deterrence under autonomous systems") — the command will infer relevant source maps and T3s by keyword search.
 - A specific source-map path (e.g., `synthesis_politeia/theory/IR/mearsheimer-systematic-map.md`) — used as the anchoring map; other relevant material is discovered around it.
 
 **[--from-map <map-path>]**: explicit anchor. Required only if the topic string is ambiguous across vaults.
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from logos vault root. Extract:
 - `reference_docs.voice_profile`
 - `reference_docs.writer_positions`
 - `reference_docs.positions_index`

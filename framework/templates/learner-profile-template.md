@@ -12,10 +12,10 @@ audience: both
 
 This is the bedrock document for the Learner Layer. The user authors it once during Phase A bedrock setup, then revises it as their intellectual life evolves. **Cap: 300 lines** — deeper sections graduate to `learner/learner-topics/`. Every field is optional; leave blank what you can't or don't want to answer.
 
-**Usage**: Copy this template to `synthesis-meta/learner/learner-profile.md`. Work through sections L1–L7 with Claude in interactive Q&A (Claude proposes phrasing from your answers; you accept or edit before Claude writes the file). Mark `last_reviewed` per section so staleness is visible.
+**Usage**: Copy this template to `agensy/learner/learner-profile.md`. Work through sections L1–L7 with Claude in interactive Q&A (Claude proposes phrasing from your answers; you accept or edit before Claude writes the file). Mark `last_reviewed` per section so staleness is visible.
 
 **Relationship to neighboring artifacts**:
-- For **authoring** commitments and stylistic patterns → cogitationis `writer-positions.md` + `voice-profile.md`
+- For **authoring** commitments and stylistic patterns → expression-vault `writer-positions.md` + `voice-profile.md`
 - For **collaboration preferences** with Claude → auto-memory `feedback_*.md`
 - For **learning trajectory** (what was opened, what shifted) → `learning-trajectory.md` (Claude-curated, Phase B)
 - For **interest declarations** → `interests-register.md` (Claude-curated, Phase B)
@@ -119,7 +119,7 @@ languages:
 ```yaml
 current_obsessions:
   - topic: [short name, e.g. "reflexivity in social science"]
-      vault: [which vault this lives in — omega | belli | kratos | oikos | clio | cogitationis | cross-vault]
+      vault: [which vault this lives in — theoria | bellum | politeia | oeconomia | historia | logos | cross-vault]
       why: [why this matters to you right now — what's at stake]
       open_question: [the specific unresolved question driving the obsession]
       surfaced: [YYYY-MM-DD when this became active]

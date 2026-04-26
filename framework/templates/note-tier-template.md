@@ -53,19 +53,19 @@ open_problems: [list of open problem IDs from vault-config.open_problems]
 
 Domain-specific fields (defined per vault type, added alongside universal fields):
 
-**Accumulation vault (omega model)**:
+**Accumulation vault (theoria model)**:
 ```yaml
 project_questions: [list of driving question labels, e.g. metaphysical, anthropological, normative]
 evergreen-candidate: [true | false]
 ```
 
-**Training vault (belli model)**:
+**Training vault (bellum model)**:
 ```yaml
 level: [tactical | operational | strategic | all]
 open_challenges: [list of open problem IDs]
 ```
 
-**Expression vault (cogitationis model)**:
+**Expression vault (logos model)**:
 ```yaml
 status: [raw | developed | seed | outline | draft | revision | final]
 omega_refs: []   # wikilinks to source vault notes this relies on
@@ -75,7 +75,7 @@ omega_refs: []   # wikilinks to source vault notes this relies on
 
 ## Schema Selection Rule
 
-In accumulation vaults with mixed domains (the omega model), Tier 2 notes come in two schemas: **Synthesis** and **Reference**. The governing rule:
+In accumulation vaults with mixed domains (the theoria model), Tier 2 notes come in two schemas: **Synthesis** and **Reference**. The governing rule:
 
 - The `evergreen-candidate` field at **note level** determines the schema — not the domain.
 - The domain's `evergreen_candidate` value in `vault-config.md` is the **default for new notes** in that domain.

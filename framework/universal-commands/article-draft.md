@@ -10,7 +10,7 @@ Generate the full draft of an essay from an outline. Voice consumed from `voice-
 
 **[essay-path]**: absolute or vault-relative path to an essay at status `outline` (created by `/article-outline`).
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from logos vault root. Extract:
 - `reference_docs.voice_profile` — style layer
 - `reference_docs.writer_positions` — substance layer (bedrock)
 - `reference_docs.map_to_article_schema` — extraction recipe

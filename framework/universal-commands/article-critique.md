@@ -6,7 +6,7 @@ audience: claude
 
 # /article-critique [essay-path] [--mode=full|frame-only|writing-only]
 
-Run an external-critic pass against a cogitationis essay at any status (`seed`, `outline`, `draft`, `revision`). Produce a structured critique document at `synthesis_logos/critic/[essay-title].md` — a separate file the operator reads and decides what to address.
+Run an external-critic pass against a logos essay at any status (`seed`, `outline`, `draft`, `revision`). Produce a structured critique document at `synthesis_logos/critic/[essay-title].md` — a separate file the operator reads and decides what to address.
 
 **Why this exists**: `/article-revise` audits execution within a frame (voice match, position alignment, preset fidelity, seam-stress). It does not audit *the frame itself*. An essay can pass all Five Questions and all Pass E audits while resting on a circular definitional move, a mis-cited theorist, an unaudited cross-scale analogy, or a concession that silently swallows its structural claim. This command runs the pressure-types that only an external reader normally catches. Calibrated against `synthesis_logos/critic/The frame is the argument, which is the problem.md` (the human-written reference critique of "The Pole Is Obsolete").
 
@@ -17,7 +17,7 @@ Run an external-critic pass against a cogitationis essay at any status (`seed`, 
 - `frame-only` — C1, C5, C6 only. Cheap pre-outline / pre-draft check; use when the thesis is still moving.
 - `writing-only` — writing-tells + C8 only. Surface polish after `/article-revise` has landed.
 
-**Runtime**: Read `vault-config.md` from cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from logos vault root. Extract:
 - `reference_docs.voice_profile` — for writing-tells sub-pass
 - `reference_docs.writer_positions` — for position-check inside C2 (is the cited theorist compatible with user's bedrock?)
 - `reference_docs.article_design_principles` — for principle references (P7–P10)

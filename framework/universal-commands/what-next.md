@@ -17,7 +17,7 @@ Analyze the vault's current state and recommend the single highest-value next su
 
 ## Step 1 — State Check
 
-**Question bank**: Read `synthesis-meta/question-bank.md`. Check for open questions tagged to this vault. If any open questions exist:
+**Question bank**: Read `agensy/question-bank.md`. Check for open questions tagged to this vault. If any open questions exist:
 - Note which open problems they address
 - Flag any question that aligns with a coverage gap (same domain or OP) — these get a connection bonus in the final recommendation
 
@@ -58,12 +58,12 @@ Flag problems with zero coverage that fall within the current phase's priority d
 
 ## Step 4.5 — Learner Layer Readiness Check
 
-Skip this step entirely if `synthesis-meta/learner/` does not exist (vault user has not adopted the Learner Layer).
+Skip this step entirely if `agensy/learner/` does not exist (vault user has not adopted the Learner Layer).
 
 ### 4.5.1 — Load learner context (lazy, capped)
 
-- Read `synthesis-meta/learner/learner-profile.md` (capped ≤300 lines — comparable to a CLAUDE.md). One full read.
-- Grep `synthesis-meta/learner/interests-register.md` Active Interests section for entries matching the current vault's domains, current obsessions from L4 of the profile, or any candidate subjects from prior steps. Do NOT read the whole file.
+- Read `agensy/learner/learner-profile.md` (capped ≤300 lines — comparable to a CLAUDE.md). One full read.
+- Grep `agensy/learner/interests-register.md` Active Interests section for entries matching the current vault's domains, current obsessions from L4 of the profile, or any candidate subjects from prior steps. Do NOT read the whole file.
 
 ### 4.5.2 — Readiness gate against `system-model.yaml`
 

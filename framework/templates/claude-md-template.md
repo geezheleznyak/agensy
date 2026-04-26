@@ -35,7 +35,7 @@ Your mission: [CONFIG: Q1 — one sentence from vault-config.mission]
 
 ## Vault-Specific Principles
 
-[CONFIG: Q1/vault-type — list only the principles NOT in the global file. For kratos: "cold-blooded", "structural", "diagnostic". For belli: "operational", "adversarial", "level-aware", "friction-tested". For omega: "insightful synthesis". Omit any principle that is already in the global Core Principles.]
+[CONFIG: Q1/vault-type — list only the principles NOT in the global file. For politeia: "cold-blooded", "structural", "diagnostic". For bellum: "operational", "adversarial", "level-aware", "friction-tested". For theoria: "insightful synthesis". Omit any principle that is already in the global Core Principles.]
 
 ## Vault Structure
 
@@ -76,7 +76,7 @@ Every Tier 2 synthesis-schema note must reference at least one open problem by n
 
 ## Two-Zone Architecture
 
-*Applies to accumulation vaults with mixed-domain content (omega model). Skip this section for training or expression vaults.*
+*Applies to accumulation vaults with mixed-domain content (theoria model). Skip this section for training or expression vaults.*
 
 The schema a note uses is determined by the NOTE's `evergreen-candidate` field, not the domain default.
 

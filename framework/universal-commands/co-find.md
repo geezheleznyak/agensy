@@ -10,11 +10,11 @@ Search across synthesis vaults for material relevant to a query. Returns a struc
 
 **<query>**: free-form search phrase. The query is split into keywords; keyword overlap drives ranking.
 
-**[--vault]**: limit search to a single vault (kratos, oikos, belli, omega, clio, cogitationis, meta). Default: search all non-cogitationis vaults (the writer's own positions live in cogitationis and are surfaced via `positions-index.md` regardless).
+**[--vault]**: limit search to a single vault (politeia, oeconomia, bellum, theoria, historia, logos, meta). Default: search all non-logos vaults (the writer's own positions live in logos and are surfaced via `positions-index.md` regardless).
 
-**[--type]**: limit result type. `atomic` = evergreen atomic notes in source vaults; `t3` = judgment notes (kratos 20-Judgment, oikos 20-Judgment); `map` = systematic maps; `bridge` = cross-vault bridge entries in `[AGENSY_PATH]/cross-vault-bridges.md`. Default: `all`.
+**[--type]**: limit result type. `atomic` = evergreen atomic notes in source vaults; `t3` = judgment notes (politeia 20-Judgment, oeconomia 20-Judgment); `map` = systematic maps; `bridge` = cross-vault bridge entries in `[AGENSY_PATH]/cross-vault-bridges.md`. Default: `all`.
 
-**Runtime**: Read `vault-registry.md` from `[AGENSY_PATH]/` to know which vaults exist and their paths. Read `positions-index.md` from cogitationis. Read `cross-vault-bridges.md` from agensy if `--type=bridge` or `--type=all`.
+**Runtime**: Read `vault-registry.md` from `[AGENSY_PATH]/` to know which vaults exist and their paths. Read `positions-index.md` from logos. Read `cross-vault-bridges.md` from agensy if `--type=bridge` or `--type=all`.
 
 ---
 
@@ -31,7 +31,7 @@ Search across synthesis vaults for material relevant to a query. Returns a struc
 Run ripgrep-equivalent searches across the relevant vaults. Parallel search by type:
 
 **Atomic notes** (`--type=atomic` or `all`):
-- Paths: `synthesis_<vault>/20-Evergreen/` (belli, omega), `synthesis_<vault>/<domain>/` (kratos, oikos).
+- Paths: `synthesis_<vault>/20-Evergreen/` (bellum, theoria), `synthesis_<vault>/<domain>/` (politeia, oeconomia).
 - Match in: title, first paragraph, tags.
 - Return: path, title, 1-line excerpt (first substantive sentence), tags.
 

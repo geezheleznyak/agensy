@@ -21,7 +21,7 @@ agensy/
   cross-vault-bridges.md     ← bridge domains, vault treatments, search terms
   CLAUDE.md                  ← this file
   framework/
-    slash-command-suite.md   ← command index (34 universal protocol files + 2 backward-compat aliases)
+    slash-command-suite.md   ← command index (35 universal protocol files + 2 backward-compat aliases)
     principles/              ← WHY layer — invariants and design rationale
       architecture-principles.md ← invariants + evaluation framework (read first)
       system-contracts.md       ← contract table + design principles (read second)
@@ -43,7 +43,7 @@ agensy/
       system-model-architecture.md ← design rationale
       system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.3)
       primitives.md             ← three-layer primitive vocabulary (nodes/edges/patterns)
-    universal-commands/      ← 34 parameterized protocol files + 2 aliases (17 core + 4 system-model + 8 article-pipeline + 5 companion-co)
+    universal-commands/      ← 35 parameterized protocol files + 2 aliases (17 core + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer)
     vault-type-templates/    ← per-vault-type substrate scaffolds (expression/training/accumulation)
   tools/
     vault-linter.py          ← note content / schema checks (Categories A/B/G)

@@ -24,7 +24,7 @@ Default: `sweep`.
 - `framework` — only harvest bedrock-candidate material for writer-positions.md §Founding Commitments or §Recurring Dispositions (rare; requires clear user commitment).
 - `all` (default) — all four.
 
-**Runtime**: Read `vault-config.md` (cogitationis) for:
+**Runtime**: Read `vault-config.md` (logos) for:
 - `reference_docs.voice_profile` — voice-profile.md path
 - `reference_docs.writer_positions` — writer-positions.md path
 - `reference_docs.positions_index` — positions-index.md path

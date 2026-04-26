@@ -1,12 +1,12 @@
 ﻿---
-description: Create an essay seed in cogitationis 10-Thoughts from a source-vault map (Type A solo + Type D braid supported)
+description: Create an essay seed in logos 10-Thoughts from a source-vault map (Type A solo + Type D braid supported)
 type: universal-protocol
 audience: claude
 ---
 
 # /article-seed [map-paths] [type] [--preset <id>]
 
-Extract thesis, primary claims, pressure points, and stakes from one or more source-vault maps, and create a seed note in cogitationis `10-Thoughts/`.
+Extract thesis, primary claims, pressure points, and stakes from one or more source-vault maps, and create a seed note in logos `10-Thoughts/`.
 
 **[map-paths]**:
 - **Type A**: single absolute or vault-relative path to a source-vault map.
@@ -16,7 +16,7 @@ Extract thesis, primary claims, pressure points, and stakes from one or more sou
 
 **[--preset <id>]**: optional explicit preset override. Valid ids: `framework-build` | `orthodoxy-counter` | `case-anatomy` | `diagnostic-lens` | `synthesis-braid`. When `[type]=D`, `synthesis-braid` is forced regardless of `--preset` (Type D and `synthesis-braid` are bound 1:1 — the flag is ignored with a warning). When `[type]=A` and `--preset synthesis-braid` is passed: refuse (`synthesis-braid` requires Type D). If `--preset` omitted and `[type]=A`, Step 2.5 infers.
 
-**Runtime**: Read `vault-config.md` from the cogitationis vault root. Extract:
+**Runtime**: Read `vault-config.md` from the logos vault root. Extract:
 - `reference_docs.map_to_article_schema` — path to extraction recipe
 - `reference_docs.writer_positions` — path to writer-positions.md
 - `reference_docs.article_presets` — path to article-presets.md (V1.5)
@@ -73,7 +73,7 @@ If any map is indexical only (no prose sections — MOC-like), reject: "Map [pat
 
 ## Step 2.5 — Preset Inference (V1.5 / V1.7)
 
-Read `article-presets.md` from cogitationis root. Determine which preset governs this essay.
+Read `article-presets.md` from logos root. Determine which preset governs this essay.
 
 **Signal 0 — Type D override (V1.7)**: if `[type]=D`, force `preset: synthesis-braid`. Set `preset_source: type-forced`, `preset_inference_confidence: high`. Skip signals 1–3.
 
@@ -103,7 +103,7 @@ Record result for Step 8 frontmatter:
 
 ## Step 2.6 — Positions Lookup (V1.6 / V1.7)
 
-Read `positions-index.md` from cogitationis root. Find substantive positions this essay should engage.
+Read `positions-index.md` from logos root. Find substantive positions this essay should engage.
 
 **Inputs**: the source-map (Type A) or all N source maps (Type D), already read at Step 2.
 
@@ -115,7 +115,7 @@ Read `positions-index.md` from cogitationis root. Find substantive positions thi
      - First-principle names (2–5 keywords)
      - Core-concept names (3–8 keywords)
      - Any explicit tags on the source map (`theme/...`, domain slugs)
-     - Vault name of source (`kratos`, `oikos`, `belli`, `omega`, `clio`)
+     - Vault name of source (`politeia`, `oeconomia`, `bellum`, `theoria`, `historia`)
    - **Type D**: union the above extraction across **all N maps**, then dedupe. Also add each map's source vault to the keyword set (braids commonly cross vaults; matching T3s may sit in any of the N source vaults).
    Normalize: lowercase, singularize, strip punctuation.
 
@@ -279,7 +279,7 @@ updated: YYYY-MM-DD
 tags: [type/thought, type/article-seed, type/braid, theme/<primary theme union from N maps>]
 status: raw
 article_type: D
-source_vaults: [kratos, oikos, belli]  # list — one per framework; may repeat if two frameworks from one vault
+source_vaults: [politeia, oeconomia, bellum]  # list — one per framework; may repeat if two frameworks from one vault
 source_maps:
   - "[[synthesis_<vault>/theory/.../f1-map.md]]"  # F1
   - "[[synthesis_<vault>/theory/.../f2-map.md]]"  # F2

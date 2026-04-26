@@ -6,7 +6,7 @@ schema_version: 0.2
 
 # Primitives — The Vocabulary of the Vault System Model
 
-This is the canonical reference for the three-layer primitive vocabulary used by every `[vault]/system-model.yaml`. The vocabulary was empirically validated in Phase 0 (see `primitives-experiment.md`) by decomposing three mechanism-rich notes from three vaults (oikos, belli, kratos) and confirming ≥80% shared use without loss of meaning.
+This is the canonical reference for the three-layer primitive vocabulary used by every `[vault]/system-model.yaml`. The vocabulary was empirically validated in Phase 0 (see `primitives-experiment.md`) by decomposing three mechanism-rich notes from three vaults (oeconomia, bellum, politeia) and confirming ≥80% shared use without loss of meaning.
 
 **The three layers**:
 
@@ -24,39 +24,39 @@ Each node belongs to exactly one category. A node is *never* a claim or a full e
 
 ### `agents`
 Loci of decision/action with interests.
-- **oikos**: `lenders`, `fund_managers`, `central_banks`
-- **belli**: `friendly_commander`, `adversary_commander`
-- **kratos**: `rising_power`, `dominant_power`, `domestic_coalitions`
+- **oeconomia**: `lenders`, `fund_managers`, `central_banks`
+- **bellum**: `friendly_commander`, `adversary_commander`
+- **politeia**: `rising_power`, `dominant_power`, `domestic_coalitions`
 
 ### `states`
 Conditions persisting until changed (stocks). A state has a level that can rise or fall.
-- **oikos**: `leverage_ratio`, `asset_prices`, `financing_regime`
-- **belli**: `friendly_mental_model`, `environment`
-- **kratos**: `relative_power_position`, `credibility_rigidity`, `anxiety_level`
+- **oeconomia**: `leverage_ratio`, `asset_prices`, `financing_regime`
+- **bellum**: `friendly_mental_model`, `environment`
+- **politeia**: `relative_power_position`, `credibility_rigidity`, `anxiety_level`
 
 ### `flows`
 Rates of change of states. A flow is the derivative of a stock.
-- **oikos**: `credit_extension_rate`, `leverage_accumulation_rate`
-- **belli**: `friendly_cycle_completion_rate`, `adversary_cycle_completion_rate`
-- **kratos**: `growth_trajectory`, `commitment_accumulation_rate`
+- **oeconomia**: `credit_extension_rate`, `leverage_accumulation_rate`
+- **bellum**: `friendly_cycle_completion_rate`, `adversary_cycle_completion_rate`
+- **politeia**: `growth_trajectory`, `commitment_accumulation_rate`
 
 ### `signals`
 Information carrying content between agents/states. A signal is *about* something else.
-- **oikos**: `risk_model_outputs`, `credit_ratings`, `observed_defaults`
-- **belli**: `sensor_data`, `orienting_interpretations`
-- **kratos**: `stated_intentions`, `forward_deployments`, `red_lines`
+- **oeconomia**: `risk_model_outputs`, `credit_ratings`, `observed_defaults`
+- **bellum**: `sensor_data`, `orienting_interpretations`
+- **politeia**: `stated_intentions`, `forward_deployments`, `red_lines`
 
 ### `constraints`
 Boundaries that foreclose possibilities. A constraint rules *out*, not *in*.
-- **oikos**: `career_risk`, `Basel_II_capital_rules`, `political_economy_of_tightening`
-- **belli**: `cognitive_capacity`, `LOAC`, `human_in_the_loop_requirement`
-- **kratos**: `anarchy`, `asymmetric_time_preference`, `nuclear_deterrence`
+- **oeconomia**: `career_risk`, `Basel_II_capital_rules`, `political_economy_of_tightening`
+- **bellum**: `cognitive_capacity`, `LOAC`, `human_in_the_loop_requirement`
+- **politeia**: `anarchy`, `asymmetric_time_preference`, `nuclear_deterrence`
 
 ### `structures`
 Persistent configurations of roles and relations. A structure is durable enough that it is the *background* against which action happens, not the action itself.
-- **oikos**: `money_manager_capitalism`, `three_stage_financing_regime`
-- **belli**: `two_coupled_OODA_loops`
-- **kratos**: `international_anarchic_system`, `alliance_network`, `credibility_architecture`
+- **oeconomia**: `money_manager_capitalism`, `three_stage_financing_regime`
+- **bellum**: `two_coupled_OODA_loops`
+- **politeia**: `international_anarchic_system`, `alliance_network`, `credibility_architecture`
 
 ---
 
@@ -67,36 +67,36 @@ Edges are typed, directed relations between two nodes. `from` is the source; `to
 ### Core set (empirically dominant in Phase 0)
 
 **`produces`** — `from` generates or causes `to`.
-- oikos: `higher_leverage` produces `higher_asset_prices`
-- belli: `adversary_action` produces `friendly_observation`
-- kratos: `rising_power_growth` produces `dominant_power_fear`
+- oeconomia: `higher_leverage` produces `higher_asset_prices`
+- bellum: `adversary_action` produces `friendly_observation`
+- politeia: `rising_power_growth` produces `dominant_power_fear`
 
 **`reinforces`** — `from` amplifies or stabilizes `to`. Differs from `produces` in that `to` already exists; `from` intensifies it.
-- oikos: `observed_stability` reinforces `downward_revision_of_risk`
-- belli: `obsolete_model` reinforces `adversary_confusion`
-- kratos: `each_new_commitment` reinforces `credibility_rigidity`
+- oeconomia: `observed_stability` reinforces `downward_revision_of_risk`
+- bellum: `obsolete_model` reinforces `adversary_confusion`
+- politeia: `each_new_commitment` reinforces `credibility_rigidity`
 
 **`dampens`** — `from` suppresses or reduces `to`.
-- oikos: `central_bank_intervention` dampens `bust_phase`
-- belli: `deception` dampens `adversary_orientation_quality`
-- kratos: `cultural_similarity` dampens `spiral_intensity`
+- oeconomia: `central_bank_intervention` dampens `bust_phase`
+- bellum: `deception` dampens `adversary_orientation_quality`
+- politeia: `cultural_similarity` dampens `spiral_intensity`
 
 **`gates`** — `from` is a threshold or condition that enables or blocks `to`. Gates are binary or step-function.
-- oikos: `competitive_pressure` gates `individual_exit_option`
-- belli: `AI_enabled_cycle` gates `human_participation`
-- kratos: `commitment_rigidity` gates `ability_to_back_down`
+- oeconomia: `competitive_pressure` gates `individual_exit_option`
+- bellum: `AI_enabled_cycle` gates `human_participation`
+- politeia: `commitment_rigidity` gates `ability_to_back_down`
 
 **`couples`** — `from` makes `to` dependent on a third element. Coupling creates shared fate.
-- belli: `two_OODA_loops` couples `friendly_cycle_state` to `adversary_cycle_state`
-- kratos: `alliance_commitments` couple `great_power_decisions` to `local_ally_triggers`
+- bellum: `two_OODA_loops` couples `friendly_cycle_state` to `adversary_cycle_state`
+- politeia: `alliance_commitments` couple `great_power_decisions` to `local_ally_triggers`
 
 ### Reserve set (plausible; retained for broader corpus)
 
 - **`consumes`** — `from` depletes or transforms `to`. (Rare in Phase 0; likely common in energy/resource vaults.)
-- **`reveals`** — `from` makes `to` observable. (belli signaling; oikos risk revelation.)
-- **`conceals`** — `from` hides or obfuscates `to`. (belli deception; kratos strategic ambiguity.)
-- **`requires`** — `from` depends on `to` for its operation. (kratos credibility requires commitments.)
-- **`opposes`** — `from` and `to` are in structural antagonism. (kratos rising power opposes dominant power interests.)
+- **`reveals`** — `from` makes `to` observable. (bellum signaling; oeconomia risk revelation.)
+- **`conceals`** — `from` hides or obfuscates `to`. (bellum deception; politeia strategic ambiguity.)
+- **`requires`** — `from` depends on `to` for its operation. (politeia credibility requires commitments.)
+- **`opposes`** — `from` and `to` are in structural antagonism. (politeia rising power opposes dominant power interests.)
 
 `realizes` and `acts-on` from Shannon's original list are dropped: the first is too abstract, the second subsumed by `produces`.
 
@@ -108,42 +108,42 @@ A pattern is a recurring *shape* of mechanism, instantiated by a subgraph of nod
 
 ### `positive_feedback`
 Self-amplifying loop — output reinforces input.
-- **oikos**: stability → downward risk revision → looser credit → higher leverage → higher asset prices → improved creditworthiness → (back to stability signal).
-- **belli**: each side's actions become the other side's observations → each cycle feeds the next → tempo differential amplifies.
-- **kratos**: growth → fear → commitments → rigidity → trigger-vulnerability → more fear.
+- **oeconomia**: stability → downward risk revision → looser credit → higher leverage → higher asset prices → improved creditworthiness → (back to stability signal).
+- **bellum**: each side's actions become the other side's observations → each cycle feeds the next → tempo differential amplifies.
+- **politeia**: growth → fear → commitments → rigidity → trigger-vulnerability → more fear.
 
 ### `negative_feedback`
 Self-limiting loop — output dampens input.
-- Not explicit in the three Phase 0 notes, but standard in control-theoretic mechanisms (e.g., balance-of-power restoration in kratos, price equilibration in oikos, logistic constraint in belli). Retain.
+- Not explicit in the three Phase 0 notes, but standard in control-theoretic mechanisms (e.g., balance-of-power restoration in politeia, price equilibration in oeconomia, logistic constraint in bellum). Retain.
 
 ### `threshold`
 Sudden qualitative transition at a critical value.
-- **oikos**: Minsky Moment — the accumulated Ponzi structure crosses a threshold at which arrest of asset-price appreciation triggers cascade failure.
-- **belli**: OODA mismatch threshold — the tempo differential crosses a point at which adversary cohesion collapses, not merely degrades.
-- **kratos**: parity as danger zone — power transition crosses the value at which preventive-war logic becomes dominant.
+- **oeconomia**: Minsky Moment — the accumulated Ponzi structure crosses a threshold at which arrest of asset-price appreciation triggers cascade failure.
+- **bellum**: OODA mismatch threshold — the tempo differential crosses a point at which adversary cohesion collapses, not merely degrades.
+- **politeia**: parity as danger zone — power transition crosses the value at which preventive-war logic becomes dominant.
 
 ### `reflexivity`
 System's model of itself affects the system.
-- **oikos**: risk models calibrated on stability rate the stability-induced fragility as safe, which produces more of it.
-- **belli**: each commander's model of the other shapes their actions, which shape the other's observations, which shape the other's model.
-- **kratos**: signals of resolve partially create the reality they aim to deter (dominant power's deterrent posture reinforces rising power's perception of threat).
+- **oeconomia**: risk models calibrated on stability rate the stability-induced fragility as safe, which produces more of it.
+- **bellum**: each commander's model of the other shapes their actions, which shape the other's observations, which shape the other's model.
+- **politeia**: signals of resolve partially create the reality they aim to deter (dominant power's deterrent posture reinforces rising power's perception of threat).
 
 ### `selection`
 Differential persistence of competing units.
-- **belli**: faster-cycling OODA side wins; slower-cycling side is selected out.
-- Common in evolutionary / market / institutional contexts. Appears in oikos (firms with hedge financing survive shake-outs that kill Ponzi-financed firms) and kratos (regimes with adaptive coalition management persist; rigid coalitions collapse).
+- **bellum**: faster-cycling OODA side wins; slower-cycling side is selected out.
+- Common in evolutionary / market / institutional contexts. Appears in oeconomia (firms with hedge financing survive shake-outs that kill Ponzi-financed firms) and politeia (regimes with adaptive coalition management persist; rigid coalitions collapse).
 
 ### `accumulation`
 Stock grows without a balancing release.
-- **oikos**: Ponzi structures accumulate during boom; no mechanism releases them until the Minsky Moment.
-- **kratos**: commitment network accumulates; each new commitment is path-dependent.
-- **belli**: in prolonged campaigns, cognitive load and decision fatigue accumulate without structural release mechanisms.
+- **oeconomia**: Ponzi structures accumulate during boom; no mechanism releases them until the Minsky Moment.
+- **politeia**: commitment network accumulates; each new commitment is path-dependent.
+- **bellum**: in prolonged campaigns, cognitive load and decision fatigue accumulate without structural release mechanisms.
 
 ### `path_dependence`
 History constrains present options.
-- **oikos**: central bank interventions preserve Ponzi structures that then constrain future intervention options (each bailout sets the floor for the next).
-- **kratos**: commitment to small allies constrains great-power strategic flexibility (Alliance Entrapment).
-- **belli**: doctrine written for prior wars shapes (and constrains) adaptation to current war.
+- **oeconomia**: central bank interventions preserve Ponzi structures that then constrain future intervention options (each bailout sets the floor for the next).
+- **politeia**: commitment to small allies constrains great-power strategic flexibility (Alliance Entrapment).
+- **bellum**: doctrine written for prior wars shapes (and constrains) adaptation to current war.
 
 ---
 
@@ -174,9 +174,9 @@ Observed subtypes from Phase 2–4 corpus (not authoritative — use when they f
 
 ### `reflexivity` subtypes
 - **`target-erosion`** — action aimed at an object erodes the property that motivated the action. Examples: Hirschman boomerang (weaponizing dependence erodes dependence); Goodhart / policy_target_erosion (targeting a measure destroys its indicator value).
-- **`narrative-fact-cycle`** — belief alters behavior alters facts alters belief. Soros's original formulation. Examples: narrative_reflexivity_cycle (oikos).
+- **`narrative-fact-cycle`** — belief alters behavior alters facts alters belief. Soros's original formulation. Examples: narrative_reflexivity_cycle (oeconomia).
 - **`orientation-constitution`** — the orientation that would detect/correct the pattern is itself constituted by the pattern. Examples: deception_reflexivity (adversary's OODA produces the success of the deception); mission_command_reflexivity (commander's intent shapes what staff report as significant).
-- **`structural-entrapment`** — awareness of the pattern cannot translate to individual action because structural position converts awareness into collective inaction. Example: institutional_entrapment (oikos late-cycle career risk).
+- **`structural-entrapment`** — awareness of the pattern cannot translate to individual action because structural position converts awareness into collective inaction. Example: institutional_entrapment (oeconomia late-cycle career risk).
 
 ### `threshold` subtypes (candidate — less developed)
 - **`cascade-trigger`** — small marginal change crosses a tipping point releasing accumulated stock.
@@ -244,7 +244,7 @@ When building a vault's `system-model.yaml`:
 
 ## Pattern-Name Warning
 
-Patterns sharing a name across vaults (e.g., `reflexivity` in oikos Soros-style and belli OODA-style) may encode mechanically different dynamics. This was flagged in Phase 0, validated through Phase 4 closure (six reflexivities, all passing the observer-effect mechanism test), and partially mitigated in v0.2 by the `subtype` and `timescale` fields.
+Patterns sharing a name across vaults (e.g., `reflexivity` in oeconomia Soros-style and bellum OODA-style) may encode mechanically different dynamics. This was flagged in Phase 0, validated through Phase 4 closure (six reflexivities, all passing the observer-effect mechanism test), and partially mitigated in v0.2 by the `subtype` and `timescale` fields.
 
 **Rule (updated for v0.2)**: A `cross_vault_bindings` entry that pairs two pattern instances by *type* alone is a coarse hypothesis. Tightening it:
 - Matching `type` + matching `subtype` (where subtypes exist) = strong pairing.
