@@ -1,12 +1,14 @@
-﻿---
+---
+created: 2026-04-20
+updated: 2026-04-24
 type: architecture
-audience: claude
 schema_version: 0.2
 ---
 
 # Vault System Model Layer — Architecture
 
 The System Model Layer is a machine-readable per-vault description of each vault's domain as nodes (roles), edges (relations), and patterns (dynamical shapes), plus bindings to peer vaults via the bridge concept. It sits below slash commands and MOCs, above note content, and references — but does not duplicate — vault-config and cross-vault-bridges.
+
 
 ## Why This Layer Exists
 
@@ -41,7 +43,13 @@ Frozen from the Phase 0 experiment (`primitives-experiment.md`, 2026-04-20). Ext
 - **Patterns (7 types)**: positive_feedback · negative_feedback · threshold · reflexivity · selection · accumulation · path_dependence
 - **Pattern annotations (v0.2, optional)**: `timescale` (six bands) · `subtype` (emergent free-string) · `secondary_types` (dual-mechanism array)
 
-Cross-vault bindings are enabled by the patterns layer: the same pattern type instantiated in two vaults with different local nodes is the coupling unit. Names matching does not guarantee mechanical compatibility — that was tested at Phase 4 closure and passed for `reflexivity` across six instances. v0.2 tightens the matching criterion by adding `subtype` and `timescale` so a binding can assert not only "same pattern type" but "same pattern subtype at the same timescale."
+Cross-vault bindings operate at two distinct levels of cross-vault relation (v0.4 disambiguation):
+
+1. **Substrate overlap** (the default): two or more vaults engage the same topic substrate, each through its own discipline-specific mechanism. The bridges in `cross-vault-bridges.md` are written at this level — each bridge describes how each vault treats a shared substrate, with explicit acknowledgment that the mechanisms differ per vault. Substrate overlap does not require shared pattern type.
+
+2. **Mechanism alignment** (the rare exception): the same pattern type instantiated in two vaults with different local nodes is a coupling unit. Names matching does not guarantee mechanical compatibility — that was tested at Phase 4 closure and passed for `reflexivity` across six instances. v0.2 tightens the matching criterion by adding `subtype` and `timescale` so a mechanism alignment can assert not only "same pattern type" but "same pattern subtype at the same timescale." v0.4 makes the assertion explicit: declare `mechanism_pairings[]` inside a binding to claim mechanism alignment for specific pattern pairs. `/system-audit` Step 5b validates only declared mechanism_pairings; cross-products in `paired_with` not declared as mechanism_pairings are presumed substrate overlap.
+
+Conflating substrate and mechanism produced the v0.1-v0.3 false-positive flood (historia Phase 5b audit, 2026-04-26, 33 type-mismatches against fully-bootstrapped peers). Closure record: `framework/closures/v0.4-binding-kinds.md`.
 
 ## What the System Model Is NOT
 
@@ -90,7 +98,7 @@ framework/
 ## Integration Points
 
 - **Command lifecycle** (`framework/protocols/command-lifecycle.md`): `/system-audit` fires at the same cadence as `/coverage-audit` (milestone trigger, every N notes or on phase completion).
-- **System state** (`[AGENSY_PATH]/system-state.md`): Vault Registry gains a `System Model` column tracking per-vault status; a separate **System Model Freshness** table tracks drift (last_audit / dirt_level / outstanding_issues).
+- **System state** (`agensy/system-state.md`): Vault Registry gains a `System Model` column tracking per-vault status; a separate **System Model Freshness** table tracks drift (last_audit / dirt_level / outstanding_issues).
 - **Genesis protocol** (`framework/protocols/genesis-protocol.md`): new vaults created post-v0.1 optionally bootstrap an empty `system-model.yaml` in Doc 12; population deferred to an explicit `/system-build` session.
 - **Coverage-audit** (`framework/universal-commands/coverage-audit.md`): if a vault has a `system-model.yaml`, `/coverage-audit` Step 9 **mandatorily** invokes `/system-audit` as chained protocol and writes its summary line to `memory/session-state.md`. This is the primary staleness prevention mechanism.
 

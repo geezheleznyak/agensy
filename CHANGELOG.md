@@ -7,6 +7,32 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.5.0] — 2026-04-26
+
+### Changed — System Model schema v0.3 → v0.4 (binding-kind disambiguation)
+
+- `framework/system-model/system-model-schema.yaml`: bumped `schema.version` to `0.4`. Added `mechanism_pairings` to `cross_vault_bindings_optional_fields`. New `mechanism_pairings_schema` block specifies `required_fields: [local, peers]` + optional `rationale`. Added v0.4 validation rules and a `v0_4_motivation` paragraph documenting the binding-kind disambiguation. Extensibility note bumped: v0.4 candidates that shipped — `mechanism_pairings`; v0.5 reserved — node quality/confidence, edge weight.
+
+- `framework/universal-commands/system-audit.md`: Step 5b rewritten. Step 5b now fires ONLY on pairings explicitly declared in a binding's `mechanism_pairings[]` list. Cross-products of `local_patterns × paired_with[v].patterns` not in `mechanism_pairings` are treated as implicit substrate overlap and skipped silently. Issue counters renamed: `binding type-mismatch` (v0.2-v0.3) becomes `mechanism-pairing failures` + `mechanism-pairing broken refs`; new informational counters `mechanism-pairing divergences` and `implicit substrate pairings`. Step 7 report format updated; Step 9 dirt-level rule updated (mechanism-pairing failures replace `binding type-mismatch` as the cross-vault drift trigger; informational counts excluded from the "issue count > 5" rule). One-line summary fields renamed accordingly. Migration note added for v0.3 → v0.4 readers: pre-v0.4 yamls produce zero mechanism-pairing failures (correct: no claims were made).
+
+- `framework/system-model/primitives.md`: Pattern-Name Warning section rewritten with explicit substrate-vs-mechanism distinction. New "Rule (updated for v0.4)" replaces the v0.2 rule and specifies that bindings are substrate-by-default; mechanism alignment requires explicit `mechanism_pairings[]` declaration. Annotation discipline section added.
+
+- `framework/system-model/system-model-architecture.md`: cross-vault binding paragraph rewritten to describe the two distinct kinds of cross-vault relation (substrate overlap as the default; mechanism alignment as the rare exception via explicit `mechanism_pairings[]`).
+
+- `CLAUDE.md`: vault-structure tree updates `system-model-schema.yaml` version from `v0.3` to `v0.4`.
+
+### Backward compatibility
+
+All v0.1, v0.2, and v0.3 yamls remain valid against the v0.4 schema. The new field is optional. Pre-v0.4 bindings with no `mechanism_pairings[]` produce zero mechanism-pairing failures under v0.4 audit semantics — correct, because no mechanism alignment claims were made by those bindings.
+
+The legacy `binding type-mismatch` warning class from v0.2-v0.3 is retired. Audit reports under v0.4 emit `mechanism-pairing failures` and `mechanism-pairing broken refs` instead. Downstream consumers of audit summary lines (e.g., `/coverage-audit` Step 9 capture) should update their parsers — the summary line field names changed (`type_mismatch` → `mech_failures`, plus new `mech_broken_refs` and `substrate_pairings` fields).
+
+### Migration guidance
+
+Additive minor release — no mandatory action. To gain back mechanism validation on a binding under v0.4, declare the genuine alignments in `mechanism_pairings[]`. Aspirational or weak pairings should not be declared — substrate is the right default.
+
+---
+
 ## [2.4.0] — 2026-04-26
 
 ### Added — Learner Layer Phase A.1 (First-Use Gate + `/learner-profile` command)

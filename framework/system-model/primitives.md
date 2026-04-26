@@ -1,6 +1,7 @@
-﻿---
+---
+created: 2026-04-20
+updated: 2026-04-24
 type: reference
-audience: claude
 schema_version: 0.2
 ---
 
@@ -246,11 +247,27 @@ When building a vault's `system-model.yaml`:
 
 Patterns sharing a name across vaults (e.g., `reflexivity` in oeconomia Soros-style and bellum OODA-style) may encode mechanically different dynamics. This was flagged in Phase 0, validated through Phase 4 closure (six reflexivities, all passing the observer-effect mechanism test), and partially mitigated in v0.2 by the `subtype` and `timescale` fields.
 
-**Rule (updated for v0.2)**: A `cross_vault_bindings` entry that pairs two pattern instances by *type* alone is a coarse hypothesis. Tightening it:
-- Matching `type` + matching `subtype` (where subtypes exist) = strong pairing.
-- Matching `type` + different `subtype` = weak pairing, flagged informationally by `/system-audit` Step 5b.
-- Different `type` across `paired_with` entries = binding is suspect; `/system-audit` flags as `⚠️ binding type-mismatch`.
-- Matching `type` + divergent `timescale` bands = pairing is real at the mechanism level but degenerate at the application level — query results should preserve the timescale distinction.
+### Substrate vs mechanism (v0.4 disambiguation)
+
+`cross_vault_bindings` entries operate at TWO distinct levels of cross-vault relation:
+
+1. **Substrate overlap** (the default; what most bindings actually express): two or more vaults engage the same topic substrate (institutions, complexity, political economy), each through its own discipline-specific mechanism. The pairing is at the topic/domain level. Substrate overlap does NOT require shared pattern type. The bridges in `cross-vault-bridges.md` are written at this level — each bridge describes how each vault treats a shared substrate, with explicit acknowledgment that the mechanisms differ per vault.
+
+2. **Mechanism alignment** (the rare exception): two specific patterns instantiate the same dynamical mechanism — same pattern type, ideally same subtype and timescale. Mechanism alignment is what `cross_vault_bindings` was originally (v0.1) intended to express, and what `/system-audit` Step 5b validates. It is rare in practice — confirmed cases include the four-vault `target-erosion` reflexivity (historia asabiyyah_erosion_cycle ↔ politeia hirschman_boomerang ↔ oeconomia policy_target_erosion ↔ theoria reward_hacking_target_erosion) and the path_dependence "lock-in" cluster (historia institutional_lock_in ↔ politeia order_lock_in ↔ oeconomia institutional_lock_in).
+
+Conflating substrate and mechanism produces the v0.1-v0.3 false-positive flood (historia Phase 5b audit, 2026-04-26: 33 type-mismatches against fully-bootstrapped peers). v0.4 disambiguates by adding the `mechanism_pairings[]` field to bindings.
+
+**Rule (updated for v0.4)**: `cross_vault_bindings` entries are by default *substrate-level*. `/system-audit` does NOT enforce mechanism alignment on substrate-level bindings.
+
+To assert mechanism alignment between specific pattern pairs, declare them in the binding's `mechanism_pairings:` list. `/system-audit` then validates:
+- Same `type` + matching `subtype` (where present) = strong mechanism pairing.
+- Same `type` + different `subtype` = weak pairing, flagged informationally.
+- Same `type` + divergent `timescale` bands = real mechanism, degenerate application — query results should preserve the timescale distinction.
+- Different `type` (and not in `secondary_types`) = MECHANISM-PAIRING FAILURE — the explicit assertion is invalidated; either the assertion is wrong (downgrade to substrate by removing from mechanism_pairings), or the patterns themselves need re-typing (a primitive-layer concern).
+
+Absence of `mechanism_pairings` on a binding is the right default for most bindings, which document substrate overlap rather than mechanism alignment.
+
+**Annotation discipline**: use `mechanism_pairings` sparingly. Inflating it with weak or aspirational pairings re-introduces the false-positive problem in self-inflicted form (now you're failing your own claims). The point is to document and validate the few genuine cross-vault mechanism instances.
 
 ---
 

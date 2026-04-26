@@ -1,16 +1,16 @@
 # system-model-schema.yaml
-# Canonical schema for the Vault System Model Layer — v0.3
+# Canonical schema for the Vault System Model Layer — v0.4
 # Per-vault [vault]/system-model.yaml files extend this file via `extends:`.
 # Vocabulary frozen from the Phase 0 primitive-discovery experiment
 # (see framework/system-model/primitives-experiment.md, 2026-04-20).
-# v0.2 additions (2026-04-24) and v0.3 additions (2026-04-24) are all additive;
-# v0.1 and v0.2 YAMLs remain valid.
+# v0.2 (2026-04-24), v0.3 (2026-04-24), and v0.4 (2026-04-26) additions are all
+# additive; v0.1, v0.2, and v0.3 YAMLs remain valid.
 
 schema:
   name: vault-system-model
-  version: "0.3"
+  version: "0.4"
   created: 2026-04-20
-  updated: 2026-04-24
+  updated: 2026-04-26
   source_experiment: framework/system-model/primitives-experiment.md
   v0_2_motivation: >
     Closure gates from Phase 2 (politeia) and Phase 4 (oeconomia+bellum) identified four
@@ -28,6 +28,35 @@ schema:
     `last_engaged` date) to nodes AND patterns. Sparse by default — annotate
     only nodes the user has actually engaged with. Default is implicitly `unseen`;
     do not pre-fill the YAML with `unseen` markers.
+  v0_4_motivation: >
+    Phase 5b historia audit (2026-04-26) surfaced 33 binding type-mismatches against
+    the four fully-bootstrapped peer vaults. Investigation revealed a category
+    error in the v0.1 cross_vault_bindings design: "bridges" in
+    cross-vault-bridges.md are concept-level SUBSTRATE overlaps ("how each vault
+    treats institutions / complexity / political economy"), but /system-audit
+    Step 5b treated every paired-pattern combination as a MECHANISM alignment
+    claim. The two are different kinds of cross-vault relation; conflating them
+    produced a high false-positive rate (~33% of pattern cross-products) when
+    audited against bootstrapped peers.
+
+    v0.4 disambiguates by adding `mechanism_pairings[]` to cross_vault_bindings
+    entries — an EXPLICIT list of (local_pattern, peer_vault.peer_pattern)
+    tuples where mechanism alignment IS being claimed. /system-audit Step 5b
+    only fires on declared mechanism_pairings. Cross-products of
+    local_patterns × paired_with[v].patterns NOT in mechanism_pairings are
+    treated as implicit substrate overlap and not flagged. /system-audit
+    Step 9 dirt-level rule updated: only mechanism_pairings failures count
+    toward the type-mismatch trigger.
+
+    All v0.1-v0.3 yamls remain valid (mechanism_pairings is optional). Migration
+    is purely additive: identify the few genuine mechanism alignments, annotate
+    them. Bindings without explicit mechanism claims produce zero false-positive
+    type-mismatches; bindings WITH explicit claims get strict mechanism
+    validation (the original v0.2 intent applied where it actually applies).
+
+    The asymmetry — substrate overlap is the rule, mechanism alignment is the
+    rare exception — matches what cross-vault-bridges.md actually documents.
+    Closure record: framework/closures/v0.4-binding-kinds.md.
 
 # ─────────────────────────────────────────────────────────────
 # NODE VOCABULARY — 6 categories
@@ -187,6 +216,41 @@ cross_vault_bindings_required_fields:
 cross_vault_bindings_optional_fields:
   - local_patterns          # List of pattern ids on this side of the bridge.
   - notes                   # Free-text characterization of the binding.
+  - mechanism_pairings      # (v0.4) — see mechanism_pairings_schema below.
+
+# ─────────────────────────────────────────────────────────────
+# MECHANISM PAIRINGS (v0.4)
+# Substrate overlap is the DEFAULT semantics of a cross_vault_bindings entry:
+# the binding asserts that two or more vaults share a topic substrate
+# (institutions, complexity, political economy), each through its own
+# discipline-specific mechanism. Substrate overlap does NOT require the local
+# patterns and peer patterns to share a pattern type.
+#
+# A `mechanism_pairings[]` entry inside a binding is an EXPLICIT additional
+# assertion: this specific (local_pattern, peer_vault.peer_pattern) tuple
+# shares a mechanism (pattern type, ideally subtype + timescale) — not just a
+# substrate. /system-audit Step 5b validates only declared mechanism_pairings.
+# Absence of mechanism_pairings on a binding is the right default for most
+# bindings; it accurately reflects substrate-only cross-vault relationship.
+#
+# Use mechanism_pairings sparingly. The point is to document genuine cross-
+# vault mechanism instances (e.g., the four-vault `target-erosion` reflexivity
+# subtype) and let the audit validate the claim. Inflating mechanism_pairings
+# with weak or aspirational pairings re-introduces the v0.1-v0.3 false-positive
+# problem in the opposite direction (now self-inflicted).
+# ─────────────────────────────────────────────────────────────
+mechanism_pairings_schema:
+  required_fields:
+    - local                 # local pattern id (must exist in this vault's patterns[])
+    - peers                 # list of "<peer_vault>.<peer_pattern_id>" strings
+  optional_fields:
+    - rationale             # one-line natural-language note on the alignment
+  semantics: >
+    For each declared (local, peer) tuple: the local pattern and peer pattern
+    are claimed to instantiate the same dynamical mechanism. /system-audit
+    Step 5b validates this claim by comparing pattern type, subtype, and
+    timescale. Type mismatch (without secondary_types escape) is a hard
+    failure. Subtype/timescale divergence is informational.
 
 # ─────────────────────────────────────────────────────────────
 # EXTENSIBILITY
@@ -201,7 +265,7 @@ extensibility:
     mechanism: "Declare under an `extensions:` block in the vault's system-model.yaml"
   schema_level_additions:
     allowed: false
-    note: "v0.2 candidates that shipped: timescale, subtype, secondary_types. v0.3 candidates that shipped: user_engagement, last_engaged. Reserved for v0.4: node quality/confidence, edge weight."
+    note: "v0.2 candidates that shipped: timescale, subtype, secondary_types. v0.3 candidates that shipped: user_engagement, last_engaged. v0.4 candidates that shipped: mechanism_pairings (binding-kind disambiguation). Reserved for v0.5: node quality/confidence, edge weight."
 
 # ─────────────────────────────────────────────────────────────
 # VALIDATION RULES
@@ -228,6 +292,10 @@ validation:
   - "If present, user_engagement must be a key in user_engagement_states."
   - "If user_engagement is present, last_engaged must also be present and must be a valid YYYY-MM-DD date."
   - "If last_engaged is present without user_engagement, that is a schema violation (annotation half-applied)."
+  # v0.4 additions
+  - "If present, every mechanism_pairings[].local must reference an existing pattern id in this vault."
+  - "If present, every mechanism_pairings[].peers entry must be a string of the form '<peer_vault>.<peer_pattern_id>' where <peer_vault> appears in the binding's paired_with dict."
+  - "v0.4 audit-level (blocking): mechanism_pairings type-mismatch (without secondary_types escape) is the only condition that triggers Step 9 dirt-level RED via Step 5b. Cross-products of paired_with NOT in mechanism_pairings are presumed substrate-level and not type-checked."
 
 # ─────────────────────────────────────────────────────────────
 # WHAT THE SYSTEM MODEL IS NOT

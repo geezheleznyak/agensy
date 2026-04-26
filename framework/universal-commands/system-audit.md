@@ -1,7 +1,6 @@
-﻿---
+---
 description: Reconcile a vault's system-model.yaml against the schema, vault-config, bridges, and the note corpus
 type: universal-protocol
-audience: claude
 ---
 
 # /system-audit
@@ -11,8 +10,8 @@ Systematic reconciliation of `[vault]/system-model.yaml` against the canonical s
 **Runtime**: Read the following inputs before executing:
 - `vault-config.md` from the vault root — `domains[]`, `engagement_axis.positions[]`, `folder_structure.output`.
 - `system-model.yaml` from the vault root.
-- `[AGENSY_PATH]/framework/system-model/system-model-schema.yaml` — canonical schema.
-- `[AGENSY_PATH]/cross-vault-bridges.md` — valid bridge_ids.
+- `agensy/framework/system-model/system-model-schema.yaml` — canonical schema.
+- `agensy/cross-vault-bridges.md` — valid bridge_ids.
 - Directory listing under the vault root (for `linked_notes` existence checks).
 
 If `system-model.yaml` does not exist at the vault root, respond: "No system model to audit — run `/system-build` first." and stop.
@@ -67,42 +66,71 @@ Report:
 ## Step 5 — Cross-Vault Binding Integrity
 
 For every entry in `cross_vault_bindings[]`:
-- `bridge_id` exists in `[AGENSY_PATH]/cross-vault-bridges.md`.
+- `bridge_id` exists in `agensy/cross-vault-bridges.md`.
 - Every id in `local_nodes` / `local_patterns` resolves in this vault's system-model.
-- Every vault name in `paired_with` exists in `[AGENSY_PATH]/system-state.md` Vault Registry.
+- Every vault name in `paired_with` exists in `agensy/system-state.md` Vault Registry.
 - Every id in `paired_with[vault].nodes` / `paired_with[vault].patterns` resolves when the peer vault's system-model is readable. If the peer vault has no `system-model.yaml`, flag as `⏳ peer not bootstrapped` (not an error — expected during rollout).
 
 Report: `⚠️ binding drift: N` with bridge_id, side, and broken id.
 
 ---
 
-## Step 5b — Binding Mechanism Check (v0.2)
+## Step 5b — Binding Mechanism Check (v0.2; rewritten v0.4)
 
-For every `cross_vault_bindings[]` entry that pairs local patterns with patterns in a peer vault via `paired_with[vault].patterns`:
+**v0.4 change**: this step now fires ONLY on pairings explicitly declared in
+`mechanism_pairings[]`. Cross-products of `local_patterns × paired_with[v].patterns`
+that are NOT in `mechanism_pairings` are treated as implicit substrate overlap
+and not type-checked. This eliminates the v0.1-v0.3 false-positive flood while
+preserving strict mechanism validation where it is actually being claimed.
 
-1. **Type match** — compare the `type` field of each local pattern against each paired peer pattern.
+If a binding has no `mechanism_pairings` field, the binding is treated as
+substrate-level only. Step 5b emits only an informational summary line
+(`ℹ️ binding has no declared mechanism pairings`) — not a warning.
+
+For every `cross_vault_bindings[]` entry with a `mechanism_pairings[]` list,
+and for every entry within that list:
+
+1. **Resolve** — each `peers[]` string of form `<peer_vault>.<peer_pattern_id>`
+   must resolve to an existing pattern in the peer's `system-model.yaml`. If
+   the peer vault is not bootstrapped, skip silently (informational note).
+   If the peer is bootstrapped but the pattern id does not exist → flag as
+   `⚠️ mechanism-pairing broken reference`.
+
+2. **Type match** — compare the `type` field of the local pattern against the
+   peer pattern.
    - Same `type` → pass silently.
-   - Different `type` (and neither is in the other's `secondary_types`) → `⚠️ binding type-mismatch`. This is the hardest failure: the bridge asserts a structural pairing that the primitives do not support.
-   - Different `type` but one is in the other's `secondary_types` → `ℹ️ binding type-match via secondary_type` — pass with note.
+   - Different `type` but one is in the other's `secondary_types` → `ℹ️ mechanism-pairing match via secondary_type` — pass with note.
+   - Different `type` (no secondary_types escape) → `⚠️ mechanism-pairing failure`. The explicit assertion is invalidated; the user should either find a different peer pattern that genuinely matches, or remove this entry from mechanism_pairings (downgrading the claim to substrate-only).
 
-2. **Subtype divergence** — if both patterns carry a `subtype` field, compare strings.
+3. **Subtype divergence** — if both patterns carry a `subtype` field, compare strings.
    - Same `subtype` → strong pairing (best case). Report silently.
-   - Different `subtype` → `ℹ️ binding subtype-divergence` — informational, not an error. The pairing may still be meaningful at the coarser `type` level.
-   - One side has `subtype`, the other does not → `ℹ️ binding subtype-asymmetric` — prompts annotating the unannotated side.
+   - Different `subtype` → `ℹ️ mechanism-pairing subtype-divergence` — informational. The pairing may still be meaningful at the coarser `type` level.
+   - One side has `subtype`, the other does not → `ℹ️ mechanism-pairing subtype-asymmetric` — prompts annotating the unannotated side.
 
-3. **Timescale divergence** — if both patterns carry a `timescale` field, compare bands.
+4. **Timescale divergence** — if both patterns carry a `timescale` field, compare bands.
    - Same band → silently pass.
    - Adjacent bands (e.g., `weeks-to-months` paired with `years`) → silently pass; natural cross-scale pairing.
-   - Bands apart (e.g., `seconds-to-minutes` paired with `decades+`) → `ℹ️ binding timescale-gap` — the shared mechanism operates at incompatible speeds; query results should preserve the distinction.
+   - Bands apart (e.g., `seconds-to-minutes` paired with `decades+`) → `ℹ️ mechanism-pairing timescale-gap` — the shared mechanism operates at incompatible speeds; query results should preserve the distinction.
    - `mixed` on either side → silently pass; explicit acknowledgment by definition.
 
-4. **Aggregate report**:
-   - `⚠️ binding type-mismatch: N` (errors — review bindings).
-   - `ℹ️ binding divergences: N` (sub-type / timescale / asymmetry — informational).
+5. **Aggregate report**:
+   - `⚠️ mechanism-pairing failures: N` (errors — fix or downgrade to substrate).
+   - `⚠️ mechanism-pairing broken references: N` (errors — peer pattern id stale).
+   - `ℹ️ mechanism-pairing divergences: N` (subtype / timescale / asymmetry — informational).
+   - `ℹ️ implicit substrate pairings: N` (cross-products in `paired_with` not declared in `mechanism_pairings` — informational only; v0.4 does not flag these).
 
-This step is peer-readable — runs fully only when paired vaults' `system-model.yaml` files are accessible. If a peer is not bootstrapped, skip its comparisons silently.
+This step is peer-readable — runs fully only when paired vaults' `system-model.yaml` files are accessible. If a peer is not bootstrapped, skip its comparisons silently with a `⏳ peer not bootstrapped` note.
 
-Reference: `primitives.md` "Pattern-Name Warning" section and Layer 3b–3c.
+Reference: `primitives.md` "Pattern-Name Warning" section (updated for v0.4) and Layer 3b–3c.
+
+### Migration note for v0.3 → v0.4 readers
+
+Pre-v0.4 yamls have no `mechanism_pairings` field. Under v0.4 audit semantics,
+pre-v0.4 bindings produce zero mechanism-pairing failures (correct: no claims
+were made). They also produce no `binding type-mismatch` warnings (the v0.2-v0.3
+warning class is retired in v0.4). To gain back mechanism validation on a
+binding, declare the genuine alignments in `mechanism_pairings[]`. Aspirational
+or weak pairings should not be declared — substrate is the right default.
 
 ---
 
@@ -137,8 +165,10 @@ Schema version: 0.1 · Date: YYYY-MM-DD
 📝 unlinked entities: N
 📥 unreferenced notes: N
 ⚠️ binding drift: N
-⚠️ binding type-mismatch: N
-ℹ️ binding divergences: N
+⚠️ mechanism-pairing failures: N        # v0.4 — replaces "binding type-mismatch"
+⚠️ mechanism-pairing broken refs: N     # v0.4 — peer pattern id stale
+ℹ️ mechanism-pairing divergences: N
+ℹ️ implicit substrate pairings: N       # v0.4 — informational only
 ⚠️ potential pattern-name collision: N
 
 ## Details
@@ -165,15 +195,19 @@ Produce 3–5 concrete next actions at the end. Not an exhaustive list — just 
 
 ## Step 9 — Update System State + Compute Dirt Level
 
-Update `[AGENSY_PATH]/system-state.md` Vault Registry — set this vault's `System Model` column to `audited-YYYY-MM-DD`. If the row does not yet have a system-model column populated, add one with the current audit date.
+Update `agensy/system-state.md` Vault Registry — set this vault's `System Model` column to `audited-YYYY-MM-DD`. If the row does not yet have a system-model column populated, add one with the current audit date.
 
-**Compute dirt level** from this audit's issue counts:
+**Compute dirt level** from this audit's issue counts (v0.4: mechanism-pairing failures replace binding type-mismatch as the cross-vault drift trigger):
 
 | Level | Criterion |
 |---|---|
-| 🟢 green | All issue counts ≤ 1 AND no broken linked_notes AND no binding type-mismatch |
-| 🟡 yellow | Any issue count 2–5 AND no broken linked_notes AND no binding type-mismatch |
-| 🔴 red | Any issue count > 5 OR ≥ 1 broken linked_notes OR ≥ 1 binding type-mismatch |
+| 🟢 green | All issue counts ≤ 1 AND no broken linked_notes AND no mechanism-pairing failures AND no mechanism-pairing broken refs |
+| 🟡 yellow | Any issue count 2–5 AND no broken linked_notes AND no mechanism-pairing failures AND no mechanism-pairing broken refs |
+| 🔴 red | Any issue count > 5 OR ≥ 1 broken linked_notes OR ≥ 1 mechanism-pairing failure OR ≥ 1 mechanism-pairing broken ref |
+
+**Note (v0.4)**: `unreferenced notes` and `implicit substrate pairings` are informational-only counts. They do NOT contribute to the "any issue count > 5" trigger. Treat them as visibility surfaces, not drift signals. This refines the v0.1 over-broad rule that conflated all counts.
+
+**Counts that DO contribute to the > 5 rule**: schema violations, config drift, broken linked_notes, unlinked entities, binding drift, mechanism-pairing failures, mechanism-pairing broken refs, potential pattern-name collision.
 
 Update the **System Model Freshness** table in `system-state.md` with:
 - `last_audit`: today's date
@@ -182,10 +216,10 @@ Update the **System Model Freshness** table in `system-state.md` with:
 
 **Escalation policy** — if `dirt_level` is `red`, surface the top 3 drift items to the user at the end of the audit report with a "REMEDIATION RECOMMENDED" header. For `yellow` or `green`, the report is informational only.
 
-**One-line summary** — emit a single structured line at the end of the report for downstream capture by `/coverage-audit` Step 9:
+**One-line summary** — emit a single structured line at the end of the report for downstream capture by `/coverage-audit` Step 9 (v0.4: rename `type_mismatch` → `mech_failures`, add `mech_broken_refs` and `substrate_pairings`):
 
 ```
-SYSTEM_AUDIT_SUMMARY: vault=<name> dirt=<green|yellow|red> schema=N config=N broken_notes=N unlinked=N unref=N binding_drift=N type_mismatch=N divergences=N
+SYSTEM_AUDIT_SUMMARY: vault=<name> dirt=<green|yellow|red> schema=N config=N broken_notes=N unlinked=N unref=N binding_drift=N mech_failures=N mech_broken_refs=N divergences=N substrate_pairings=N
 ```
 
 Do NOT modify `system-model.yaml` itself — the audit is read-only by design. Remediation is `/system-build`.

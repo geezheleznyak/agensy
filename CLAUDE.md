@@ -41,7 +41,7 @@ agensy/
       learner-profile-template.md ← Learner Layer bedrock template (v2.1.0+; opt-in)
     system-model/            ← System Model Layer documents
       system-model-architecture.md ← design rationale
-      system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.3)
+      system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.4)
       primitives.md             ← three-layer primitive vocabulary (nodes/edges/patterns)
     universal-commands/      ← 35 parameterized protocol files + 2 aliases (17 core + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer)
     vault-type-templates/    ← per-vault-type substrate scaffolds (expression/training/accumulation)
