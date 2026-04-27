@@ -48,6 +48,9 @@ agensy/
   tools/
     vault-linter.py          ← note content / schema checks (Categories A/B/G)
     framework-verify.py      ← architectural integrity checks (Categories F1–F6)
+    system-audit.py          ← system-model.yaml validation (mechanical half of /system-audit; v2.6.0+)
+    coverage-audit.py        ← corpus walk + counts + note-index rebuild (mechanical half of /coverage-audit; v2.6.0+)
+    _vault_utils.py          ← shared parsing layer; private to tools/ package (v2.6.0+)
   vaults/
     theoria-config.md        ← Q1–Q7 extract for synthesis_theoria
     bellum-config.md         ← Q1–Q7 extract for synthesis_bellum

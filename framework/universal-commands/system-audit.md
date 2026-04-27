@@ -18,6 +18,25 @@ If `system-model.yaml` does not exist at the vault root, respond: "No system mod
 
 ---
 
+## Step 0 — Helper Script (recommended)
+
+If `[framework-root]/tools/system-audit.py` exists, run it first:
+
+    python [framework-root]/tools/system-audit.py [vault-path] --json
+
+Consume the JSON. It deterministically completes Steps 1, 2, 3, 4A (unlinked entities only), 5, 5b (type-match only), and 9 (counts + dirt level + summary line). Steps still requiring Claude judgment:
+
+- **Step 4B** — corpus walk for unreferenced notes (the script emits `unref=0` as sentinel; replace with the real count after walking).
+- **Step 6** — pattern-name collision heuristic (categorical-distribution).
+- **Step 7** — report formatting and prose synthesis.
+- **Step 8** — next-actions prioritization.
+
+After incorporating Step 4B and Step 6 results, **re-evaluate dirt level**: if Step 6 collisions push any contributing count > 5, downgrade green→yellow or yellow→red per Step 9 thresholds. The script's `dirt_level` field is the lower bound (best case); Claude's final dirt level may be worse but never better.
+
+**Fallback**: if `tools/system-audit.py` is missing, fails to import PyYAML, or exits with code 3 (invocation error), fall back to walking the YAML manually per Steps 1–9 below. The protocol below remains authoritative — the script is an accelerator.
+
+---
+
 ## Step 1 — Schema Conformance
 
 For every node / edge / pattern / cross_vault_binding:

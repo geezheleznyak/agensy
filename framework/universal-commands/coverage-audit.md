@@ -19,6 +19,27 @@ Systematic audit of the entire vault against the coverage plan. Produces an upda
 
 ---
 
+## Step 0 — Helper Script (recommended)
+
+If `[framework-root]/tools/coverage-audit.py` exists, run it first:
+
+    python [framework-root]/tools/coverage-audit.py [vault-path] --json
+    # or, to also rewrite memory/note-index.md (Step 7):
+    python [framework-root]/tools/coverage-audit.py [vault-path] --json --write-note-index
+
+Consume the JSON. It deterministically completes Steps 1, 2, 3, 4, the numeric inputs for Step 8, and (with `--write-note-index`) Step 7. Steps still requiring Claude judgment:
+
+- **Step 5** — priority gap list (which gap matters most given vault state).
+- **Step 6** — coverage-plan rewrite. The script provides updated `counts_by_domain`, `counts_by_op`, and `targets_table` data; Claude integrates the narrative (Planned Notes section + per-gap explanation).
+- **Step 8 (narrative)** — `open_actions`, `recent_arcs`. The script provides numeric reset values (`session_state_inputs.{notes_since_last_audit_reset, last_coverage_audit, total_notes_for_registry}`).
+- **Step 9** — chain-fire `/system-audit`. The script does not shell out; Claude invokes `tools/system-audit.py` separately and consumes both JSONs.
+
+Read `targets_table.parse_status` from the JSON. If `not-found` or `malformed`, the script could not extract `Target T2` columns from the coverage plan — Claude reads the targets directly in Step 5.
+
+**Fallback**: if `tools/coverage-audit.py` is missing, fails to import, or exits with code 3 (invocation error), fall back to walking the corpus manually per Steps 1–9 below. The protocol below remains authoritative — the script is an accelerator.
+
+---
+
 ## Step 1 — Domain Walk
 
 **Standard (per-folder) vaults**: For each domain in vault-config.md `domains[]`, walk the domain's unique `folder`. Count notes per domain by folder.

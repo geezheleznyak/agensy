@@ -7,6 +7,41 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.6.0] — 2026-04-27
+
+### Added — Two helper scripts for protocol-deterministic halves
+
+Mechanical reconciliation scripts that execute the deterministic halves of `/system-audit` and `/coverage-audit`. Both follow the same pattern: read-only, JSON or human output, scope of executed-vs-deferred steps explicit in the JSON. Steps requiring judgment (corpus heuristics, narrative synthesis, prioritization) remain with the agent.
+
+- `tools/system-audit.py` — implements protocol Steps 1, 2, 3, 4A, 5, 5b-typematch, and 9 of `/system-audit`. CLI: positional vault path + `--json --verbose --baseline {save|compare} --schema --bridges --peer-root`. Exit codes 0/1/2/3 (green/yellow/red/error). Emits the canonical `SYSTEM_AUDIT_SUMMARY:` line that `/coverage-audit` Step 9 parses (`unref=0` is a sentinel; the agent overwrites with the real count after Step 4B). PyYAML required.
+- `tools/coverage-audit.py` — implements protocol Steps 1, 2, 3, 4, 7 (with `--write-note-index`), and 8-numeric of `/coverage-audit`. CLI mirrors system-audit's pattern. Exit code 0 (success) or 3 (invocation error). Defensive parsers for the Domain Summary `Target T2` column and the `## Planned Notes` section never crash on format variation; instead they emit a `parse_status` field. PyYAML not required (stdlib-only).
+- `tools/_vault_utils.py` — shared parsing layer extracted from `tools/vault-linter.py` to support multiple consumers. Houses `VaultConfig`, `parse_frontmatter`, `discover_notes`, `classify_for_coverage`, `get_note_domain`, `build_link_index`, plus module-level constants `MAP_SUFFIXES`, `INFRA_PATTERNS`, `BASE_FIELDS`, `STOPWORDS`. Underscore prefix marks the module private to the `tools/` package — not a stable API. Two new optional flags on `discover_notes`: `include_infrastructure_maps`, `include_t3_output` (both default `False` to preserve linter behavior).
+
+### Fixed
+
+- `tools/_vault_utils.py::VaultConfig._tier_value()` — the prior lazy-with-lookahead regex (`(?:(?!  \w).)*?`) returned empty strings for `tier1_type` / `tier2_type` / `tier3_type` across all vaults because the lookahead failed on 4-space-indented body lines. Replaced with `[\s\S]*?` bounded by the next 2-space block-key. **Side effect**: `vault-linter`'s `classify_note` now correctly classifies untyped notes located outside `tier3_output` as tier2 (was: tier3, because `'' == ''`). For training vaults that store atomic concepts in a non-T3 folder, this eliminates the false-positive A17 ("Tier 3 not in output folder") error class — observed drop in one test vault was 251 issues (~31% of total). No other check codes are affected.
+
+### Changed — Protocol amendments
+
+- `framework/universal-commands/system-audit.md` — adds Step 0 documenting the optional helper-script fast path. Steps 1–9 unchanged and remain authoritative. Fallback contract: if the script is missing, fails to import PyYAML, or exits with code 3 (invocation error), the protocol's manual path applies.
+- `framework/universal-commands/coverage-audit.md` — adds Step 0, same pattern.
+
+### Changed — Refactor
+
+- `tools/vault-linter.py` — extracted `VaultConfig`, frontmatter helpers, `discover_notes`, `build_link_index`, and the shared constants to `tools/_vault_utils.py`. Linter now imports from there. Pure cut-and-move; all check codes (A01–A18, B01–B08, G01–G04) continue to fire identically. File shrunk from 1238 → 820 lines.
+
+### Backward compatibility
+
+Additive minor release. All changes additive at the protocol level; vaults can adopt the helper scripts when convenient. The `_tier_value` regex fix is a bugfix — vaults with linter regression baselines will see fewer A17 false-positive issues; regenerate baselines after this release if needed.
+
+The new `_vault_utils.py` module is private (underscore-prefixed) and is not a stable API. External consumers should not import from it.
+
+### Migration guidance
+
+No mandatory action. Coverage-audit and system-audit protocols still run end-to-end without the scripts. To use the fast path, ensure PyYAML is installed (`pip install pyyaml`) for system-audit; coverage-audit is stdlib-only.
+
+---
+
 ## [2.5.0] — 2026-04-26
 
 ### Changed — System Model schema v0.3 → v0.4 (binding-kind disambiguation)
