@@ -1,7 +1,6 @@
-﻿---
+---
 description: Interactively add, update, or remove nodes / edges / patterns / bindings in a vault's system-model.yaml
 type: universal-protocol
-audience: claude
 ---
 
 # /system-build
@@ -11,8 +10,10 @@ Write-side counterpart to `/system-query` and `/system-audit`. Proposes safe, sc
 **Runtime**: Read the following inputs before executing:
 - `vault-config.md` from the vault root — `domains[]`, `engagement_axis.positions[]`.
 - `system-model.yaml` from the vault root (create it if missing — see Step 0).
-- `[AGENSY_PATH]/framework/system-model/system-model-schema.yaml` — canonical schema.
-- `[AGENSY_PATH]/cross-vault-bridges.md` — valid bridge_ids (for binding ops).
+- `agensy/framework/system-model/system-model-schema.yaml` — canonical per-vault schema.
+- `agensy/framework/system-model/cross-vault-bindings-schema.yaml` — central-file schema (for binding ops in v0.6+).
+- `agensy/cross-vault-bindings.yaml` — central bindings file (for binding ops; created if missing).
+- `agensy/cross-vault-bridges.md` — valid bridge_ids (for binding ops).
 
 If `system-model.yaml` does not exist at the vault root, offer to bootstrap it (Step 0). Otherwise jump to Step 1.
 
@@ -27,7 +28,7 @@ If `system-model.yaml` does not exist at the vault root, offer to bootstrap it (
 | `add-node` | "add node X" | Append a new node block under `nodes:` |
 | `add-edge` | "add edge X → Y of type T" | Append a new edge block under `edges:` |
 | `add-pattern` | "add pattern X of type T" | Append a new pattern block under `patterns:` |
-| `add-binding` | "add binding to bridge B" | Append a new entry under `cross_vault_bindings:` |
+| `add-binding` | "add binding to bridge B" | Append/extend a binding entry in `agensy/cross-vault-bindings.yaml` (v0.6+; pre-v0.6 was per-vault `cross_vault_bindings:`) |
 | `update` | "update node X set domain=Y" | Modify a specific field on an existing entity |
 | `rename` | "rename node X to Y" | Change an id; also updates all references (edges, patterns, bindings) |
 | `remove` | "remove node X" | Delete an entity; refuse if still referenced unless `--force` |
@@ -41,19 +42,18 @@ If the request does not match any mode, state the closest match and ask the user
 ## Step 0 — Bootstrap Mode (only if system-model.yaml is missing)
 
 If the vault has no `system-model.yaml`:
-1. Propose a minimal skeleton at the vault root:
+1. Propose a minimal skeleton at the vault root (v0.6+ — note: no `cross_vault_bindings:` section; bindings live in the central file):
    ```yaml
    vault: [vault-name from vault-config]
-   schema_version: 0.1
-   extends: ../[AGENSY_PATH]/framework/system-model/system-model-schema.yaml
+   schema_version: 0.6
+   extends: ../agensy/framework/system-model/system-model-schema.yaml
 
    nodes: []
    edges: []
    patterns: []
-   cross_vault_bindings: []
    ```
 2. Confirm with the user before writing.
-3. After creation, add the vault's row in `[AGENSY_PATH]/system-state.md` Vault Registry — set `System Model` = `bootstrapped-YYYY-MM-DD`.
+3. After creation, add the vault's row in `agensy/system-state.md` Vault Registry — set `System Model` = `bootstrapped-YYYY-MM-DD`.
 4. Stop. The user invokes `/system-build` again with the first real edit.
 
 Do **not** auto-populate nodes from the note corpus in bootstrap mode. Bootstrap is intentionally empty. The Phase 2 pilot (politeia) was hand-curated — future bootstraps should follow the same pattern, with explicit user choice on every entity.
@@ -90,10 +90,12 @@ Every proposed edit must pass schema conformance before it is offered to the use
 - `domain` ∈ vault-config domains.
 - `description` is present (non-empty prose; one paragraph minimum — patterns without a description are placeholders and rot).
 
-**For `add-binding`**:
-- `bridge_id` ∈ bridge IDs defined in `[AGENSY_PATH]/cross-vault-bridges.md` (the file uses headings like "Bridge 2 — Decision Theory and Rationality"; derive the `bridge-2-decision-theory-and-rationality` form or match on the closest registered id pattern).
-- `local_nodes[]` / `local_patterns[]` each resolves in this vault's model.
-- `paired_with[vault_name]` vault exists in `[AGENSY_PATH]/system-state.md` Vault Registry. Peer nodes/patterns are allowed to be expected-but-not-yet-bootstrapped.
+**For `add-binding`** (v0.6+ — writes to `agensy/cross-vault-bindings.yaml`, NOT to the per-vault YAML):
+- `bridge_id` ∈ bridge IDs defined in `agensy/cross-vault-bridges.md`.
+- `local_nodes[]` / `local_patterns[]` each resolves in this vault's `system-model.yaml`.
+- The new entry is added under `bindings[].contributions[this_vault].self_declared`. If a binding for `bridge_id` already exists in the central file, extend the existing block (don't duplicate).
+- To claim peer contributions ahead of peer ratification, add to `contributions[peer].peer_views[this_vault]` instead. The audit will surface those as `unratified_peer_views` (informational) until the peer adds them to `self_declared`.
+- mechanism_pairings are added under `bindings[bridge_id].mechanism_pairings[]` with `claimer: this_vault`.
 
 **For `rename` / `remove`**:
 - Find all references across `nodes`, `edges`, `patterns`, `cross_vault_bindings`.
@@ -153,7 +155,7 @@ If any light-audit issue surfaces, report it to the user but do not auto-revert 
 ## Step 6 — Update System State (only on bootstrap or first write)
 
 If this was the vault's first write of the session or a bootstrap:
-- Set `[AGENSY_PATH]/system-state.md` Vault Registry row → `System Model` column = `bootstrapped-YYYY-MM-DD` (if not already set).
+- Set `agensy/system-state.md` Vault Registry row → `System Model` column = `bootstrapped-YYYY-MM-DD` (if not already set).
 
 Do not update on routine edits — Audit cadence is what drives the `audited-YYYY-MM-DD` state, not every small edit.
 

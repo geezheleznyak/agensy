@@ -19,6 +19,7 @@ agensy/
   vault-registry.md          ← structural registry of all active vaults (identity, connections, compliance)
   system-state.md            ← dynamic operational state (note counts, audit dates, cross-vault positions)
   cross-vault-bridges.md     ← bridge domains, vault treatments, search terms
+  cross-vault-bindings.yaml  ← centralized cross-vault binding data (v0.6+; user-authored — parallel to per-vault system-model.yaml; absent until user has multi-vault bindings to declare)
   CLAUDE.md                  ← this file
   framework/
     slash-command-suite.md   ← command index (35 universal protocol files + 2 backward-compat aliases)
@@ -41,7 +42,8 @@ agensy/
       learner-profile-template.md ← Learner Layer bedrock template (v2.1.0+; opt-in)
     system-model/            ← System Model Layer documents
       system-model-architecture.md ← design rationale
-      system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.4)
+      system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.6)
+      cross-vault-bindings-schema.yaml ← schema for the central cross-vault-bindings file (v0.6+)
       primitives.md             ← three-layer primitive vocabulary (nodes/edges/patterns)
     universal-commands/      ← 35 parameterized protocol files + 2 aliases (17 core + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer)
     vault-type-templates/    ← per-vault-type substrate scaffolds (expression/training/accumulation)

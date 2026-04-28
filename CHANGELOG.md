@@ -7,6 +7,42 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.7.0] — 2026-04-28
+
+### Changed — System Model schema v0.4 → v0.6 (centralized cross-vault bindings)
+
+Two schema bumps shipped together. v0.5 deprecated `paired_with` with on-the-fly derivation; v0.6 took the architectural step v0.5 prepared for: relocate cross-vault binding data out of per-vault `system-model.yaml` files into a single central file. Vaults at `schema_version: 0.6` have no `cross_vault_bindings:` section.
+
+- `framework/system-model/system-model-schema.yaml` — bumped `schema.version` `0.4` → `0.6`. Added `v0_5_motivation` and `v0_6_motivation` blocks. The `cross_vault_bindings_*` field lists are kept (pre-v0.6 vaults still parse) but documented as relocated. New v0.5 + v0.6 validation rules. Extensibility note bumped: v0.5 candidates that shipped — `paired_with` deprecation + on-the-fly derivation; v0.6 candidates that shipped — central-file relocation; v0.7 reserved — node quality/confidence, edge weight.
+
+- `framework/system-model/cross-vault-bindings-schema.yaml` — **NEW**. Canonical schema for the central `cross-vault-bindings.yaml` file. Per-bridge structure: `contributions[vault_short]` carries `self_declared` (this vault's own claim) + `peer_views[claimer]` (what other vaults claim this vault contributes). Both perspectives are preserved — no information loss. `mechanism_pairings` live at the bridge level with explicit `claimer:` field. Defines the audit signals produced from this file (`unratified_peer_views`, `binding_drift`, `mech_failures`, `mech_broken_refs`, `mech_divergences`).
+
+- `tools/system-audit.py` — `TOOL_VERSION` `0.1.0` → `0.3.0`. `EXPECTED_SCHEMA_VERSION` `0.4` → `0.6`. New helpers `load_central_bindings()`, `synthesize_local_bindings()` (projects central file into the per-vault binding view), `check_unratified_peer_views()` (single informational class collapsing five v0.5 classes), `populate_peer_models_by_short()` (pre-loads peer models so `<peer>.<pattern_id>` mechanism_pairings refs resolve under v0.6). `count_substrate_pairings()` reads from the central file. Removed v0.5 helpers `compute_paired_with_for_binding`, `classify_binding_strip_safety`, `compute_claims_about_me`, `index_local_by_bridge`. Summary line: `pw_unratified=N claims_about_me=N safe_to_strip=N` collapses to `unratified_peer_views=N`. `find_framework_root()` now prefers script-relative resolution over sibling-walk (was inconsistent for adjacent framework mirrors).
+
+- `framework/universal-commands/system-audit.md` — Step 5 rewritten to describe the v0.6 central-file flow. Step 9 informational-counts list collapses five v0.5 classes (`paired_with_unratified`, `claims_about_me`, `bindings_safe_to_strip`, `bindings_unratified`, `bindings_selectivity_loss`, `bindings_mixed`, `bindings_derived_only`) into one (`unratified_peer_views`). Summary line trailing fields updated.
+
+- `framework/universal-commands/system-bridge.md` — Runtime inputs now include the central bindings file. Step 2 reads from the central file's `contributions[this_vault]` block. Step 4 candidate template emits v0.6 central-file shape.
+
+- `framework/universal-commands/system-build.md` — Bootstrap skeleton updated: `schema_version: 0.6` and no `cross_vault_bindings:` section. `add-binding` mode now writes to the central file (under `bindings[].contributions[this_vault].self_declared`); peer claims are added under `contributions[peer].peer_views[this_vault]`; mechanism_pairings carry an explicit `claimer:` field at the bridge level.
+
+### Backward compatibility
+
+Pre-v0.6 vaults parse cleanly under the v0.6 audit (the per-vault `cross_vault_bindings:` section is preserved when no central file exists; the central file takes precedence whenever a bridge appears there). Schema-version mismatch is INFO not WARN for vaults at 0.1, 0.2, 0.3, 0.4, or 0.5. The five v0.5 informational audit classes are retired — vaults that surfaced them under v0.5 now see a single `unratified_peer_views` count instead.
+
+### Migration guidance
+
+For existing single-vault users (the common case): bump `system-model.yaml` `schema_version` to `0.6`. No further action — no central file is needed until you have multi-vault cross-vault bindings to declare.
+
+For multi-vault users with existing `cross_vault_bindings:` sections across vaults: a one-shot consolidation moves the data into a single `cross-vault-bindings.yaml` at the framework root. Per-vault sections are then removed. The v0.6 central-file shape is documented in `framework/system-model/cross-vault-bindings-schema.yaml`. Validate post-migration with `python tools/system-audit.py [vault]` — node/edge/pattern/binding counts and dirt levels should be unchanged.
+
+The v0.5 `paired_with` deprecation path (with derivation, `paired_with_unratified`, `claims_about_me`, etc.) is superseded — the central-file structure makes both `self_declared` and `peer_views` explicit, so the visibility kludges those signals provided are no longer needed.
+
+### Substrate pairings semantics shift
+
+Under v0.5, `substrate_pairings` counted `(local_patterns × explicit_paired_with[peer].patterns)` OR `(local_patterns × derived[peer].patterns)`. Under v0.6 the equivalent is `(self_declared.local_patterns × effective_peer_patterns)` where `effective_peer_patterns = self_declared.local_patterns ∪ peer_views[*].patterns`. Numerically larger than v0.5 counts; informational only.
+
+---
+
 ## [2.6.0] — 2026-04-27
 
 ### Added — Two helper scripts for protocol-deterministic halves

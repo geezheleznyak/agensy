@@ -1,0 +1,182 @@
+# cross-vault-bindings-schema.yaml
+# Canonical schema for the central cross-vault bindings file —
+# agensy/cross-vault-bindings.yaml (schema v0.6, 2026-04-28).
+#
+# Companion to framework/system-model/system-model-schema.yaml. v0.6 of the
+# overall System Model layer relocates cross-vault binding data from each
+# vault's per-vault system-model.yaml into a single central file at the
+# meta vault root. Per-vault YAMLs at schema_version 0.6 do NOT contain a
+# `cross_vault_bindings:` section; the central file is the single source of
+# truth.
+
+schema:
+  name: cross-vault-bindings
+  version: "0.6"
+  created: 2026-04-28
+  source_design: framework/closures/v0.6-centralized-bindings.md
+  motivation: >
+    Pre-v0.6, every vault's system-model.yaml contained a per-vault
+    `cross_vault_bindings:` section with `local_nodes`, `local_patterns`,
+    optional `paired_with[peer]` claims about peer contributions, and
+    `mechanism_pairings[]` entries. v0.5 deprecated `paired_with` and made
+    /system-audit derive it on the fly from peer vaults' local_nodes.
+
+    v0.6 takes the next step: cross-vault bindings are inherently a
+    cross-vault concern; the per-vault placement was an artifact of
+    incremental design. Centralizing eliminates write-amplification on
+    bridge renames, captures both `self_declared` and `peer_views`
+    explicitly (preserving complementary perspectives), and gives the
+    audit a single load instead of N-way peer walks.
+
+    The 2026-04-28 root-cause investigation of v0.5's "unratified" claims
+    confirmed zero genuine drift errors across 105 cross-vault claims (all
+    were either authoring-sequence artifacts or complementary perspectives
+    on bridge scope — no Cause C). The migration is therefore a pure data
+    consolidation, not a forced choice. See:
+      - framework/closures/v0.6-centralized-bindings.md (decision record)
+      - framework/closures/v0.5-paired-with-derivation.md (predecessor)
+
+# ─────────────────────────────────────────────────────────────
+# TOP-LEVEL FILE SHAPE
+# ─────────────────────────────────────────────────────────────
+top_level_required_fields:
+  - schema_version            # must equal "0.6"
+  - bindings                  # list of binding entries (see below)
+
+top_level_optional_fields:
+  - schema                    # path-back to this schema doc
+  - generated_from            # list of vault short-names this file consolidates
+  - notes                     # free-text headnote
+
+# ─────────────────────────────────────────────────────────────
+# BINDING ENTRY
+# Each entry describes ONE bridge across all participating vaults.
+# ─────────────────────────────────────────────────────────────
+binding_required_fields:
+  - bridge_id                 # must exist in agensy/cross-vault-bridges.md
+  - contributions             # dict keyed by vault short-name (see below)
+
+binding_optional_fields:
+  - description               # one-paragraph summary; pulled from cross-vault-bridges.md
+  - mechanism_pairings        # list of explicit mechanism alignments (see below)
+  - notes                     # free-text characterization
+
+# ─────────────────────────────────────────────────────────────
+# CONTRIBUTIONS BLOCK
+# `contributions[vault_short]` — how vault `vault_short` participates in
+# this bridge. Two perspectives, both authoritative-but-different:
+#   - self_declared: items this vault has formally claimed for the bridge
+#   - peer_views:    items OTHER vaults claim this vault contributes
+# Either can be empty. A vault appears in `contributions` if at least one
+# is non-empty.
+# ─────────────────────────────────────────────────────────────
+contribution_required_fields:
+  - self_declared             # may be empty dict {} if no self-declaration
+
+contribution_optional_fields:
+  - peer_views                # may be omitted entirely if no peer claims
+
+self_declared_required_fields: []   # all fields optional (block may be empty)
+self_declared_optional_fields:
+  - local_nodes               # node ids from this vault's nodes[]
+  - local_patterns            # pattern ids from this vault's patterns[]
+  - linked_notes              # vault-relative note paths
+  - description               # this vault's perspective on the bridge
+  - notes                     # free-text
+
+# peer_views is keyed by claimer vault short-name; each value is a dict
+# with optional `nodes` and `patterns` lists (peer thinks this vault
+# contributes these node/pattern ids — must resolve in vault's full
+# nodes/patterns, but need NOT be in vault's own self_declared).
+peer_view_value_optional_fields:
+  - nodes                     # node ids from this vault's nodes[]
+  - patterns                  # pattern ids from this vault's patterns[]
+
+# ─────────────────────────────────────────────────────────────
+# MECHANISM PAIRINGS (bridge-level under v0.6)
+# Pre-v0.6: lived inside each vault's binding entry. v0.6: lives at the
+# bridge level with explicit `claimer:` attribution. The semantics are
+# unchanged from v0.4 — see framework/closures/v0.4-binding-kinds.md.
+# ─────────────────────────────────────────────────────────────
+mechanism_pairing_required_fields:
+  - claimer                   # vault short-name; the vault asserting this pairing
+  - local                     # pattern id in `claimer` vault
+  - peers                     # list of "<peer_vault>.<peer_pattern_id>" strings
+
+mechanism_pairing_optional_fields:
+  - rationale                 # one-line natural-language note
+
+mechanism_pairings_semantics: >
+  Each entry asserts that `claimer.local` and every `peers[]` pattern
+  instantiate the same dynamical mechanism. /system-audit Step 5b
+  validates by comparing pattern type, subtype, and timescale across the
+  central file and the participating vaults' system-model.yaml files.
+  Type mismatch (without a secondary_types escape) is a hard failure.
+  Subtype/timescale divergence is informational.
+
+# ─────────────────────────────────────────────────────────────
+# VALIDATION RULES
+# Enforced by /system-audit when reading the central file.
+# ─────────────────────────────────────────────────────────────
+validation:
+  - "schema_version must equal '0.6'."
+  - "Every bindings[].bridge_id must exist in agensy/cross-vault-bridges.md (validated by bridge number)."
+  - "Every contributions key must be a known vault short-name (matches the `vault:` field of some vault's system-model.yaml after stripping 'synthesis_' / 'sythesis_' prefix)."
+  - "Every self_declared.local_nodes / local_patterns id must resolve in the named vault's nodes[] / patterns[]."
+  - "Every peer_views[claimer].nodes / patterns id must resolve in the SUBJECT vault's full nodes[] / patterns[] (i.e. the vault under whose contributions block the peer_view sits) — peer claims must reference real items the subject vault has, even if not yet in self_declared. v0.6 treats this as the inverse of v0.5's `paired_with_unratified` — it is normal during the lifecycle, not an error."
+  - "Every linked_notes path must resolve to an existing file in the named vault."
+  - "Every mechanism_pairings[].claimer must be a known vault short-name."
+  - "Every mechanism_pairings[].local must reference a pattern id in the claimer vault's patterns[]."
+  - "Every mechanism_pairings[].peers entry must be a string of the form '<peer_vault>.<peer_pattern_id>' where <peer_vault> has a binding entry under contributions in this bridge."
+  - "Mechanism-pairing type-mismatch (without secondary_types escape) is the hard-red trigger via /system-audit Step 5b — this is the only audit signal from cross-vault data that contributes to dirt-level RED."
+
+# ─────────────────────────────────────────────────────────────
+# AUDIT SIGNALS PRODUCED FROM THIS FILE
+# /system-audit reads the central file and produces:
+# ─────────────────────────────────────────────────────────────
+audit_signals:
+  unratified_peer_views:
+    description: >
+      Items that appear in some `peer_views[claimer]` block but NOT in
+      that vault's `self_declared`. Replaces v0.5's paired_with_unratified
+      AND claims_about_me — both perspectives are visible in one structure.
+    severity: informational
+    affects_dirt_level: false
+
+  binding_drift:
+    description: >
+      Items in self_declared.local_nodes/local_patterns or peer_views that
+      do NOT resolve in the subject vault's nodes[] / patterns[].
+    severity: warning
+    affects_dirt_level: true (counts toward >5 trigger)
+
+  mech_failures:
+    description: >
+      mechanism_pairings entries where the claimer's local pattern type
+      does not match a peer pattern's type, with no secondary_types escape.
+    severity: hard-red
+    affects_dirt_level: true (≥1 triggers RED)
+
+  mech_broken_refs:
+    description: >
+      mechanism_pairings entries whose peers reference a pattern id that
+      does not exist in the peer vault.
+    severity: hard-red
+    affects_dirt_level: true (≥1 triggers RED)
+
+  mech_divergences:
+    description: >
+      Subtype or timescale divergence in mechanism_pairings — informational.
+    severity: informational
+    affects_dirt_level: false
+
+# ─────────────────────────────────────────────────────────────
+# WHAT THIS FILE IS NOT
+# ─────────────────────────────────────────────────────────────
+reuse_constraints:
+  not_a_restatement_of_cross_vault_bridges:
+    "References bridge_id; does not duplicate bridge prose. The registry at agensy/cross-vault-bridges.md remains the description-of-record."
+  not_per_vault:
+    "Lives in agensy/, not in any vault. Each vault's system-model.yaml at schema_version 0.6+ has NO cross_vault_bindings: section."
+  not_auto_generated_after_migration:
+    "v0.6 was generated once via tools/consolidate-bindings.py from pre-v0.6 vault YAMLs. Subsequent edits are hand-authored. This is not a derived cache."

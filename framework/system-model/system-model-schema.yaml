@@ -1,16 +1,21 @@
 # system-model-schema.yaml
-# Canonical schema for the Vault System Model Layer — v0.4
+# Canonical schema for the Vault System Model Layer — v0.6
 # Per-vault [vault]/system-model.yaml files extend this file via `extends:`.
 # Vocabulary frozen from the Phase 0 primitive-discovery experiment
 # (see framework/system-model/primitives-experiment.md, 2026-04-20).
-# v0.2 (2026-04-24), v0.3 (2026-04-24), and v0.4 (2026-04-26) additions are all
-# additive; v0.1, v0.2, and v0.3 YAMLs remain valid.
+# v0.2 / v0.3 / v0.4 / v0.5 / v0.6 are all additive; v0.1–v0.5 YAMLs remain
+# parseable. v0.6 RELOCATES cross_vault_bindings out of per-vault YAMLs into a
+# central file at agensy/cross-vault-bindings.yaml — see
+# framework/system-model/cross-vault-bindings-schema.yaml. v0.6 vaults SHOULD
+# omit cross_vault_bindings: from their system-model.yaml; pre-v0.6 vaults that
+# still carry a section remain valid (the audit script ignores it once a
+# bridge_id is owned by the central file).
 
 schema:
   name: vault-system-model
-  version: "0.4"
+  version: "0.6"
   created: 2026-04-20
-  updated: 2026-04-26
+  updated: 2026-04-28
   source_experiment: framework/system-model/primitives-experiment.md
   v0_2_motivation: >
     Closure gates from Phase 2 (politeia) and Phase 4 (oeconomia+bellum) identified four
@@ -57,6 +62,69 @@ schema:
     The asymmetry — substrate overlap is the rule, mechanism alignment is the
     rare exception — matches what cross-vault-bridges.md actually documents.
     Closure record: framework/closures/v0.4-binding-kinds.md.
+  v0_5_motivation: >
+    Audit (2026-04-28) of cross_vault_bindings across the five fully-
+    bootstrapped vaults (theoria 1260 / oeconomia 2087 / politeia 1143 / historia 1202
+    / bellum 1101 lines, ~6800 total / ~40K tokens) showed that ~60-70% of
+    `paired_with[peer].nodes` entries duplicate data already present as
+    `local_nodes` in the peer's own binding for the same bridge_id. Beyond
+    bloat, the duplication is a drift vector: a node renamed in oeconomia must
+    be tracked down and rewritten in theoria/politeia/bellum/historia's paired_with
+    blocks. The audit also surfaced a quality bug — vaults can claim peer
+    contributions that the peer has not ratified with its own binding entry.
+
+    v0.5 deprecates `paired_with` (still optional, still parseable for
+    v0.1-v0.4 vaults). The audit script computes effective paired_with
+    on-the-fly from each peer vault's local_nodes / local_patterns for
+    the matching bridge_id. JSON output surfaces it under a new
+    informational field `paired_with_derived`. A new informational
+    warning class `paired_with_unratified` fires when a vault's explicit
+    paired_with claims a peer node/pattern that the peer's own binding
+    for that bridge_id does not declare — surfaces (does not fix) the
+    "claim without ratification" quality bug. Does NOT contribute to
+    dirt level.
+
+    Backward compatibility: vaults at schema_version <= 0.4 keep
+    paired_with and validate exactly as before. Vaults at 0.5 SHOULD
+    omit it; if they retain it, the cross-check between explicit and
+    derived runs and surfaces unratified claims. Closure record:
+    framework/closures/v0.5-paired-with-derivation.md.
+  v0_6_motivation: >
+    The 2026-04-28 root-cause investigation of v0.5's "unratified" claims
+    confirmed zero genuine drift errors across 105 cross-vault claims —
+    every existing peer claim corresponds to a real concept in the claimed
+    peer's vault. The asymmetry was authoring-sequence artifact (37 cases
+    of peer-not-yet-ratified) plus genuinely complementary perspectives on
+    bridge scope (18 cases). With zero Cause C errors, v0.6 ships the
+    architectural cleanup the user proposed alongside v0.5: relocate
+    cross-vault bindings out of per-vault system-model.yaml files into a
+    single central file at agensy/cross-vault-bindings.yaml.
+
+    Per-vault YAMLs at schema_version 0.6 carry only nodes / edges /
+    patterns. The central file uses a `self_declared` + `peer_views`
+    structure that preserves both the vault's own claimed contribution
+    and the complementary perspectives peer vaults hold — eliminating
+    the unratified-claim asymmetry as a structural surface (it was a
+    visibility kludge for what is actually multi-perspective data).
+
+    /system-audit reads the central file and validates IDs against the
+    subject vault's nodes/patterns. Five v0.5 informational classes
+    (paired_with_unratified, claims_about_me, bindings_safe_to_strip,
+    bindings_selectivity_loss, bindings_mixed) collapse into a single
+    informational class `unratified_peer_views`. Derivation logic is
+    retired — the explicit central file makes it unnecessary.
+
+    Backward compatibility: pre-v0.6 vaults that still carry a
+    `cross_vault_bindings:` section continue to parse; the audit script
+    prefers the central file when a bridge appears there. The migration
+    is a one-shot: tools/consolidate-bindings.py extracts every existing
+    binding into the central file; vaults strip their sections and bump
+    schema_version to 0.6. Closure record:
+    framework/closures/v0.6-centralized-bindings.md.
+
+    Two schemas now travel together: this file (per-vault structure) and
+    framework/system-model/cross-vault-bindings-schema.yaml (central file
+    structure).
 
 # ─────────────────────────────────────────────────────────────
 # NODE VOCABULARY — 6 categories
@@ -204,22 +272,35 @@ user_engagement_states:
 # Expected steady-state annotation density: 10–30% of nodes, NOT 100%.
 
 # ─────────────────────────────────────────────────────────────
-# CROSS-VAULT BINDINGS
-# Link a local pattern or node-set to a bridge_id in
-# agensy/cross-vault-bridges.md and its peer-vault counterpart.
+# CROSS-VAULT BINDINGS (RELOCATED IN v0.6)
+# v0.1-v0.5: bindings lived in [vault]/system-model.yaml under
+#   `cross_vault_bindings:`. The shape was:
+#     - bridge_id, local_nodes, local_patterns, paired_with (v0.5 deprecated),
+#       mechanism_pairings, linked_notes
+# v0.6: bindings live in agensy/cross-vault-bindings.yaml, governed
+#   by framework/system-model/cross-vault-bindings-schema.yaml. v0.6 vaults
+#   SHOULD omit `cross_vault_bindings:` from their system-model.yaml.
+# Pre-v0.6 vaults that still carry a section remain parseable for backward
+# compatibility, but the audit prefers the central file when a bridge_id
+# appears there. The fields below are kept ONLY to validate residual pre-v0.6
+# data; do not author new entries here.
 # ─────────────────────────────────────────────────────────────
 cross_vault_bindings_required_fields:
   - bridge_id               # Must exist in agensy/cross-vault-bridges.md.
-  - local_nodes             # List of node ids in this vault.
-  - paired_with             # Dict: { [vault_name]: { nodes: [...], patterns: [...] } }
+  - local_nodes             # List of node ids in this vault. (Pre-v0.6 only.)
 
 cross_vault_bindings_optional_fields:
   - local_patterns          # List of pattern ids on this side of the bridge.
   - notes                   # Free-text characterization of the binding.
   - mechanism_pairings      # (v0.4) — see mechanism_pairings_schema below.
+                            # In v0.6, mechanism_pairings live in the central
+                            # file with explicit `claimer:` attribution.
+  - paired_with             # (DEPRECATED in v0.5; OBSOLETE in v0.6 —
+                            # the central file's peer_views structure replaces
+                            # it. Still parseable in residual pre-v0.6 data.)
 
 # ─────────────────────────────────────────────────────────────
-# MECHANISM PAIRINGS (v0.4)
+# MECHANISM PAIRINGS (v0.4; relocated in v0.6)
 # Substrate overlap is the DEFAULT semantics of a cross_vault_bindings entry:
 # the binding asserts that two or more vaults share a topic substrate
 # (institutions, complexity, political economy), each through its own
@@ -265,7 +346,7 @@ extensibility:
     mechanism: "Declare under an `extensions:` block in the vault's system-model.yaml"
   schema_level_additions:
     allowed: false
-    note: "v0.2 candidates that shipped: timescale, subtype, secondary_types. v0.3 candidates that shipped: user_engagement, last_engaged. v0.4 candidates that shipped: mechanism_pairings (binding-kind disambiguation). Reserved for v0.5: node quality/confidence, edge weight."
+    note: "v0.2 candidates that shipped: timescale, subtype, secondary_types. v0.3 candidates that shipped: user_engagement, last_engaged. v0.4 candidates that shipped: mechanism_pairings (binding-kind disambiguation). v0.5 candidates that shipped: paired_with deprecation + on-the-fly derivation (data-duplication elimination). v0.6 candidates that shipped: cross_vault_bindings relocation to a central file at agensy/cross-vault-bindings.yaml with self_declared + peer_views structure (eliminates write-amplification and the unratified-claim asymmetry). Reserved for v0.7: node quality/confidence, edge weight."
 
 # ─────────────────────────────────────────────────────────────
 # VALIDATION RULES
@@ -294,8 +375,16 @@ validation:
   - "If last_engaged is present without user_engagement, that is a schema violation (annotation half-applied)."
   # v0.4 additions
   - "If present, every mechanism_pairings[].local must reference an existing pattern id in this vault."
-  - "If present, every mechanism_pairings[].peers entry must be a string of the form '<peer_vault>.<peer_pattern_id>' where <peer_vault> appears in the binding's paired_with dict."
+  - "If present, every mechanism_pairings[].peers entry must be a string of the form '<peer_vault>.<peer_pattern_id>' where <peer_vault> appears in the binding's paired_with dict (v0.4) OR has a binding for the same bridge_id (v0.5+ relaxation)."
   - "v0.4 audit-level (blocking): mechanism_pairings type-mismatch (without secondary_types escape) is the only condition that triggers Step 9 dirt-level RED via Step 5b. Cross-products of paired_with NOT in mechanism_pairings are presumed substrate-level and not type-checked."
+  # v0.5 additions (apply ONLY to residual pre-v0.6 vaults)
+  - "If a binding ships with explicit `paired_with`, that value is treated as authoritative for THIS vault's audit run. The audit additionally computes `paired_with_derived` from peer vaults' local_nodes / local_patterns for the same bridge_id, and surfaces the diff under informational class `paired_with_unratified` when the explicit value references nodes/patterns absent from the peer's local entries for this bridge_id."
+  - "If a binding omits `paired_with` (the v0.5 recommended state), /system-audit Step 5 computes the effective paired_with on-the-fly by walking peer vaults' system-model.yaml and gathering their local_nodes / local_patterns for the same bridge_id. Peer vaults with no entry for this bridge_id contribute the empty set."
+  - "v0.5 audit-level (informational): paired_with_unratified is a NEW warning class — does NOT contribute to the >5 dirt-level trigger and does NOT change red/yellow/green levels. Pure visibility surface."
+  # v0.6 additions
+  - "Cross-vault bindings live in agensy/cross-vault-bindings.yaml (governed by framework/system-model/cross-vault-bindings-schema.yaml). v0.6 vaults SHOULD omit `cross_vault_bindings:` from system-model.yaml; pre-v0.6 vaults that still carry the section remain valid but the central file takes precedence whenever a bridge_id appears there."
+  - "v0.6 audit-level (informational): five v0.5 informational classes (paired_with_unratified, claims_about_me, bindings_safe_to_strip, bindings_selectivity_loss, bindings_mixed) collapse into one — `unratified_peer_views` — emitted from the central file. Does NOT affect dirt level."
+  - "Mechanism pairings authored under v0.6 live at the bridge level in the central file with an explicit `claimer:` field. Pre-v0.6 mechanism_pairings inside per-vault bindings remain parseable but new authorship goes through the central file."
 
 # ─────────────────────────────────────────────────────────────
 # WHAT THE SYSTEM MODEL IS NOT

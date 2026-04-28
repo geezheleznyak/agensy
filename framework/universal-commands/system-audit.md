@@ -10,7 +10,9 @@ Systematic reconciliation of `[vault]/system-model.yaml` against the canonical s
 **Runtime**: Read the following inputs before executing:
 - `vault-config.md` from the vault root — `domains[]`, `engagement_axis.positions[]`, `folder_structure.output`.
 - `system-model.yaml` from the vault root.
-- `agensy/framework/system-model/system-model-schema.yaml` — canonical schema.
+- `agensy/framework/system-model/system-model-schema.yaml` — canonical per-vault schema.
+- `agensy/framework/system-model/cross-vault-bindings-schema.yaml` — central-file schema (v0.6+).
+- `agensy/cross-vault-bindings.yaml` — central cross-vault bindings file (v0.6+).
 - `agensy/cross-vault-bridges.md` — valid bridge_ids.
 - Directory listing under the vault root (for `linked_notes` existence checks).
 
@@ -84,13 +86,24 @@ Report:
 
 ## Step 5 — Cross-Vault Binding Integrity
 
-For every entry in `cross_vault_bindings[]`:
-- `bridge_id` exists in `agensy/cross-vault-bridges.md`.
-- Every id in `local_nodes` / `local_patterns` resolves in this vault's system-model.
-- Every vault name in `paired_with` exists in `agensy/system-state.md` Vault Registry.
-- Every id in `paired_with[vault].nodes` / `paired_with[vault].patterns` resolves when the peer vault's system-model is readable. If the peer vault has no `system-model.yaml`, flag as `⏳ peer not bootstrapped` (not an error — expected during rollout).
+**v0.6 change** — cross-vault bindings live in `agensy/cross-vault-bindings.yaml`, NOT in per-vault `system-model.yaml`. The audit projects the central file's contributions for THIS vault and runs the same per-binding checks the legacy v0.1–v0.5 code ran on the in-vault section.
 
-Report: `⚠️ binding drift: N` with bridge_id, side, and broken id.
+For every entry in the projection (one per bridge where this vault has a non-empty `self_declared` block in the central file):
+- `bridge_id` exists in `agensy/cross-vault-bridges.md`.
+- Every id in `self_declared.local_nodes` / `local_patterns` resolves in this vault's system-model.
+- `linked_notes` paths resolve under the vault root.
+
+Then Step 5 walks the central file's `contributions[this_vault].peer_views` block:
+- Every id in `peer_views[claimer].nodes` / `patterns` must resolve in THIS vault's full nodes / patterns. A non-resolving id is `⚠️ binding drift` (a peer claims a real-but-renamed item, OR has a stale claim).
+- An id present in `peer_views[claimer]` but NOT in `self_declared` surfaces as informational `unratified_peer_views` — does NOT affect dirt level. This is the v0.6 unification of v0.5's `paired_with_unratified` + `claims_about_me`.
+
+Report:
+- `⚠️ binding drift: N` (hard, contributes to dirt level)
+- `ℹ️ unratified_peer_views: N` (informational; expected during normal lifecycle)
+
+**Migration note (v0.5 → v0.6)** — the v0.5 informational classes `paired_with_unratified`, `claims_about_me`, `bindings_safe_to_strip`, `bindings_selectivity_loss`, `bindings_mixed`, `bindings_derived_only` are all retired. They were visibility kludges for what is structurally a single phenomenon: complementary perspectives on bridge scope. The v0.6 schema makes both perspectives explicit (`self_declared` + `peer_views`), so a single `unratified_peer_views` count captures the same signal. See `framework/closures/v0.6-centralized-bindings.md`.
+
+**Pre-v0.6 vaults**: any vault whose `system-model.yaml` still carries a `cross_vault_bindings:` section is a residual pre-v0.6 file. The audit prefers the central file when a bridge_id appears there; a pre-v0.6 section with bridges NOT in the central file would be ignored (this should not happen after the one-shot migration).
 
 ---
 
@@ -228,6 +241,8 @@ Update `agensy/system-state.md` Vault Registry — set this vault's `System Mode
 
 **Counts that DO contribute to the > 5 rule**: schema violations, config drift, broken linked_notes, unlinked entities, binding drift, mechanism-pairing failures, mechanism-pairing broken refs, potential pattern-name collision.
 
+**v0.6 informational-only counts (do NOT contribute to dirt level)**: `unratified_peer_views`, `peer_unparseable`. The single `unratified_peer_views` class replaces five v0.5 classes (paired_with_unratified, claims_about_me, bindings_safe_to_strip, bindings_unratified, bindings_selectivity_loss, bindings_mixed, bindings_derived_only) — all retired alongside the central-file relocation.
+
 Update the **System Model Freshness** table in `system-state.md` with:
 - `last_audit`: today's date
 - `dirt_level`: green / yellow / red (with emoji)
@@ -238,8 +253,10 @@ Update the **System Model Freshness** table in `system-state.md` with:
 **One-line summary** — emit a single structured line at the end of the report for downstream capture by `/coverage-audit` Step 9 (v0.4: rename `type_mismatch` → `mech_failures`, add `mech_broken_refs` and `substrate_pairings`):
 
 ```
-SYSTEM_AUDIT_SUMMARY: vault=<name> dirt=<green|yellow|red> schema=N config=N broken_notes=N unlinked=N unref=N binding_drift=N mech_failures=N mech_broken_refs=N divergences=N substrate_pairings=N
+SYSTEM_AUDIT_SUMMARY: vault=<name> dirt=<green|yellow|red> schema=N config=N broken_notes=N unlinked=N unref=N binding_drift=N mech_failures=N mech_broken_refs=N divergences=N substrate_pairings=N unratified_peer_views=N
 ```
+
+The trailing field (v0.6) replaces the three v0.5 trailing fields (`pw_unratified`, `claims_about_me`, `safe_to_strip`); informational only.
 
 Do NOT modify `system-model.yaml` itself — the audit is read-only by design. Remediation is `/system-build`.
 

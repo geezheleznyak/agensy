@@ -1,12 +1,11 @@
-﻿---
+---
 description: Diff a vault's cross_vault_bindings against cross-vault-bridges.md; propose new, flag missing, detect drift
 type: universal-protocol
-audience: claude
 ---
 
 # /system-bridge
 
-Reconcile a vault's `cross_vault_bindings[]` against the canonical bridge registry in `[AGENSY_PATH]/cross-vault-bridges.md`. Reports: bridges this vault appears in but doesn't yet have bindings for (missing); bindings present but not in the registry (drift); bindings whose peer side has become invalid (broken); proposed new bindings based on heuristic scan of the vault's nodes and patterns (candidates).
+Reconcile a vault's `cross_vault_bindings[]` against the canonical bridge registry in `agensy/cross-vault-bridges.md`. Reports: bridges this vault appears in but doesn't yet have bindings for (missing); bindings present but not in the registry (drift); bindings whose peer side has become invalid (broken); proposed new bindings based on heuristic scan of the vault's nodes and patterns (candidates).
 
 Three modes:
 - `diff` (default) — report only; no writes.
@@ -18,15 +17,16 @@ Read-only except when the user explicitly routes a proposed binding through `/sy
 **Runtime**: Read the following inputs:
 - `vault-config.md` from the vault root — `domains[]`.
 - `system-model.yaml` from the vault root. If absent: respond "No system model — run `/system-build bootstrap` first." and stop.
-- `[AGENSY_PATH]/cross-vault-bridges.md` — canonical bridge registry.
-- `[AGENSY_PATH]/system-state.md` — Vault Registry (to know which peer vaults exist and their system-model status).
+- `agensy/cross-vault-bindings.yaml` (v0.6+) — central bindings file; the source of truth for cross-vault binding data.
+- `agensy/cross-vault-bridges.md` — canonical bridge registry (descriptions).
+- `agensy/system-state.md` — Vault Registry (to know which peer vaults exist and their system-model status).
 - Peer vaults' `system-model.yaml` where they exist and the user requested `pair`.
 
 ---
 
 ## Step 1 — Parse the Bridge Registry
 
-Walk `[AGENSY_PATH]/cross-vault-bridges.md`. For each `## Bridge N — Title` heading, extract:
+Walk `agensy/cross-vault-bridges.md`. For each `## Bridge N — Title` heading, extract:
 - `bridge_id` — derived from heading: `bridge-N-kebab-case-title` (e.g., `## Bridge 2 — Decision Theory and Rationality` → `bridge-2-decision-theory-and-rationality`). Be tolerant of shorter in-model ids — `bridge-2-decision-theory` is a valid alias when only the core noun matters.
 - `which_vaults` — parse the "**Which vaults**:" line.
 - `search_terms` — parse the "**Search terms**:" line.
@@ -38,7 +38,7 @@ Build an in-memory index: `{ bridge_id → { vaults, terms, tension } }`.
 
 ## Step 2 — Classify the Vault's Current Bindings
 
-For this vault's `cross_vault_bindings[]`:
+**v0.6 change**: bindings live in `agensy/cross-vault-bindings.yaml`. Read the central file and walk `bindings[]` where `contributions[this_vault]` has a non-empty `self_declared` block.
 
 **Valid binding**: `bridge_id` resolves in the registry; the current vault is listed in that bridge's `which_vaults`.
 
@@ -46,7 +46,7 @@ For this vault's `cross_vault_bindings[]`:
 
 **Orphan**: `bridge_id` resolves but this vault is NOT in that bridge's `which_vaults`. Either the registry is stale (add the vault) or the binding is overreaching (remove). Flag.
 
-**Broken peer**: a `paired_with` vault does not exist in the Vault Registry, or a `paired_with[vault].nodes[]` / `[patterns[]]` id does not resolve in that vault's system-model (only checkable where the peer vault is bootstrapped).
+**Broken peer view**: an item in `peer_views[claimer].nodes` / `patterns` (under THIS vault's contribution block) does not resolve in this vault's `nodes[]` / `patterns[]`. Surfaces as `binding_drift` from `/system-audit` Step 5.
 
 Report counts and one line per issue.
 
@@ -69,21 +69,22 @@ For each missing bridge, scan the current vault's nodes and patterns for evidenc
 - Match node `label`s and `linked_notes` filenames against the bridge's `search_terms` (case-insensitive, partial match).
 - Match pattern `type`s and `description`s against the bridge's `bridge_tension` keywords.
 
-If at least 2 nodes or 1 pattern matches, draft a candidate binding block:
+If at least 2 nodes or 1 pattern matches, draft a candidate binding block in v0.6 central-file shape:
 
 ```yaml
+# Add to agensy/cross-vault-bindings.yaml under bindings[]:
 - bridge_id: [bridge-N-slug]
   description: >
     [Copy first sentence of the bridge's prose from the registry.]
-  local_nodes: [list of matched node ids]
-  local_patterns: [list of matched pattern ids]
-  paired_with:
-    [peer-vault]:
-      nodes: []     # user fills in after reading peer system-model
-      patterns: []  # user fills in
+  contributions:
+    [this-vault]:
+      self_declared:
+        local_nodes: [list of matched node ids]
+        local_patterns: [list of matched pattern ids]
+        linked_notes: []
 ```
 
-Present as a candidate — not written. Writing is `/system-build add-binding`.
+Present as a candidate — not written. Writing is `/system-build add-binding` (which now edits the central file directly).
 
 Suppress candidates where the match is thin (single node, no pattern) — report instead as "worth manual check" to avoid spray.
 

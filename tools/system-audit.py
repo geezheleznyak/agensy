@@ -8,8 +8,17 @@ Implements the deterministic half of the /system-audit protocol (Steps 1, 2, 3,
 remain with Claude — they require corpus-walking heuristics and judgment that
 should not be mechanized.
 
-Read-only by design — never writes to system-model.yaml. Remediation belongs
-to /system-build.
+v0.6 (2026-04-28): cross-vault bindings now live in
+agensy/cross-vault-bindings.yaml (governed by
+framework/system-model/cross-vault-bindings-schema.yaml). The audit projects
+the central file into a per-vault view and runs the same Step 5 / Step 5b
+checks against the projection. Five v0.5 informational classes
+(paired_with_unratified, claims_about_me, bindings_safe_to_strip,
+bindings_selectivity_loss, bindings_mixed) collapse into one —
+`unratified_peer_views`. Derivation logic is retired.
+
+Read-only by design — never writes to vault YAMLs or the central file.
+Remediation belongs to /system-build.
 
 Usage:
     python system-audit.py <vault-path>            # human report; exit 0/1/2
@@ -19,8 +28,10 @@ Usage:
 Exit codes:
     0  green    1  yellow    2  red    3  invocation error
 
-Schema reference (default search order, walking up from vault):
+Schema references (default search order, walking up from vault):
     [framework-root]/framework/system-model/system-model-schema.yaml
+    [framework-root]/framework/system-model/cross-vault-bindings-schema.yaml
+    [framework-root]/cross-vault-bindings.yaml
 
 Override with --schema, --bridges, --peer-root if non-default layout.
 """
@@ -45,8 +56,9 @@ except ImportError:
     sys.exit(3)
 
 
-TOOL_VERSION = "0.1.0"
-EXPECTED_SCHEMA_VERSION = "0.4"
+TOOL_VERSION = "0.3.0"
+EXPECTED_SCHEMA_VERSION = "0.6"
+SCHEMA_VERSIONS_PRE_V06 = {"0.1", "0.2", "0.3", "0.4", "0.5"}
 
 # Timescale ordering for adjacency check (Step 5b informational)
 TIMESCALE_ORDER = [
@@ -62,13 +74,19 @@ def find_framework_root(vault_path: Path) -> Path:
     """Find directory containing 'framework/system-model/system-model-schema.yaml'.
 
     Search order:
-    1. Sibling directories of vault_path (the typical case — multiple vaults +
-       framework dir all under one workspace)
-    2. Ancestors of vault_path (vault nested deeper than framework)
-    3. Parent of this script's location (when system-audit.py lives in
-       <framework-root>/tools/, the framework root is its grandparent)
+    1. Parent of this script's location (when system-audit.py lives in
+       <framework-root>/tools/, the framework root is its grandparent).
+       Preferred FIRST so the running script's home wins over any other
+       directory that mirrors the framework structure (e.g. an agensy
+       public mirror sitting alongside agensy).
+    2. Sibling directories of vault_path.
+    3. Ancestors of vault_path.
     """
     sentinel = Path('framework') / 'system-model' / 'system-model-schema.yaml'
+    # Script-relative (this script's grandparent) — preferred
+    script_root = Path(__file__).resolve().parent.parent
+    if (script_root / sentinel).exists():
+        return script_root
     # Siblings
     parent = vault_path.resolve().parent
     if parent.exists():
@@ -83,10 +101,6 @@ def find_framework_root(vault_path: Path) -> Path:
         if cur.parent == cur:
             break
         cur = cur.parent
-    # Script-relative (this script's grandparent)
-    script_root = Path(__file__).resolve().parent.parent
-    if (script_root / sentinel).exists():
-        return script_root
     return None
 
 
@@ -118,11 +132,109 @@ def load_model(path: Path):
         sys.exit(3)
 
 
+_PEER_LOAD_FAILURES = set()  # paths we've already warned about
+
+
+def load_peer_model_tolerant(path: Path):
+    """v0.5: load a peer system-model without exiting on YAML errors.
+
+    The local-vault load via load_model() remains strict (exit 3 on parse
+    error is the right behavior — the audit is for THAT vault). For peer
+    loads, a malformed YAML is logged once to stderr and the function
+    returns None — the audit continues without that peer's contribution
+    rather than aborting. Critical for v0.5 because derivation walks ALL
+    peer vaults; one bad YAML must not block the audit of healthy ones.
+    """
+    if not path.exists():
+        return None
+    try:
+        return load_yaml_with_header(path)
+    except yaml.YAMLError as e:
+        if str(path) not in _PEER_LOAD_FAILURES:
+            _PEER_LOAD_FAILURES.add(str(path))
+            print(f"WARN: peer system-model has malformed YAML — skipping for "
+                  f"derivation: {path}: {type(e).__name__}", file=sys.stderr)
+        return None
+
+
 def load_schema(path: Path):
     if not path or not path.exists():
         print(f"ERROR: schema not found at {path}. Use --schema to override.", file=sys.stderr)
         sys.exit(3)
     return yaml.safe_load(path.read_text(encoding='utf-8'))
+
+
+def load_central_bindings(path: Path):
+    """v0.6: load agensy/cross-vault-bindings.yaml. Returns the
+    parsed dict, or {} if the file is missing (allowing pre-v0.6 vaults to
+    audit using their per-vault cross_vault_bindings section). Raises on
+    YAML parse error so the audit fails loudly when the central file is
+    structurally broken — unlike a peer YAML, the central file is THIS
+    vault's binding source under v0.6."""
+    if not path or not path.exists():
+        return {}
+    try:
+        return yaml.safe_load(path.read_text(encoding='utf-8')) or {}
+    except yaml.YAMLError as e:
+        print(f"ERROR: malformed YAML in central bindings file {path}: {e}",
+              file=sys.stderr)
+        sys.exit(3)
+
+
+def synthesize_local_bindings(my_short: str, central: dict):
+    """v0.6: project the central file into the legacy per-vault binding shape
+    for this vault. Each binding entry in the returned list has the
+    pre-v0.6 structure (bridge_id, local_nodes, local_patterns, linked_notes,
+    optional mechanism_pairings). This lets the rest of the audit reuse the
+    same per-binding loops it always has, without special-casing v0.6.
+
+    A bridge is projected ONLY when this vault has at least one item in
+    `self_declared` (any of local_nodes / local_patterns / linked_notes /
+    mechanism_pairings). This preserves the pre-v0.6 binding-count
+    semantics: a binding represents a formal declaration by this vault,
+    not merely its presence in someone else's peer_views.
+
+    mechanism_pairings under v0.6 live at the bridge level with explicit
+    `claimer:` attribution; the projection keeps only those authored by
+    this vault and strips the claimer field so check_mechanism_pairings
+    operates unchanged.
+    """
+    out = []
+    for b in (central.get('bindings') or []):
+        contribs = b.get('contributions') or {}
+        my = contribs.get(my_short)
+        if not my:
+            continue
+        sd = my.get('self_declared') or {}
+        my_mp = []
+        for mp in (b.get('mechanism_pairings') or []):
+            if mp.get('claimer') == my_short:
+                stripped = {k: v for k, v in mp.items() if k != 'claimer'}
+                my_mp.append(stripped)
+        # Skip bridges where this vault has neither a non-empty self_declared
+        # nor any authored mechanism_pairings — peer_views alone do not
+        # constitute a binding declaration by this vault.
+        has_self = bool(
+            (sd.get('local_nodes') or []) or
+            (sd.get('local_patterns') or []) or
+            (sd.get('linked_notes') or [])
+        )
+        if not has_self and not my_mp:
+            continue
+        entry = {
+            'bridge_id': b.get('bridge_id'),
+            'local_nodes': list(sd.get('local_nodes') or []),
+            'local_patterns': list(sd.get('local_patterns') or []),
+            'linked_notes': list(sd.get('linked_notes') or []),
+        }
+        if sd.get('description'):
+            entry['description'] = sd['description']
+        if sd.get('notes'):
+            entry['notes'] = sd['notes']
+        if my_mp:
+            entry['mechanism_pairings'] = my_mp
+        out.append(entry)
+    return out
 
 
 def load_bridges(path: Path):
@@ -382,9 +494,36 @@ def check_unlinked_entities(model, issues):
 # CHECKS — Step 5: Cross-Vault Binding Integrity
 # ─────────────────────────────────────────────────────────────
 
+def _peer_short_name(peer_dir, peer_model):
+    """Normalize a vault dir-name to the short-name key used in central
+    file `contributions` blocks. Reads `vault:` field from the model and
+    strips the synthesis_ / sythesis_ prefix. Falls back to directory
+    name similarly stripped."""
+    raw = (peer_model.get('vault') if peer_model else None) or peer_dir.name
+    for prefix in ('synthesis_', 'sythesis_'):
+        if raw.startswith(prefix):
+            return raw[len(prefix):]
+    return raw
+
+
 def check_bindings(model, valid_node_ids, valid_pattern_ids, valid_bridge_numbers,
-                   peer_root, issues, info, peer_models):
-    """Step 5: bridge number known, local refs resolve, peer refs resolve."""
+                   issues):
+    """Step 5 (v0.6): validate this vault's projected binding entries.
+
+    Under v0.6, model['cross_vault_bindings'] is synthesized from the central
+    file (agensy/cross-vault-bindings.yaml) — see
+    synthesize_local_bindings(). Each entry has bridge_id, local_nodes,
+    local_patterns, linked_notes, optional mechanism_pairings (claimer-stripped).
+
+    Validation:
+      - bridge_id parses and resolves in the bridge registry.
+      - local_nodes / local_patterns resolve in this vault.
+
+    Peer-side validation moved to check_unratified_peer_views() — peer_views
+    are validated against the SUBJECT vault's nodes/patterns (the vault under
+    whose contributions block they sit), which under v0.6 means the audit
+    only validates peer_views[*] when the audited vault IS the subject.
+    """
     for b in (model.get('cross_vault_bindings') or []):
         bid = b.get('bridge_id', '<no-bridge-id>')
         n = parse_bridge_number(bid)
@@ -405,35 +544,69 @@ def check_bindings(model, valid_node_ids, valid_pattern_ids, valid_bridge_number
                     'bridge_id': bid, 'side': 'local', 'kind': 'pattern',
                     'id': lp, 'issue': 'unknown-local-pattern',
                 })
-        paired = b.get('paired_with') or {}
-        if not isinstance(paired, dict):
+
+
+# ─────────────────────────────────────────────────────────────
+# CHECKS — Step 5 (v0.6): Unratified Peer Views
+# Replaces v0.5's paired_with_unratified, claims_about_me, bindings_safe_to_strip,
+# bindings_selectivity_loss, bindings_mixed, and bindings_derived_only.
+# ─────────────────────────────────────────────────────────────
+
+def check_unratified_peer_views(my_short, central, valid_node_ids,
+                                valid_pattern_ids, issues, info):
+    """v0.6: walk the central file's contributions[my_short] block. For every
+    bridge where this vault appears, verify:
+
+      - self_declared.local_nodes / local_patterns resolve in this vault
+        (already covered by check_bindings on the synthesized projection;
+        this is a safety net that also flags items present only in
+        peer_views but missing from this vault).
+      - peer_views[claimer].nodes / patterns resolve in THIS vault's
+        nodes[] / patterns[]. A non-resolving id is binding_drift (peer
+        claims a real-but-renamed item, OR peer has a stale claim).
+      - Items present in peer_views but NOT in self_declared surface as
+        `unratified_peer_views` — informational only, expected in normal
+        lifecycle (some peer noticed a connection this vault hasn't
+        formalized yet).
+    """
+    for b in (central.get('bindings') or []):
+        bid = b.get('bridge_id', '<no-bridge-id>')
+        contribs = b.get('contributions') or {}
+        my = contribs.get(my_short)
+        if not my:
             continue
-        for peer_name, peer_data in paired.items():
-            peer_dir = find_peer_vault(peer_name, peer_root)
-            if not peer_dir:
-                if peer_name not in info['peer_not_bootstrapped']:
-                    info['peer_not_bootstrapped'].append(peer_name)
+        sd = my.get('self_declared') or {}
+        sd_nodes = set(sd.get('local_nodes') or [])
+        sd_patts = set(sd.get('local_patterns') or [])
+        peer_views = my.get('peer_views') or {}
+        if not isinstance(peer_views, dict):
+            continue
+        for claimer, view in peer_views.items():
+            if not isinstance(view, dict):
                 continue
-            # Cache peer model
-            if peer_name not in peer_models:
-                peer_sm = peer_dir / 'system-model.yaml'
-                peer_models[peer_name] = load_model(peer_sm) or {}
-            peer_model = peer_models[peer_name]
-            peer_node_ids = {n.get('id') for n in (peer_model.get('nodes') or [])}
-            peer_pattern_ids = {p.get('id') for p in (peer_model.get('patterns') or [])}
-            if not isinstance(peer_data, dict):
-                continue
-            for pn in (peer_data.get('nodes') or []):
-                if pn not in peer_node_ids:
+            for pn in (view.get('nodes') or []):
+                if pn not in valid_node_ids:
                     issues['binding_drift'].append({
-                        'bridge_id': bid, 'side': 'peer', 'vault': peer_name,
-                        'kind': 'node', 'id': pn, 'issue': 'unknown-peer-node',
+                        'bridge_id': bid, 'side': 'peer_view',
+                        'claimer': claimer, 'kind': 'node', 'id': pn,
+                        'issue': 'unknown-local-node-in-peer-view',
                     })
-            for pp in (peer_data.get('patterns') or []):
-                if pp not in peer_pattern_ids:
+                elif pn not in sd_nodes:
+                    info['unratified_peer_views'].append({
+                        'bridge_id': bid, 'claimer': claimer,
+                        'kind': 'node', 'id': pn,
+                    })
+            for pp in (view.get('patterns') or []):
+                if pp not in valid_pattern_ids:
                     issues['binding_drift'].append({
-                        'bridge_id': bid, 'side': 'peer', 'vault': peer_name,
-                        'kind': 'pattern', 'id': pp, 'issue': 'unknown-peer-pattern',
+                        'bridge_id': bid, 'side': 'peer_view',
+                        'claimer': claimer, 'kind': 'pattern', 'id': pp,
+                        'issue': 'unknown-local-pattern-in-peer-view',
+                    })
+                elif pp not in sd_patts:
+                    info['unratified_peer_views'].append({
+                        'bridge_id': bid, 'claimer': claimer,
+                        'kind': 'pattern', 'id': pp,
                     })
 
 
@@ -449,6 +622,31 @@ def timescale_distance(a, b):
         return abs(TIMESCALE_ORDER.index(a) - TIMESCALE_ORDER.index(b))
     except ValueError:
         return None  # unknown band — treat as not comparable
+
+
+def populate_peer_models_by_short(peer_root, peer_models, info):
+    """v0.6: walk peer_root and load every peer vault's system-model, keyed
+    by short name. Idempotent — skips entries already cached. Used by
+    check_mechanism_pairings to resolve `<peer_short>.<peer_pattern_id>`
+    references against peer pattern data.
+    """
+    if not peer_root or not peer_root.exists():
+        return
+    for child in sorted(peer_root.iterdir()):
+        if not child.is_dir():
+            continue
+        peer_sm = child / 'system-model.yaml'
+        if not peer_sm.exists():
+            continue
+        peer_model = load_peer_model_tolerant(peer_sm)
+        if not peer_model:
+            short_dir = _peer_short_name(child, None)
+            if short_dir not in info['peer_unparseable']:
+                info['peer_unparseable'].append(short_dir)
+            continue
+        short = _peer_short_name(child, peer_model)
+        if short not in peer_models:
+            peer_models[short] = peer_model
 
 
 def check_mechanism_pairings(model, peer_models, issues, info):
@@ -477,7 +675,13 @@ def check_mechanism_pairings(model, peer_models, issues, info):
                 peer_name, peer_pid = peer_ref.split('.', 1)
                 peer_model = peer_models.get(peer_name)
                 if peer_model is None:
-                    if peer_name not in info['peer_not_bootstrapped']:
+                    # Could be: (a) not bootstrapped, (b) unparseable YAML.
+                    # check_bindings populates peer_unparseable in case (b).
+                    # In either case, skip peer-side validation rather than
+                    # surface as mech_broken_refs (which would mis-attribute
+                    # an oeconomia YAML bug as a historia mechanism-pairing failure).
+                    if peer_name not in info['peer_unparseable'] and \
+                       peer_name not in info['peer_not_bootstrapped']:
                         info['peer_not_bootstrapped'].append(peer_name)
                     continue
                 peer_p = next(
@@ -543,30 +747,62 @@ def check_mechanism_pairings(model, peer_models, issues, info):
 # Step 5b informational: substrate pairings count
 # ─────────────────────────────────────────────────────────────
 
-def count_substrate_pairings(model):
-    """Cross-products of local_patterns × peer.patterns NOT in mechanism_pairings."""
+def _effective_peer_patterns(peer_contrib):
+    """v0.6: a peer vault's effective pattern contribution under a bridge is
+    the union of (a) its self_declared.local_patterns and (b) every
+    peer_views[claimer].patterns (items some claimer asserts the peer
+    contributes). Mirrors v0.5's "explicit-or-derived" semantics."""
+    sd = (peer_contrib.get('self_declared') or {}).get('local_patterns') or []
+    out = list(sd)
+    for claimer, view in (peer_contrib.get('peer_views') or {}).items():
+        if not isinstance(view, dict):
+            continue
+        for pp in (view.get('patterns') or []):
+            if pp not in out:
+                out.append(pp)
+    return out
+
+
+def count_substrate_pairings(my_short, central):
+    """v0.6: cross-products of THIS vault's local_patterns × every peer
+    vault's effective_patterns for the same bridge, NOT declared in
+    mechanism_pairings as authored by THIS vault. Read directly from the
+    central file.
+
+    Effective patterns include both self_declared and peer_views items —
+    matches v0.5's behavior when explicit paired_with was set OR derivation
+    fired.
+
+    `bindings_without_mp` counts bridges where this vault appears with a
+    self_declared block but authors no mechanism_pairings.
+    """
     total = 0
     bindings_without_mp = 0
-    for b in (model.get('cross_vault_bindings') or []):
-        local_p = b.get('local_patterns') or []
-        paired = b.get('paired_with') or {}
+    for b in (central.get('bindings') or []):
+        contribs = b.get('contributions') or {}
+        my = contribs.get(my_short)
+        if not my:
+            continue
+        my_local_patterns = (my.get('self_declared') or {}).get('local_patterns') or []
+        # mechanism_pairings authored by this vault (claimer == my_short)
+        my_authored_mp = [mp for mp in (b.get('mechanism_pairings') or [])
+                          if mp.get('claimer') == my_short]
+        if not my_authored_mp:
+            if my_local_patterns:
+                bindings_without_mp += 1
         declared_pairs = set()
-        for entry in (b.get('mechanism_pairings') or []):
-            local_id = entry.get('local')
-            for peer_ref in (entry.get('peers') or []):
+        for mp in my_authored_mp:
+            local_id = mp.get('local')
+            for peer_ref in (mp.get('peers') or []):
                 if isinstance(peer_ref, str) and '.' in peer_ref:
                     declared_pairs.add((local_id, peer_ref))
-        if not (b.get('mechanism_pairings') or []):
-            bindings_without_mp += 1
-        if not isinstance(paired, dict):
-            continue
-        for peer_name, peer_data in paired.items():
-            if not isinstance(peer_data, dict):
+        for peer_short, peer_contrib in contribs.items():
+            if peer_short == my_short:
                 continue
-            peer_patterns = peer_data.get('patterns') or []
-            for lp in local_p:
+            peer_patterns = _effective_peer_patterns(peer_contrib)
+            for lp in my_local_patterns:
                 for pp in peer_patterns:
-                    if (lp, f'{peer_name}.{pp}') not in declared_pairs:
+                    if (lp, f'{peer_short}.{pp}') not in declared_pairs:
                         total += 1
     return total, bindings_without_mp
 
@@ -576,6 +812,9 @@ def count_substrate_pairings(model):
 # ─────────────────────────────────────────────────────────────
 
 def compute_counts(model, counts):
+    """v0.6: nodes/edges/patterns from per-vault model. `bindings.total` counts
+    the projected per-vault binding view (bridges where this vault has a
+    non-empty contribution block in the central file)."""
     nodes = model.get('nodes') or []
     edges = model.get('edges') or []
     patterns = model.get('patterns') or []
@@ -662,7 +901,8 @@ def assemble_result(vault_name, schema_version, model, issues, info, counts, dir
         'audit_date': datetime.now().strftime('%Y-%m-%d'),
         'audit_timestamp': datetime.now().isoformat(),
         'scope': {
-            'steps_executed': ['1', '2', '3', '4A', '5', '5b-typematch', '9'],
+            'steps_executed': ['1', '2', '3', '4A', '5', '5-peer-views',
+                               '5b-typematch', '9'],
             'steps_deferred_to_claude': ['4B', '5b-collision', '6', '7', '8'],
         },
         'counts': counts,
@@ -686,7 +926,8 @@ def format_summary_line(vault_name, dirt_level, issues, info):
         f"mech_failures={len(issues['mech_failures'])} "
         f"mech_broken_refs={len(issues['mech_broken_refs'])} "
         f"divergences={len(issues['mech_divergences'])} "
-        f"substrate_pairings={info['substrate_pairings']}"
+        f"substrate_pairings={info['substrate_pairings']} "
+        f"unratified_peer_views={len(info.get('unratified_peer_views', []))}"
     )
 
 
@@ -709,7 +950,12 @@ def human_report(result, verbose=False):
                  ", ".join(f"{k}={v}" for k, v in sorted(counts['edges']['by_type'].items())) + ")")
     lines.append(f"- Patterns: {counts['patterns']['total']} (by type: " +
                  ", ".join(f"{k}={v}" for k, v in sorted(counts['patterns']['by_type'].items())) + ")")
-    lines.append(f"- Bindings: {counts['bindings']['total']} ({counts['bindings']['with_mechanism_pairings']} with mechanism_pairings)")
+    bindings_c = counts['bindings']
+    lines.append(
+        f"- Bindings: {bindings_c['total']} "
+        f"({bindings_c['with_mechanism_pairings']} with mechanism_pairings) "
+        f"[from agensy/cross-vault-bindings.yaml — schema v0.6]"
+    )
     lines.append(f"- Linked notes: {counts.get('linked_notes_total', 0)} total / {counts.get('linked_notes_unique', 0)} unique")
     lines.append("")
 
@@ -717,6 +963,12 @@ def human_report(result, verbose=False):
     lines.append(f"## Dirt Level: {dot} {result['dirt_level'].upper()}")
     for r in result['dirt_rationale']:
         lines.append(f"  · {r}")
+    # v0.6: single informational class replaces v0.5's five
+    upv = info.get('unratified_peer_views', [])
+    if upv:
+        lines.append("")
+        lines.append(f"  v0.6 unratified_peer_views: {len(upv)} (informational; "
+                     f"peer claims this vault contributes items not in self_declared)")
     lines.append("")
 
     lines.append("## Issues")
@@ -726,7 +978,21 @@ def human_report(result, verbose=False):
         lines.append(f"  {marker}{k}: {n}")
     lines.append(f"  ℹ️ substrate_pairings: {info['substrate_pairings']} (informational)")
     lines.append(f"  ℹ️ peer_not_bootstrapped: {info['peer_not_bootstrapped']} (informational)")
+    peer_unparseable = info.get('peer_unparseable', [])
+    if peer_unparseable:
+        lines.append(f"  ⚠️ peer_unparseable: {peer_unparseable} (peer YAML failed to parse — peer-side mechanism_pairings checks skipped, NOT mis-attributed as drift)")
+    lines.append(f"  ℹ️ unratified_peer_views: {len(upv)} (v0.6 informational — does NOT affect dirt level)")
     lines.append("")
+    if upv:
+        lines.append(f"### unratified_peer_views ({len(upv)})")
+        cap_pv = None if verbose else 10
+        shown = upv if cap_pv is None else upv[:cap_pv]
+        for it in shown:
+            lines.append(f"  - bridge={it['bridge_id']} claimer={it['claimer']} "
+                         f"{it['kind']}={it['id']}")
+        if cap_pv is not None and len(upv) > cap_pv:
+            lines.append(f"  ... ({len(upv) - cap_pv} more — use --verbose to see all)")
+        lines.append("")
 
     # Detail (cap at 10 per category, --verbose shows all)
     cap = None if verbose else 10
@@ -857,12 +1123,31 @@ def main():
 
     schema_version = str(model.get('schema_version', '0.1'))
     if schema_version != EXPECTED_SCHEMA_VERSION:
-        print(f"WARN: schema version mismatch — tool built for "
-              f"{EXPECTED_SCHEMA_VERSION}, found {schema_version}. "
-              f"Some checks may be incorrect.", file=sys.stderr)
+        if schema_version in SCHEMA_VERSIONS_PRE_V06:
+            print(f"INFO: vault on schema_version {schema_version}; tool "
+                  f"is v0.6-aware. Cross-vault bindings are read from the "
+                  f"central file (agensy/cross-vault-bindings.yaml) "
+                  f"regardless of vault schema_version.", file=sys.stderr)
+        else:
+            print(f"WARN: schema version {schema_version} is unrecognized; "
+                  f"tool built for {EXPECTED_SCHEMA_VERSION}. Some checks "
+                  f"may be incorrect.", file=sys.stderr)
 
     schema = load_schema(schema_path)
     valid_bridge_numbers = load_bridges(bridges_path)
+
+    # v0.6: load the central cross-vault bindings file. Resolve relative to
+    # the framework root (agensy/cross-vault-bindings.yaml). When the
+    # central file exists, project this vault's view (synthesize_local_bindings)
+    # OVER any residual per-vault cross_vault_bindings — central is canonical.
+    central_path = (framework_root / 'cross-vault-bindings.yaml') if framework_root else None
+    central = load_central_bindings(central_path) if central_path else {}
+    my_short_name = _peer_short_name(vault_path, model)
+    if central.get('bindings'):
+        # Replace the per-vault binding section with the projection from the
+        # central file. This means downstream checks (linked_notes, bindings,
+        # mechanism_pairings, counts) work uniformly under v0.6.
+        model['cross_vault_bindings'] = synthesize_local_bindings(my_short_name, central)
 
     try:
         config = VaultConfig(vault_path)
@@ -885,6 +1170,9 @@ def main():
         'substrate_pairings': 0,
         'peer_not_bootstrapped': [],
         'bindings_without_mechanism_pairings': 0,
+        # v0.6 — informational only; not in CONTRIBUTING_KEYS
+        'unratified_peer_views': [],
+        'peer_unparseable': [],
     }
     counts = {}
     peer_models = {}
@@ -897,13 +1185,19 @@ def main():
     check_linked_notes(model, vault_path, issues, counts)
     # Step 4A
     check_unlinked_entities(model, issues)
-    # Step 5
+    # Step 5 (v0.6): validate IDs in the projected bindings
     check_bindings(model, valid_node_ids, valid_pattern_ids, valid_bridge_numbers,
-                   peer_root, issues, info, peer_models)
-    # Step 5b type-match
+                   issues)
+    # Step 5 (v0.6): unratified_peer_views — replaces v0.5's five info classes
+    if central.get('bindings'):
+        check_unratified_peer_views(my_short_name, central, valid_node_ids,
+                                    valid_pattern_ids, issues, info)
+    # Step 5b type-match: pre-populate peer_models keyed by short name so
+    # mechanism_pairings.peers references resolve under v0.6.
+    populate_peer_models_by_short(peer_root, peer_models, info)
     check_mechanism_pairings(model, peer_models, issues, info)
-    # Step 5b informational
-    sub_total, no_mp = count_substrate_pairings(model)
+    # Step 5b informational (v0.6: read directly from central file)
+    sub_total, no_mp = count_substrate_pairings(my_short_name, central)
     info['substrate_pairings'] = sub_total
     info['bindings_without_mechanism_pairings'] = no_mp
     # Counts

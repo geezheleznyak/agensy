@@ -155,7 +155,8 @@ agensy/
     inter-vault-protocol.md  ← cross-vault connection rules
     command-lifecycle.md     ← when to fire each command
     map-to-article-extraction.md ← schema for /article-* expression pipeline
-    system-model-schema.yaml ← v0.2 schema for per-vault system-model.yaml
+    system-model-schema.yaml ← v0.6 schema for per-vault system-model.yaml
+    cross-vault-bindings-schema.yaml ← v0.6 schema for the central cross-vault-bindings.yaml
     system-model-architecture.md ← design rationale for the System Model Layer
     primitives.md            ← three-layer primitive vocabulary (nodes/edges/patterns)
     universal-commands/      ← 34 command protocol files + 2 backward-compat aliases
