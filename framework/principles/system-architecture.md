@@ -22,8 +22,8 @@ Claude does not need to read the diagrams file to reason about the framework —
 Machine-readable description of the complete framework. Shows full component metadata, command-to-key relationships, state file ownership, lifecycle thresholds, and structural constraints. **This is the canonical topology** — the visual diagrams in `system-diagrams.md` render the same information for human orientation.
 
 ```yaml
-# ── Synthesis-Meta System Manifest ──────────────────────────────────────────
-# Version: 2026-03-30
+# ── Agensy System Manifest ──────────────────────────────────────────────────
+# Version: 2026-05-07
 # Source of truth for: component metadata, command-to-key relationships,
 # state file ownership, lifecycle thresholds, structural constraints.
 # Mermaid diagrams above show the same system visually.
@@ -102,15 +102,19 @@ loading_hierarchy:
 
     universal_protocols:
       location: "[AGENSY_PATH]/framework/universal-commands/"
-      count: 34   # 17 core + 4 system-model + 8 article + 5 co  (+ 2 alias files)
+      count: 36   # 17 core + 4 system-model + 9 article + 5 co + 1 learner  (+ 2 aliases + 3 hw-pass sub-passes = 41 files)
       core_17: [arc, coverage-audit, axis-survey, what-next, promote, compare,
                 engage-problem, synthesis, update-moc, evergreen-note, engage-deep,
                 domain-audit, dialogue, positions, revisit, question-bank, quick-check]
       system_model_4: [system-query, system-audit, system-build, system-bridge]  # registered 2026-04-20
-      article_pipeline_8: [article-scan, article-seed, article-outline, article-draft,
-                            article-revise, article-promote, article-critique, article-companion]  # registered 2026-04-21/22
+      article_pipeline_9: [article-scan, article-seed, article-outline, article-draft,
+                            article-revise, article-promote, article-critique, article-companion,
+                            article-handwrite]  # article-* registered 2026-04-21/22; article-handwrite registered 2026-04-28
+      hw_pass_sub_passes_3: [hw-pass-1-structure, hw-pass-2-sentences, hw-pass-3-honesty]  # internal sub-passes invoked by /article-handwrite — NOT standalone commands
       companion_co_5: [co-find, co-combine, co-suggest, co-critique, co-capture]  # registered 2026-04-22
+      learner_layer_1: [learner-profile]  # Phase A.1, registered 2026-04-24
       backward_compat_aliases: [confront, fault-line-survey]  # point at engage-deep / axis-survey
+      # Command count: 36 standalone protocol files + 2 aliases + 3 hw-pass internal sub-passes = 41 files (see slash-command-suite.md).
 
 commands:
   arc:
@@ -347,6 +351,22 @@ commands:
     reads: [vault-config, voice-profile, writer-positions, positions-index, source-map-registry, article-presets]
     writes_content: [companion_essay_workspace_in_essays_folder]
     required_keys: [reference_docs, folder_structure]
+
+  # ── Hand Mode (V2.0, registered 2026-04-28) ─────────────────────────────
+  # Third top-level expression mode: operator writes prose by hand on a Loaded
+  # Canvas. Three diagnostics LOCKED upfront, anatomy slots prefetched, three-pass
+  # discipline (hw-pass-1/2/3) enforced after with 24h time gates.
+  # hw-pass-1-structure, hw-pass-2-sentences, hw-pass-3-honesty are INTERNAL
+  # sub-passes invoked through /article-handwrite — they are NOT standalone
+  # commands and are not enumerated as separate command entries.
+  article-handwrite:
+    triggers: [user_invocation]
+    subcommands: [start, status, finalize]
+    reads: [vault-config, voice-profile, writer-positions, positions-index,
+            source-map-registry, article-presets, essay-framework,
+            framework-integration, hand-mode-protocol]
+    writes_content: [loaded_canvas_essay_in_essays_folder, pass_notes_appended_post_writes]
+    required_keys: [reference_docs, folder_structure, modes]
 
   # ── Companion Collaborative (registered 2026-04-22) ────────────────────
   # Read-only verbs the operator uses while writing by hand in companion mode.

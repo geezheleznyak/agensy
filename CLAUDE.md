@@ -22,11 +22,12 @@ agensy/
   cross-vault-bindings.yaml  ← centralized cross-vault binding data (v0.6+; user-authored — parallel to per-vault system-model.yaml; absent until user has multi-vault bindings to declare)
   CLAUDE.md                  ← this file
   framework/
-    slash-command-suite.md   ← command index (35 universal protocol files + 2 backward-compat aliases)
+    slash-command-suite.md   ← command index (36 universal protocol files + 2 backward-compat aliases + 3 hw-pass internal sub-passes = 41 files)
     principles/              ← WHY layer — invariants and design rationale
       architecture-principles.md ← invariants + evaluation framework (read first)
       system-contracts.md       ← contract table + design principles (read second)
-      system-architecture.md    ← Mermaid diagrams + YAML system manifest (read third)
+      system-architecture.md    ← YAML system manifest (read third — the canonical machine-readable topology)
+      system-diagrams.md        ← Mermaid visual companion to system-architecture.md (human orientation only)
       framework-meta-architecture.md ← META — framework-as-system-of-documents (read last; only when designing framework-level changes)
       learner-layer-architecture.md ← Learner Layer design doc (v2.1.0+; opt-in feature)
     protocols/               ← step-by-step procedures
@@ -45,7 +46,7 @@ agensy/
       system-model-schema.yaml  ← canonical schema for per-vault system-model.yaml (v0.6)
       cross-vault-bindings-schema.yaml ← schema for the central cross-vault-bindings file (v0.6+)
       primitives.md             ← three-layer primitive vocabulary (nodes/edges/patterns)
-    universal-commands/      ← 35 parameterized protocol files + 2 aliases (17 core + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer)
+    universal-commands/      ← 36 parameterized protocol files + 2 aliases + 3 hw-pass internal sub-passes (17 core + 4 system-model + 9 article-pipeline incl. article-handwrite + 5 companion-co + 1 learner-layer)
     vault-type-templates/    ← per-vault-type substrate scaffolds (expression/training/accumulation)
   tools/
     vault-linter.py          ← note content / schema checks (Categories A/B/G)

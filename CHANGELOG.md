@@ -7,6 +7,37 @@ Convention: each entry names the specific files changed (e.g., `framework/archit
 
 ---
 
+## [2.8.0] — 2026-05-07
+
+### Added — Hand mode (V2.0): `/article-handwrite` + 3 internal sub-passes
+
+A third top-level mode for expression vaults, alongside pipeline and companion modes. Where pipeline mode delegates prose generation to AI and companion mode is reactively augmenting, hand mode is **arranged-then-written**: three pre-writing diagnostics LOCKED, anatomy slots prefetched into a Loaded Canvas, three-pass revision discipline with 24h time gates between passes. Lifts the dormant Essayist's Framework from passive scaffolding to active backbone.
+
+- `framework/universal-commands/article-handwrite.md` — **NEW**. Subcommands `start`, `status`, `finalize`. `start` runs blocking interactive Q&A on the three diagnostics (question-not-topic, steelmanned objection, hostile-but-fair reader), prefetches source maps and T3 positions, scans the topic against framework §VII polymath-trap heuristics, and writes a Loaded Canvas to the essays folder. The command never writes prose into the essay body.
+- `framework/universal-commands/hw-pass-1-structure.md` — **NEW**. Internal sub-pass invoked by `/article-handwrite`. Movement audit, anatomy slot fill (Provocation / Movement / Turn / Resting Point), polymath-trap re-scan against prose. Output appended as `## Pass 1 Notes`. No time gate.
+- `framework/universal-commands/hw-pass-2-sentences.md` — **NEW**. Internal sub-pass. Composes the existing voice-profile 13-tic audit with framework §IV three pathologies (gravitas / weak-hedge / performance) and a non-skippable read-aloud directive. Refuses within 24h of last update unless `--force` (logged).
+- `framework/universal-commands/hw-pass-3-honesty.md` — **NEW**. Internal sub-pass. Composes `/article-critique` C1–C8 (full mode) + `writer-positions.md` non-negotiables check + framework §VI honesty audit ("where is the argument thinner than the prose suggests?"). Same 24h time gate.
+
+### Changed — Framework descriptions refreshed for the 36-command count
+
+The architectural-spine docs were synchronized with the new total: **36 standalone protocol files + 2 backward-compat aliases + 3 hw-pass internal sub-passes = 41 files**.
+
+- `framework/principles/system-architecture.md` — version line bumped to `2026-05-07`. `universal_protocols` block: `count: 34` → `36`; renamed `article_pipeline_8` → `article_pipeline_9` and added `article-handwrite`; added `hw_pass_sub_passes_3` (with explanatory comment that they are internal, not standalone); added `learner_layer_1: [learner-profile]`. New `commands:` block entry for `article-handwrite` (subcommands, reads, writes, required_keys).
+- `framework/principles/system-diagrams.md` — **NEW (synced from upstream)**. Visual companion to the YAML manifest. Three Mermaid diagrams (system map, command dispatch & lifecycle, state management & feedback loops) + Genesis-Protocol diagram. Updated UP-node label to reflect the 36 + 2 + 3 sub-pass count and the article-pipeline (9) including handwrite.
+- `framework/slash-command-suite.md` — header count updated; new "Hand-mode commands (V2.0)" section with three subcommands listed plus an "Internal sub-passes" sub-table; explanatory paragraph that `/co-*` verbs remain callable throughout hand mode and that `/article-promote` accepts `handwrite-final` identically to `final` and `companion-final`.
+- `CLAUDE.md` — vault-structure tree: `slash-command-suite.md` count line and `universal-commands/` count line updated; `system-architecture.md` annotation refined ("YAML system manifest" rather than "Mermaid diagrams + YAML"); `system-diagrams.md` added to the principles listing.
+
+### Backward compatibility
+
+Fully additive. No existing command, schema field, or template block changed contract. Vaults that never adopt hand mode are unaffected; the mode is opt-in per essay (operator chooses `/article-handwrite start` vs. `/article-seed` or `/article-companion start`). The `/article-promote` harvest loop is mode-agnostic — `handwrite-final` enters the same loop as `final` and `companion-final`.
+
+### Notes
+
+- `hw-pass-1`, `hw-pass-2`, `hw-pass-3` are internal sub-passes, not standalone commands — they are documented as such and excluded from the 36-command count. Vault stubs in expression vaults that wrap them as convenience aliases (e.g., `/hw-pass-1`) are operator-facing shortcuts only.
+- The agensy command count had been "35 + 2 aliases" on disk and "34 + 2 aliases" in `system-architecture.md` `universal_protocols.count`; v2.8.0 reconciles both to 36 + 2 + 3 sub-passes.
+
+---
+
 ## [2.7.0] — 2026-04-28
 
 ### Changed — System Model schema v0.4 → v0.6 (centralized cross-vault bindings)

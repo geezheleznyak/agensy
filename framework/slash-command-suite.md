@@ -33,9 +33,9 @@ Vault-specific commands (unique to one vault) stay as full protocol files in `.c
 
 ---
 
-## Universal Commands (35 protocol files + 2 backward-compat aliases)
+## Universal Commands (36 protocol files + 2 backward-compat aliases + 3 hw-pass internal sub-passes = 41 files)
 
-*17 core knowledge-work + 4 system-model + 8 article-pipeline + 5 companion-co + 1 learner-layer. Full inventory below; the article-* and co-* rows are also repeated in the §Expression Vault Commands section for pipeline context.*
+*17 core knowledge-work + 4 system-model + 9 article-pipeline (incl. article-handwrite) + 5 companion-co + 1 learner-layer = 36 standalone commands. Full inventory below; the article-* and co-* rows are documented in detail in the §Expression Vault Commands section. The 3 `hw-pass-*` files are internal sub-passes invoked by `/article-handwrite` — not standalone commands.*
 
 | Command | Trigger type | Protocol file |
 |---|---|---|
@@ -149,6 +149,24 @@ The article-* pipeline turns argument-dense source-vault maps into published ess
 | `/co-suggest <selection-or-stuck-point> [--type ...]` | `universal-commands/co-suggest.md` | passage or stuck-point description | 3 distinct next-move options (direction + rationale + risk per option) |
 | `/co-critique <selection> [--mode light\|adversarial]` | `universal-commands/co-critique.md` | selected passage | bulleted flags with fix suggestions; shares C1–C8 library with `/article-critique` in adversarial mode |
 | `/co-capture [flag\|sweep\|close] [--target voice\|positions\|methodological\|framework\|all]` | `universal-commands/co-capture.md` | active companion-mode dialogue | voice-profile source files, positions-index rows (status `under-review`), writer-positions.md appends; all substrate writes user-confirmed per-item |
+
+**Hand-mode commands (V2.0 — 2026-04-28)**: a third top-level expression mode. The operator writes every sentence by hand on a *Loaded Canvas* — three pre-writing diagnostics already locked, prefetched material in a sidebar, anatomy slots empty. Lifts the dormant Essayist's Framework from passive scaffolding to active backbone. Contractually opposite to companion mode (which is purely reactive): hand mode arranges *first*, then the operator writes; companion mode never arranges. Three-pass revision discipline with 24h time gates between passes.
+
+| Command | Protocol | Inputs | Outputs |
+|---|---|---|---|
+| `/article-handwrite start <topic-or-source-map> [--from-map <map-path>] [--skip-diagnostics]` | `universal-commands/article-handwrite.md` | topic string or source-map path | essay file at `20-Essays/` with `mode: handwrite`, `status: handwrite-arranged`; Loaded Canvas (frontmatter + section skeleton + prefetched sidebar) |
+| `/article-handwrite status [essay-path]` | `universal-commands/article-handwrite.md` | essay path or active essay | report: status, last `updated`, time-gate eligibility for next pass, sidebar freshness |
+| `/article-handwrite finalize [essay-path]` | `universal-commands/article-handwrite.md` | essay at `handwrite-pass-3` | sets `status: handwrite-final`; ready for `/article-promote` |
+
+**Internal sub-passes** (NOT standalone commands; invoked by `/article-handwrite` post-drafting; vault stubs in expression vaults are convenience wrappers but the protocols live with `/article-handwrite`):
+
+| Sub-pass | Protocol | Role | Time gate |
+|---|---|---|---|
+| `/hw-pass-1` (Structure) | `universal-commands/hw-pass-1-structure.md` | Movement audit, anatomy slot fill (Provocation / Movement / Turn / Resting Point), polymath-trap re-scan against prose. Output appended as `## Pass 1 Notes` | none |
+| `/hw-pass-2` (Sentences) | `universal-commands/hw-pass-2-sentences.md` | 13-tic voice-profile audit + framework §IV three pathologies (gravitas / weak-hedge / performance) + non-skippable read-aloud directive | refuses within 24h of last update unless `--force` |
+| `/hw-pass-3` (Honesty) | `universal-commands/hw-pass-3-honesty.md` | `/article-critique` C1–C8 (full mode) + `writer-positions.md` non-negotiables check + framework §VI honesty audit | refuses within 24h unless `--force` |
+
+The four `/co-*` verbs remain callable throughout hand mode — they precede the passes, they don't replace them. `/article-promote` accepts `handwrite-final` identically to `final` and `companion-final` — the harvest loop is mode-agnostic.
 
 **Legacy expression commands** (logos, retained for non-map-derived essays):
 
